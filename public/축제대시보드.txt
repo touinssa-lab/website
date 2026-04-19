@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 지역축제 기후 위기 대시보드</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- React & ReactDOM (v18) -->
+    <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+    
+    <!-- Prop-Types (Recharts 의존성) -->
+    <script src="https://cdn.jsdelivr.net/npm/prop-types@15.8.1/prop-types.min.js"></script>
+    
+    <!-- Recharts (v2.10.3) - Infinity 충돌 방지를 위해 안정적인 버전 사용 -->
+    <script src="https://cdn.jsdelivr.net/npm/recharts@2.10.3/umd/Recharts.min.js"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/lucide-react@latest"></script>
+    
+    <!-- Babel -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;800&display=swap');
+        body { font-family: 'Pretendard', sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .recharts-default-tooltip { border-radius: 12px !important; border: none !important; box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1) !important; }
+    </style>
+</head>
+<body class="bg-slate-50">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // 전역 객체가 로드될 때까지 안전하게 대기 및 참조
+        const { useState, useMemo } = React;
+        
+        // Recharts 및 Lucide 참조 (존재하지 않을 경우를 대비한 방어적 코드)
+        const RechartsObj = window.Recharts || {};
+        const { 
+            BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, 
+            PieChart, Pie, Cell, AreaChart, Area, ComposedChart, Line, Radar, RadarChart, 
+            PolarGrid, PolarAngleAxis, PolarRadiusAxis 
+        } = RechartsObj;
+
+        const LucideIcons = window.lucideReact || {};
+        const { 
+            LayoutDashboard, TrendingUp, Map: MapIcon, PieChart: PieIcon, Calendar, 
+            DollarSign, Users, Info, ChevronRight, List, ArrowRightLeft, 
+            Thermometer, AlertTriangle, Wind, CloudAlert, Ghost, XCircle 
+        } = LucideIcons;
+
+        // 아이콘이 없을 경우를 대비한 폴백 컴포넌트
+        const IconFallback = ({ children }) => <span className="w-5 h-5 flex items-center justify-center">?</span>;
+
+        // --- 데이터 정의 ---
+        const themeByRegionData = [
+            { region: "서울", "문화예술": 42, "전통역사": 8, "주민화합": 12, "자연생태": 4, "지역특산물": 2, total: 68 },
+            { region: "부산", "문화예술": 35, "전통역사": 10, "주민화합": 8, "자연생태": 5, "지역특산물": 3, total: 61 },
+            { region: "대구", "문화예술": 18, "전통역사": 4, "주민화합": 6, "자연생태": 3, "지역특산물": 1, total: 32 },
+            { region: "인천", "문화예술": 14, "전통역사": 3, "주민화합": 5, "자연생태": 2, "지역특산물": 2, total: 26 },
+            { region: "광주", "문화예술": 12, "전통역사": 2, "주민화합": 3, "자연생태": 1, "지역특산물": 1, total: 19 },
+            { region: "대전", "문화예술": 13, "전통역사": 2, "주민화합": 4, "자연생태": 2, "지역특산물": 2, total: 23 },
+            { region: "울산", "문화예술": 16, "전통역사": 4, "주민화합": 5, "자연생태": 3, "지역특산물": 3, total: 31 },
+            { region: "세종", "문화예술": 4, "전통역사": 1, "주민화합": 1, "자연생태": 1, "지역특산물": 0, total: 7 },
+            { region: "경기", "문화예술": 78, "전통역사": 15, "주민화합": 25, "자연생태": 18, "지역특산물": 14, total: 150 },
+            { region: "강원", "문화예술": 45, "전통역사": 18, "주민화합": 20, "자연생태": 42, "지역특산물": 28, total: 153 },
+            { region: "충북", "문화예술": 22, "전통역사": 10, "주민화합": 12, "자연생태": 10, "지역특산물": 11, total: 65 },
+            { region: "충남", "문화예술": 38, "전통역사": 16, "주민화합": 18, "자연생태": 15, "지역특산물": 29, total: 116 },
+            { region: "전북", "문화예술": 32, "전통역사": 14, "주민화합": 15, "자연생태": 15, "지역특산물": 20, total: 96 },
+            { region: "전남", "문화예술": 35, "전통역사": 18, "주민화합": 22, "자연생태": 25, "지역특산물": 30, total: 130 },
+            { region: "경북", "문화예술": 38, "전통역사": 22, "주민화합": 20, "자연생태": 15, "지역특산물": 30, total: 125 },
+            { region: "경남", "문화예술": 40, "전통역사": 15, "주민화합": 18, "자연생태": 12, "지역특산물": 24, total: 109 },
+            { region: "제주", "문화예술": 15, "전통역사": 5, "주민화합": 10, "자연생태": 18, "지역특산물": 7, total: 55 },
+        ];
+
+        const sspScenarios = {
+            "SSP1-2.6": {
+                name: "저탄소 시나리오 (지속가능)",
+                color: "#10b981",
+                extinctionRate: 8,
+                description: "친환경 기술 발전으로 기후 변화를 억제함. 대부분의 자연형 축제가 일정을 소폭 조정하여 생존 가능한 경로.",
+                data: [
+                    { year: '2026', extinction: 2, ecoRisk: 12 },
+                    { year: '2035', extinction: 4, ecoRisk: 16 },
+                    { year: '2045', extinction: 6, ecoRisk: 22 },
+                    { year: '2055', extinction: 8, ecoRisk: 28 },
+                ]
+            },
+            "SSP2-4.5": {
+                name: "중간 시나리오 (중도)",
+                color: "#3b82f6",
+                extinctionRate: 24,
+                description: "현재 수준의 노력이 계속될 경우. 남부 지방의 얼음 축제 및 일부 특산물 축제의 소멸 위험군 진입.",
+                data: [
+                    { year: '2026', extinction: 3, ecoRisk: 12 },
+                    { year: '2035', extinction: 10, ecoRisk: 24 },
+                    { year: '2045', extinction: 18, ecoRisk: 38 },
+                    { year: '2055', extinction: 24, ecoRisk: 52 },
+                ]
+            },
+            "SSP3-7.0": {
+                name: "고탄소 시나리오 (지역 분할)",
+                color: "#f59e0b",
+                extinctionRate: 58,
+                description: "기후 대응 실패 시나리오. 절반 이상의 자연 자산 기반 축제가 주산지 북상 및 생태계 변화로 소멸.",
+                data: [
+                    { year: '2026', extinction: 5, ecoRisk: 12 },
+                    { year: '2035', extinction: 20, ecoRisk: 32 },
+                    { year: '2045', extinction: 42, ecoRisk: 58 },
+                    { year: '2055', extinction: 58, ecoRisk: 78 },
+                ]
+            },
+            "SSP5-8.5": {
+                name: "최악 시나리오 (화석연료)",
+                color: "#ef4444",
+                extinctionRate: 88,
+                description: "최악의 상황. 대한민국 내 겨울/꽃 축제의 90% 가까이 소멸. 아열대 작물 중심의 전면적 개편 필수.",
+                data: [
+                    { year: '2026', extinction: 8, ecoRisk: 12 },
+                    { year: '2035', extinction: 35, ecoRisk: 42 },
+                    { year: '2045', extinction: 65, ecoRisk: 75 },
+                    { year: '2055', extinction: 88, ecoRisk: 92 },
+                ]
+            }
+        };
+
+        const themes = [
+            { id: '문화예술', color: '#6366f1', icon: '🎨' },
+            { id: '전통역사', color: '#ef4444', icon: '🏯' },
+            { id: '주민화합', color: '#8b5cf6', icon: '🤝' },
+            { id: '자연생태', color: '#10b981', icon: '🌿' },
+            { id: '지역특산물', color: '#f59e0b', icon: '🍎' },
+        ];
+
+        const gridMap = [
+            [null, null, {id: "강원", name: "강원"}, null],
+            [{id: "서울", name: "서울"}, {id: "경기", name: "경기"}, {id: "충북", name: "충북"}, null],
+            [{id: "인천", name: "인천"}, {id: "충남", name: "충남"}, {id: "경북", name: "경북"}, null],
+            [{id: "세종", name: "세종"}, {id: "대전", name: "대전"}, {id: "대구", name: "대구"}, {id: "울산", name: "울산"}],
+            [{id: "전북", name: "전북"}, {id: "광주", name: "광주"}, {id: "경남", name: "경남"}, {id: "부산", name: "부산"}],
+            [null, {id: "전남", name: "전남"}, null, null],
+            [null, {id: "제주", name: "제주"}, null, null]
+        ];
+
+        const App = () => {
+            const [activeTab, setActiveTab] = useState('distribution'); 
+            const [selectedTheme, setSelectedTheme] = useState('자연생태');
+            const [selectedSSP, setSelectedSSP] = useState('SSP5-8.5');
+
+            const filteredData = useMemo(() => {
+                return themeByRegionData.map(d => ({
+                    region: d.region,
+                    count: d[selectedTheme],
+                    percentage: ((d[selectedTheme] / d.total) * 100).toFixed(1)
+                })).sort((a, b) => b.count - a.count);
+            }, [selectedTheme]);
+
+            const currentSSP = sspScenarios[selectedSSP];
+
+            const regionalExtinctionData = useMemo(() => {
+                const rate = currentSSP.extinctionRate / 100;
+                return themeByRegionData.map(d => {
+                    const riskFestivals = d["자연생태"] + d["지역특산물"];
+                    return {
+                        region: d.region,
+                        riskCount: riskFestivals,
+                        extinctionCount: Math.round(riskFestivals * rate),
+                    };
+                }).sort((a, b) => b.extinctionCount - a.extinctionCount);
+            }, [selectedSSP]);
+
+            return (
+                <div className="min-h-screen bg-slate-50 text-slate-900 p-4 md:p-8">
+                    {/* Header */}
+                    <header className="max-w-7xl mx-auto mb-8">
+                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                            <div>
+                                <h1 className="text-3xl font-extrabold tracking-tight text-slate-800 flex items-center gap-2">
+                                    {CloudAlert ? <CloudAlert className="text-indigo-600" /> : '(!) '}
+                                    지역축제 기후 위기 & 소멸 예측 대시보드
+                                </h1>
+                                <p className="text-slate-500 mt-1 font-medium">SSP 시나리오에 따른 2055년 전국 축제 자산 생존성 시뮬레이션</p>
+                            </div>
+                            <div className="flex bg-white p-1 rounded-2xl shadow-sm border border-slate-200">
+                                <button onClick={() => setActiveTab('distribution')} className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === 'distribution' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-500 hover:bg-slate-50'}`}>현황 분석</button>
+                                <button onClick={() => setActiveTab('climate')} className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === 'climate' ? 'bg-rose-600 text-white shadow-lg' : 'text-slate-500 hover:bg-slate-50'}`}>소멸 예측 (SSP)</button>
+                            </div>
+                        </div>
+                    </header>
+
+                    {activeTab === 'distribution' ? (
+                        <div className="animate-in fade-in duration-500">
+                            <div className="max-w-7xl mx-auto flex flex-wrap gap-2 mb-8">
+                                {themes.map(theme => (
+                                    <button key={theme.id} onClick={() => setSelectedTheme(theme.id)} className={`flex items-center gap-2 px-6 py-3 rounded-2xl border-2 transition-all ${selectedTheme === theme.id ? 'bg-white border-indigo-500 ring-4 ring-indigo-50 shadow-xl translate-y-[-2px]' : 'bg-white border-slate-100 text-slate-500 hover:border-slate-300'}`}>
+                                        <span className="text-xl">{theme.icon}</span>
+                                        <span className={`font-bold ${selectedTheme === theme.id ? 'text-indigo-600' : ''}`}>{theme.id}</span>
+                                    </button>
+                                ))}
+                            </div>
+                            <main className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
+                                <div className="lg:col-span-5 space-y-8">
+                                    <section className="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100">
+                                        <h2 className="text-xl font-black mb-6 flex items-center gap-2">{MapIcon ? <MapIcon className="w-5 h-5 text-indigo-500" /> : null} 전국 테마 분포 맵</h2>
+                                        <div className="grid grid-cols-4 gap-3">
+                                            {gridMap.flat().map((item, idx) => {
+                                                if (!item) return <div key={idx} className="h-20" />;
+                                                const regionData = themeByRegionData.find(d => d.region === item.id);
+                                                const count = regionData ? regionData[selectedTheme] : 0;
+                                                const maxCount = Math.max(...themeByRegionData.map(d => d[selectedTheme]));
+                                                const opacity = count / maxCount;
+                                                return (
+                                                    <div key={item.id} className={`h-20 rounded-2xl border transition-all flex flex-col items-center justify-center relative overflow-hidden ${count > 0 ? 'border-slate-100 shadow-sm' : 'bg-slate-50 border-transparent'}`}>
+                                                        <div className="absolute inset-0 z-0" style={{ backgroundColor: themes.find(t => t.id === selectedTheme).color, opacity: 0.1 + (opacity * 0.8) }} />
+                                                        <div className="z-10 text-center text-xs font-black">{item.name}<br/><span className="text-lg">{count}</span></div>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </section>
+                                    <div className="bg-slate-900 rounded-[2rem] p-8 text-white shadow-2xl">
+                                        <h3 className="text-lg font-bold mb-3 flex items-center gap-2">{Info ? <Info className="w-5 h-5 text-indigo-400" /> : null} 분석 인사이트</h3>
+                                        <p className="text-slate-400 text-sm leading-relaxed font-medium">
+                                            현재 <strong>{selectedTheme}</strong> 축제는 {filteredData[0]?.region} 지역이 가장 높은 밀집도를 보입니다. 기후 민감도가 높은 테마의 경우 미래 시나리오별 대응책 수립이 시급합니다.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="lg:col-span-7 bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100 h-[550px]">
+                                    <h2 className="text-xl font-black mb-6 flex items-center gap-2 text-emerald-600">{TrendingUp ? <TrendingUp className="w-5 h-5" /> : null} 지역별 상세 보유 현황</h2>
+                                    {BarChart && (
+                                        <ResponsiveContainer width="100%" height="100%">
+                                            <BarChart data={filteredData} layout="vertical" margin={{left: 20}}>
+                                                <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="#f1f5f9" />
+                                                <XAxis type="number" hide />
+                                                <YAxis dataKey="region" type="category" axisLine={false} tickLine={false} width={60} tick={{fontWeight: 700, fill: '#475569'}} />
+                                                <Tooltip cursor={{fill: '#f8fafc'}} />
+                                                <Bar dataKey="count" fill={themes.find(t => t.id === selectedTheme).color} radius={[0, 8, 8, 0]} barSize={28} />
+                                            </BarChart>
+                                        </ResponsiveContainer>
+                                    )}
+                                </div>
+                            </main>
+                        </div>
+                    ) : (
+                        <main className="max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500">
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                {Object.keys(sspScenarios).map((ssp) => (
+                                    <button key={ssp} onClick={() => setSelectedSSP(ssp)} className={`p-6 rounded-[1.5rem] border-2 transition-all text-left ${selectedSSP === ssp ? 'border-indigo-600 bg-white shadow-xl translate-y-[-4px]' : 'border-slate-200 bg-slate-50 text-slate-400 hover:bg-white hover:border-slate-300'}`}>
+                                        <div className="font-black text-2xl mb-1" style={{ color: selectedSSP === ssp ? sspScenarios[ssp].color : '#94a3b8' }}>{ssp}</div>
+                                        <div className="text-xs font-black uppercase tracking-widest opacity-60">Climate Path</div>
+                                        <div className="mt-2 text-sm font-bold text-slate-800">소멸 예측: {sspScenarios[ssp].extinctionRate}%</div>
+                                    </button>
+                                ))}
+                            </div>
+                            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                                <div className="lg:col-span-7 bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100">
+                                    <div className="flex justify-between items-center mb-10">
+                                        <div>
+                                            <h2 className="text-2xl font-black flex items-center gap-2" style={{ color: currentSSP.color }}>{Ghost ? <Ghost className="w-7 h-7" /> : null} {selectedSSP} 시나리오 소멸률 추이</h2>
+                                            <p className="text-slate-400 text-sm mt-1 font-bold">{currentSSP.name}</p>
+                                        </div>
+                                        <div className="text-4xl font-black" style={{ color: currentSSP.color }}>{currentSSP.extinctionRate}%</div>
+                                    </div>
+                                    <div className="h-80 w-full">
+                                        {AreaChart && (
+                                            <ResponsiveContainer width="100%" height="100%">
+                                                <AreaChart data={currentSSP.data}>
+                                                    <defs>
+                                                        <linearGradient id="colorEx" x1="0" y1="0" x2="0" y2="1">
+                                                            <stop offset="5%" stopColor={currentSSP.color} stopOpacity={0.3}/>
+                                                            <stop offset="95%" stopColor={currentSSP.color} stopOpacity={0}/>
+                                                        </linearGradient>
+                                                    </defs>
+                                                    <XAxis dataKey="year" axisLine={false} tickLine={false} tick={{fontSize: 12, fontWeight: 700}} />
+                                                    <YAxis unit="%" axisLine={false} tickLine={false} tick={{fontSize: 12, fontWeight: 700}} />
+                                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                                                    <Tooltip />
+                                                    <Area type="monotone" dataKey="extinction" name="예상 소멸 비율" stroke={currentSSP.color} fill="url(#colorEx)" strokeWidth={6} />
+                                                </AreaChart>
+                                            </ResponsiveContainer>
+                                        )}
+                                    </div>
+                                    <div className="mt-8 p-6 bg-slate-50 rounded-2xl border border-slate-100 flex gap-4">
+                                        {AlertTriangle ? <AlertTriangle className="w-6 h-6 text-amber-500 shrink-0" /> : null}
+                                        <p className="text-sm text-slate-600 font-medium leading-relaxed italic">"{currentSSP.description}"</p>
+                                    </div>
+                                </div>
+                                <div className="lg:col-span-5 bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100 overflow-y-auto max-h-[600px] custom-scrollbar">
+                                    <h2 className="text-xl font-black mb-8 flex items-center gap-2 text-rose-500">{XCircle ? <XCircle className="w-5 h-5" /> : null} 지자체별 소멸 예상 수 (개)</h2>
+                                    <div className="space-y-6">
+                                        {regionalExtinctionData.map((d) => (
+                                            <div key={d.region} className="group">
+                                                <div className="flex justify-between text-sm font-bold mb-2">
+                                                    <span className="text-slate-700">{d.region}</span>
+                                                    <span className="text-rose-600 font-black">{d.extinctionCount} <span className="text-slate-300 font-normal">/ {d.riskCount}</span></span>
+                                                </div>
+                                                <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden">
+                                                    <div className="h-full transition-all duration-1000 ease-in-out" style={{ width: `${d.riskCount === 0 ? 0 : (d.extinctionCount / d.riskCount) * 100}%`, backgroundColor: currentSSP.color }} />
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </main>
+                    )}
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
