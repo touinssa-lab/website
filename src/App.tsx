@@ -10,6 +10,8 @@ import NewsRoom from "./pages/NewsRoom";
 import NewsDetail from "./pages/NewsDetail";
 import Contact from "./pages/Contact";
 import Intelligence from "./pages/Intelligence";
+import Survey from "./pages/Survey";
+import QuickMenu from "./components/QuickMenu";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,9 +29,11 @@ const App = () => (
           <Route path="/news" element={<NewsRoom />} />
           <Route path="/news/:id" element={<NewsDetail />} />
           <Route path="/intelligence" element={<Intelligence />} />
+          <Route path="/survey" element={<Survey />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <QuickMenu />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

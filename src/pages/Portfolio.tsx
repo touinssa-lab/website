@@ -10,17 +10,17 @@ const Portfolio = () => {
     <div className="min-h-screen bg-background animate-fade-in relative overflow-hidden">
       <Header />
       
-      <section className="hero-gradient text-white py-14 md:py-20 relative overflow-hidden">
+      <section className="hero-gradient text-white min-h-[200px] md:min-h-[260px] flex items-center relative overflow-hidden">
         <AntigravityBackground />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <p className="text-sm font-medium tracking-widest uppercase opacity-80 mb-4">Our Track Records</p>
-            <h1 className="text-4xl md:text-5xl font-bold leading-tight max-w-3xl">
-              가치를 입증하는<br />투어리즘인사이트의 주요 실적
+            <p className="text-lg font-bold tracking-wider uppercase text-sky-400 mb-4">Our Track Records</p>
+            <h1 className="text-3xl md:text-5xl font-semibold font-sans leading-relaxed drop-shadow-md max-w-3xl">
+              가치를 입증하는 주요 실적
             </h1>
           </motion.div>
         </div>

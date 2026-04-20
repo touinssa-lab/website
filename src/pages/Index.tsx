@@ -7,12 +7,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import AntigravityBackground from "@/components/AntigravityBackground";
 
 const services = [
-  { icon: Map, title: "Local Branding", desc: "지역 고유의 매력을 브랜드로 구축합니다", path: "/company#services" },
-  { icon: TrendingUp, title: "Signals Analysis", desc: "관광 트렌드의 변화를 분석하고 예측합니다", path: "/company#services" },
-  { icon: BarChart3, title: "Data & AI", desc: "데이터와 AI 기반 인사이트를 제공합니다", path: "/company#services" },
-  { icon: Lightbulb, title: "Market Insights", desc: "시장 동향과 경쟁 환경을 분석합니다", path: "/company#services" },
-  { icon: Globe, title: "Strategic Planning", desc: "지속 가능한 관광 전략을 수립합니다", path: "/company#services" },
-  { icon: PenTool, title: "Infographic Design", desc: "데이터를 직관적으로 시각화합니다", path: "/company#services" },
+  { icon: Map, title: "Local Branding", desc: "지역 고유의 매력을 브랜드로 구축합니다", path: "/intelligence#services" },
+  { icon: TrendingUp, title: "Signals Analysis", desc: "관광 트렌드의 변화를 분석하고 예측합니다", path: "/intelligence#services" },
+  { icon: BarChart3, title: "Data & AI", desc: "데이터와 AI 기반 인사이트를 제공합니다", path: "/intelligence#services" },
+  { icon: Lightbulb, title: "Market Insights", desc: "시장 동향과 경쟁 환경을 분석합니다", path: "/intelligence#services" },
+  { icon: Globe, title: "Strategic Planning", desc: "지속 가능한 관광 전략을 수립합니다", path: "/intelligence#services" },
+  { icon: PenTool, title: "Infographic Design", desc: "데이터를 직관적으로 시각화합니다", path: "/intelligence#services" },
 ];
 
 const Index = () => {
@@ -163,7 +163,7 @@ const Index = () => {
             className="flex items-center justify-between mb-12"
           >
             <h2 className="text-3xl md:text-4xl font-bold">Our Services</h2>
-            <Link to="/company#services" className="text-sm font-medium text-muted-foreground hover:text-accent transition-colors flex items-center gap-1">
+            <Link to="/intelligence#services" className="text-sm font-medium text-muted-foreground hover:text-accent transition-colors flex items-center gap-1">
               전체 보기 <ArrowRight className="h-4 w-4" />
             </Link>
           </motion.div>
