@@ -1,4 +1,4 @@
-export type ContentBlock = 
+export type ContentBlock =
   | { type: 'text'; value: string }
   | { type: 'image'; value: string; caption?: string };
 
@@ -16,7 +16,7 @@ export const newsItems: NewsArticle[] = [
   {
     id: "1",
     category: "관광 통계",
-    title: "1분기 방한 외래객 476만명 ‘사상 최대’…3월 206만명 돌파",
+    title: "1분기 방한 외래객 1476만명 ‘사상 최대’…3월 206만명 돌파",
     date: "2026. 04. 18",
     thumbnail: "/news_001-1.png",
     excerpt: "올해 1분기 방한 외래관광객: 475만 9,471명으로 전년 대비 23% 증가, 분기 기준 역대 최대치 기록.",
