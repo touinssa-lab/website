@@ -49,13 +49,16 @@ const CarbonCalculator = () => {
       <div className="grid lg:grid-cols-5 h-full relative z-10">
         
         {/* Left Side: Input Elements */}
-        <div className="lg:col-span-3 p-6 md:p-10 border-b lg:border-b-0 lg:border-r border-border/50">
-          <div className="mb-8">
-            <h2 className="text-2xl md:text-3xl font-bold font-serif mb-2">Calculate Your Travel Carbon Footprint</h2>
+        <div className="lg:col-span-3 p-5 md:p-8 border-b lg:border-b-0 lg:border-r border-border/50">
+          <div className="mb-6">
+            <h2 className="text-2xl md:text-3xl font-bold font-serif mb-2 flex items-center gap-2">
+              <Leaf className="text-accent w-8 h-8" />
+              여행 탄소 발자국 계산기
+            </h2>
             <p className="text-muted-foreground">여행 시 발생하는 탄소 배출량을 예측해 보세요.</p>
           </div>
 
-          <div className="flex flex-wrap gap-2 mb-8 bg-muted/40 p-1.5 rounded-xl border border-border/50">
+          <div className="flex flex-wrap gap-2 mb-6 bg-muted/40 p-1.5 rounded-xl border border-border/50">
             {[
               { id: 'flights', label: 'Flights', icon: Plane },
               { id: 'vehicles', label: 'Vehicles', icon: Car },
@@ -199,8 +202,8 @@ const CarbonCalculator = () => {
         </div>
 
         {/* Right Side: Results Display */}
-        <div className="lg:col-span-2 bg-muted/20 p-6 md:p-10 flex flex-col justify-center">
-          <div className="space-y-8">
+        <div className="lg:col-span-2 bg-muted/20 p-5 md:p-8 flex flex-col justify-center">
+          <div className="space-y-6">
             <div className="text-center">
               <p className="text-sm font-semibold text-accent mb-2 uppercase tracking-wide">Estimated Output</p>
               <h3 className="text-5xl font-bold font-serif text-foreground mb-1">

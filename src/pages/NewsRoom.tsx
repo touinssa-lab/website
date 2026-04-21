@@ -4,6 +4,7 @@ import Footer from "@/components/Footer";
 import DataDashboard from "@/components/DataDashboard";
 import CarbonCalculator from "@/components/CarbonCalculator";
 import FestivalDashboard from "@/components/FestivalDashboard";
+import TravelVolumeDashboard from "@/components/TravelVolumeDashboard";
 import { newsItems } from "@/data/newsData";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
@@ -14,7 +15,8 @@ import {
   Tag, 
   ChevronRight,
   LayoutDashboard,
-  FileText
+  FileText,
+  MapPin
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import AntigravityBackground from "@/components/AntigravityBackground";
@@ -22,7 +24,7 @@ import AntigravityBackground from "@/components/AntigravityBackground";
 
 const NewsRoom = () => {
   const [mainView, setMainView] = useState<'articles' | 'dashboard'>('articles');
-  const [activeView, setActiveView] = useState<'data' | 'carbon' | 'festival'>('data');
+  const [activeView, setActiveView] = useState<'data' | 'carbon' | 'festival' | 'travel'>('data');
 
   return (
     <div className="min-h-screen bg-background animate-fade-in relative overflow-hidden">
@@ -164,7 +166,7 @@ const NewsRoom = () => {
                   <h2 className="text-3xl font-bold mb-8 text-center underline-accent">데이터분석 대시보드</h2>
                   
                   {/* Toggle Nav */}
-                  <div className="flex justify-center mb-10 overflow-x-auto pb-4 custom-scrollbar w-full max-w-4xl">
+                  <div className="flex justify-center mb-4 overflow-x-auto pb-4 custom-scrollbar w-full max-w-4xl">
                     <div className="inline-flex items-center p-1.5 bg-muted/50 border border-border/40 rounded-xl backdrop-blur-sm min-w-max">
                       <button
                         onClick={() => setActiveView('data')}
@@ -176,6 +178,17 @@ const NewsRoom = () => {
                       >
                         <BarChart3 className="w-4 h-4" />
                         관광 데이터 분석 인사이트
+                      </button>
+                      <button
+                        onClick={() => setActiveView('travel')}
+                        className={`flex items-center gap-2 px-5 py-3 rounded-lg text-sm font-bold transition-all duration-300 ${
+                          activeView === 'travel'
+                            ? 'bg-background shadow-md text-sky-500 scale-[1.02]'
+                            : 'text-muted-foreground hover:text-foreground'
+                        }`}
+                      >
+                        <MapPin className="w-4 h-4" />
+                        국민여행 총량 통계
                       </button>
                       <button
                         onClick={() => setActiveView('festival')}
@@ -212,6 +225,7 @@ const NewsRoom = () => {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -20 }}
                       transition={{ duration: 0.4 }}
+                      className="py-4"
                     >
                       <DataDashboard />
                     </motion.div>
@@ -223,6 +237,7 @@ const NewsRoom = () => {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -20 }}
                       transition={{ duration: 0.4 }}
+                      className="py-4"
                     >
                       <FestivalDashboard />
                     </motion.div>
@@ -234,9 +249,21 @@ const NewsRoom = () => {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -20 }}
                       transition={{ duration: 0.4 }}
-                      className="py-4"
+                      className="py-3"
                     >
                       <CarbonCalculator />
+                    </motion.div>
+                  )}
+                  {activeView === 'travel' && (
+                    <motion.div
+                      key="sub-travel"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      transition={{ duration: 0.4 }}
+                      className="py-2"
+                    >
+                      <TravelVolumeDashboard />
                     </motion.div>
                   )}
                 </AnimatePresence>

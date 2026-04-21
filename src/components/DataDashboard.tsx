@@ -2,7 +2,7 @@ import { useState } from "react";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { motion, AnimatePresence } from "framer-motion";
 import { mockDashboardData, RegionType } from "@/data/mockData";
-import { Users, TrendingUp, MapPin } from "lucide-react";
+import { Users, TrendingUp, MapPin, BarChart3 } from "lucide-react";
 
 const COLORS = ['hsl(var(--primary))', 'hsl(var(--accent))', 'hsl(var(--secondary))', 'hsl(var(--muted-foreground))'];
 
@@ -18,10 +18,13 @@ export default function DataDashboard() {
   const currentData = mockDashboardData[selectedRegion];
 
   return (
-    <div className="w-full max-w-6xl mx-auto my-16 animate-fade-in">
+    <div className="w-full max-w-6xl mx-auto animate-fade-in">
       <div className="flex flex-col md:flex-row justify-between items-end mb-8 gap-4">
         <div>
-          <h2 className="text-3xl font-bold font-serif mb-2">관광 데이터 분석 인사이트</h2>
+          <h2 className="text-3xl font-bold font-serif mb-2 flex items-center gap-2">
+            <BarChart3 className="text-primary w-8 h-8" />
+            관광 데이터 분석 인사이트
+          </h2>
           <p className="text-muted-foreground">지역별 실시간 관광객 동향 및 인구통계학적 특성 (모의 데이터)</p>
         </div>
         
