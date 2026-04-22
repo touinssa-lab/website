@@ -36,8 +36,7 @@ const Footer = () => {
                 서울특별시 서초구 강남대로30길 40, 202호
               </li>
               <li className="flex items-center gap-2">
-                <Phone className="h-4 w-4 flex-shrink-0 text-accent" />
-                010-7179-7743 / 02-3445-5333
+                010-7179-7743 / 02-3445-5334
               </li>
               <li className="flex items-center gap-2">
                 <Mail className="h-4 w-4 flex-shrink-0 text-accent" />

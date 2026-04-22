@@ -1,7 +1,8 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { motion } from "framer-motion";
-import { BarChart3, Globe, Lightbulb, TrendingUp, Map, PenTool } from "lucide-react";
+import { BarChart3, Globe, Lightbulb, TrendingUp, Map, PenTool, ChevronRight } from "lucide-react";
+import { Link } from "react-router-dom";
 import AntigravityBackground from "@/components/AntigravityBackground";
 
 const services = [
@@ -18,6 +19,7 @@ const services = [
     subtitle: "시그널 분석",
     desc: "관광 산업의 최신 트렌드를 분석하고, 변화하는 시장 환경에 대한 심층적인 인사이트를 제공합니다. 국내외 관광 동향을 모니터링하고, 미래 전략 수립을 위한 기초 자료를 제공합니다.",
     features: ["국내외 관광 트렌드 모니터링", "소비자 행동 패턴 분석", "미래 관광 시장 예측"],
+    link: "/news/7",
   },
   {
     icon: BarChart3,
@@ -98,14 +100,26 @@ const Intelligence = () => {
               </div>
               <div className="md:col-span-8 space-y-5">
                 <p className="text-lg font-bold text-foreground/90 leading-relaxed">{service.desc}</p>
-                <ul className="space-y-1.5">
-                  {service.features.map((f) => (
-                    <li key={f} className="flex items-center gap-2 text-base">
-                      <div className="w-1.5 h-1.5 rounded-full bg-accent flex-shrink-0" />
-                      {f}
-                    </li>
-                  ))}
-                </ul>
+                <div className="flex flex-col md:flex-row justify-between items-end gap-6">
+                  <ul className="space-y-1.5">
+                    {service.features.map((f) => (
+                      <li key={f} className="flex items-center gap-2 text-base">
+                        <div className="w-1.5 h-1.5 rounded-full bg-accent flex-shrink-0" />
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                  
+                  {service.link && (
+                    <Link 
+                      to={service.link}
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-accent/10 border border-accent/20 text-accent rounded-lg hover:bg-accent hover:text-white transition-all duration-300 font-semibold text-sm group"
+                    >
+                      사례 보기
+                      <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                    </Link>
+                  )}
+                </div>
               </div>
             </motion.div>
           ))}

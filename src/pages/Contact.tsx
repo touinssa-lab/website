@@ -7,13 +7,21 @@ import { toast } from "sonner";
 const Contact = () => {
   const [formData, setFormData] = useState({
     name: "",
+    organization: "",
     email: "",
-    subject: "",
+    phone: "",
+    inquiryType: "프로젝트의뢰",
     message: "",
+    agreed: false,
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!formData.agreed) {
+      toast.error("정보 수신 동의란에 체크해 주세요");
+      return;
+    }
     
     try {
       const response = await fetch("https://formsubmit.co/ajax/touinssa@gmail.com", {
@@ -23,18 +31,28 @@ const Contact = () => {
             'Accept': 'application/json'
         },
         body: JSON.stringify({
-            name: formData.name,
-            email: formData.email,
-            subject: formData.subject,
-            message: formData.message,
-            _subject: `[웹사이트 문의] ${formData.subject}`,
+            이름: formData.name,
+            소속_기관명: formData.organization,
+            이메일: formData.email,
+            연락처: formData.phone,
+            문의유형: formData.inquiryType,
+            내용: formData.message,
+            _subject: `[웹사이트 문의] ${formData.inquiryType} - ${formData.name}`,
             _captcha: "false"
         })
       });
 
       if (response.ok) {
         toast.success("문의 내용이 성공적으로 자동 전송되었습니다!");
-        setFormData({ name: "", email: "", subject: "", message: "" });
+        setFormData({ 
+          name: "", 
+          organization: "", 
+          email: "", 
+          phone: "", 
+          inquiryType: "프로젝트의뢰", 
+          message: "",
+          agreed: false
+        });
       } else {
         toast.error("서버 응답 오류로 전송에 실패했습니다.");
       }
@@ -43,10 +61,11 @@ const Contact = () => {
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value, type } = e.target as HTMLInputElement;
     setFormData(prev => ({
       ...prev,
-      [e.target.name]: e.target.value
+      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
     }));
   };
 
@@ -57,67 +76,107 @@ const Contact = () => {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Hero Section */}
         <div className="mb-16 text-center space-y-6">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight animate-slide-down">
-            Get in Touch
+          <h1 className="text-4xl md:text-5xl lg:text-3xl font-bold leading-tight animate-slide-down break-keep">
+            "답은 현장에, 질문은 당신에게 있습니다."
           </h1>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed animate-slide-up stagger-1">
-            Have a question, suggestion, or just want to say hello? We'd love to hear from you.
+          <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed animate-slide-up stagger-1 break-keep">
+            지금, 질문을 던져보세요. 투어리즘인사이트는 당신의 목소리에서 시작합니다.
           </p>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-12">
           {/* Contact Form */}
-          <div className="rounded-2xl bg-card p-8">
-            <h2 className="text-2xl font-bold mb-6">Send us a message</h2>
-        <form onSubmit={handleSubmit} className="space-y-6 animate-slide-up stagger-2">
-          <div>
-                <label htmlFor="name" className="block text-sm font-medium mb-2">
-                  Name
+          <div className="rounded-2xl bg-card border border-border p-8 md:p-10 shadow-xl">
+            <h2 className="text-2xl font-bold mb-8 font-serif">문의하기</h2>
+            <form onSubmit={handleSubmit} className="space-y-6 animate-slide-up stagger-2">
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="name" className="block text-sm font-semibold mb-2">
+                    이름
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-3 rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all font-sans"
+                    placeholder="성함을 입력해주세요"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="organization" className="block text-sm font-semibold mb-2">
+                    소속 / 기관명
+                  </label>
+                  <input
+                    type="text"
+                    id="organization"
+                    name="organization"
+                    value={formData.organization}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-3 rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all font-sans"
+                    placeholder="소속 단체를 입력해주세요"
+                  />
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="email" className="block text-sm font-semibold mb-2">
+                    이메일
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-3 rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all font-sans"
+                    placeholder="example@email.com"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="phone" className="block text-sm font-semibold mb-2">
+                    연락처
+                  </label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-3 rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all font-sans"
+                    placeholder="010-0000-0000"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="inquiryType" className="block text-sm font-semibold mb-2">
+                  문의유형
                 </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={formData.name}
+                <select
+                  id="inquiryType"
+                  name="inquiryType"
+                  value={formData.inquiryType}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring"
-                  placeholder="Your name"
-                />
+                  className="w-full px-4 py-3 rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all appearance-none font-sans"
+                >
+                  <option value="프로젝트의뢰">프로젝트의뢰</option>
+                  <option value="협업파트너쉽 제안">협업파트너쉽 제안</option>
+                  <option value="데이터 리포트 요청">데이터 리포트 요청</option>
+                  <option value="기타문의">기타문의</option>
+                </select>
               </div>
+
               <div>
-                <label htmlFor="email" className="block text-sm font-medium mb-2">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring"
-                  placeholder="your.email@example.com"
-                />
-              </div>
-              <div>
-                <label htmlFor="subject" className="block text-sm font-medium mb-2">
-                  Subject
-                </label>
-                <input
-                  type="text"
-                  id="subject"
-                  name="subject"
-                  value={formData.subject}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring"
-                  placeholder="What's this about?"
-                />
-              </div>
-              <div>
-                <label htmlFor="message" className="block text-sm font-medium mb-2">
-                  Message
+                <label htmlFor="message" className="block text-sm font-semibold mb-2">
+                  내용
                 </label>
                 <textarea
                   id="message"
@@ -125,16 +184,31 @@ const Contact = () => {
                   value={formData.message}
                   onChange={handleChange}
                   required
-                  rows={6}
-                  className="w-full px-4 py-3 rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring resize-none"
-                  placeholder="Tell us what's on your mind..."
+                  rows={5}
+                  className="w-full px-4 py-3 rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all resize-none font-sans"
+                  placeholder="문의하실 내용을 상세히 적어주세요"
                 />
               </div>
+
+              <div className="flex items-center gap-3 p-4 rounded-xl bg-muted/30 border border-border/50 group hover:border-accent/30 transition-colors">
+                <input
+                  type="checkbox"
+                  id="agreed"
+                  name="agreed"
+                  checked={formData.agreed}
+                  onChange={handleChange}
+                  className="w-5 h-5 rounded border-input bg-background text-accent focus:ring-accent accent-accent cursor-pointer"
+                />
+                <label htmlFor="agreed" className="text-sm text-muted-foreground cursor-pointer select-none leading-relaxed break-keep">
+                  입력하신 정보는 문의하신 내용에 대한 회신용으로만 사용됩니다.
+                </label>
+              </div>
+
               <Button 
                 type="submit"
-                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-full py-6"
+                className="w-full bg-primary hover:bg-primary/90 text-white font-bold rounded-xl py-7 text-lg shadow-lg shadow-primary/20 transition-all hover:scale-[1.01]"
               >
-                Send Message
+                문의 내용 전송하기
               </Button>
             </form>
           </div>
@@ -160,7 +234,7 @@ const Contact = () => {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">Phone</h3>
-                    <p className="text-muted-foreground">010-7179-7743 / 02-3445-5333</p>
+                    <p className="text-muted-foreground">010-7179-7743 / 02-3445-5334</p>
                     <p className="text-muted-foreground text-sm">평일 09:00 - 18:00</p>
                   </div>
                 </div>

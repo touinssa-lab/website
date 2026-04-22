@@ -66,9 +66,15 @@ const NewsDetail = () => {
         <article className="prose prose-lg dark:prose-invert max-w-none">
           {article.contentBlocks.map((block, idx) => {
             if (block.type === 'text') {
+              const parts = block.value.split(/(\*\*.*?\*\*)/g);
               return (
                 <p key={idx} className="text-muted-foreground md:text-lg leading-relaxed mb-6 whitespace-pre-line tracking-wide break-keep">
-                  {block.value}
+                  {parts.map((part, i) => {
+                    if (part.startsWith('**') && part.endsWith('**')) {
+                      return <strong key={i} className="text-foreground font-bold">{part.slice(2, -2)}</strong>;
+                    }
+                    return part;
+                  })}
                 </p>
               );
             } 
