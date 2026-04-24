@@ -61,7 +61,7 @@ const QuickMenu = () => {
   };
 
   return (
-    <div className="fixed right-6 top-1/2 -translate-y-1/2 z-[100] flex flex-col gap-4 items-end pointer-events-none">
+    <div className="fixed right-6 top-40 z-[100] flex flex-col gap-4 items-end pointer-events-none">
       <AnimatePresence>
         {menuItems.map((item, index) => (
           <motion.div
