@@ -1,13 +1,14 @@
 import { useState, useMemo } from 'react';
 import { 
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
-    AreaChart, Area
+    AreaChart, Area, LabelList
 } from 'recharts';
 import { 
     CloudAlert, Map as MapIcon, Info, TrendingUp, Ghost, AlertTriangle, XCircle,
     Palette, History, Users, Leaf, Apple
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import SouthKoreaMap from './SouthKoreaMap';
 
 // --- 스태틱 데이터 정의 ---
 const themeByRegionData = [
@@ -89,15 +90,7 @@ const themes = [
     { id: '지역특산물', color: 'hsl(38, 92%, 50%)', icon: Apple },
 ];
 
-const gridMap = [
-    [null, null, {id: "강원", name: "강원"}, null],
-    [{id: "서울", name: "서울"}, {id: "경기", name: "경기"}, {id: "충북", name: "충북"}, null],
-    [{id: "인천", name: "인천"}, {id: "충남", name: "충남"}, {id: "경북", name: "경북"}, null],
-    [{id: "세종", name: "세종"}, {id: "대전", name: "대전"}, {id: "대구", name: "대구"}, {id: "울산", name: "울산"}],
-    [{id: "전북", name: "전북"}, {id: "광주", name: "광주"}, {id: "경남", name: "경남"}, {id: "부산", name: "부산"}],
-    [null, {id: "전남", name: "전남"}, null, null],
-    [null, {id: "제주", name: "제주"}, null, null]
-];
+// Removed gridMap in favor of SouthKoreaMap SVG component
 
 const FestivalDashboard = () => {
     const [activeTab, setActiveTab] = useState<'distribution' | 'climate'>('distribution'); 
@@ -201,40 +194,21 @@ const FestivalDashboard = () => {
                         {/* Dash Layout */}
                         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                             {/* Left: Map & Insight */}
-                            <div className="lg:col-span-5 space-y-6">
-                                <section className="glass-panel p-6 rounded-3xl border border-border/30">
-                                    <h3 className="text-lg font-bold mb-6 flex items-center gap-2">
-                                        <MapIcon className="w-5 h-5 text-primary" /> 전국 테마 분포 맵
+                            <div className="lg:col-span-6 space-y-6">
+                                <section className="glass-panel p-6 rounded-3xl border border-border/30 overflow-hidden">
+                                    <h3 className="text-lg font-bold mb-12 flex items-center gap-2 text-primary">
+                                        <MapIcon className="w-5 h-5" /> 
+                                        <span>전국 테마 분포 맵<span className="text-xs font-medium opacity-70 ml-1">(지역별 축제 밀집도 지리적 분포)</span></span>
                                     </h3>
-                                    <div className="grid grid-cols-4 gap-2">
-                                        {gridMap.flat().map((item, idx) => {
-                                            if (!item) return <div key={idx} className="h-20" />;
-                                            const regionData = themeByRegionData.find(d => d.region === item.id);
-                                            const count = regionData ? (regionData as any)[selectedTheme] : 0;
-                                            const maxCount = Math.max(...themeByRegionData.map(d => (d as any)[selectedTheme]));
-                                            const opacity = count / maxCount;
-                                            const themeObj = themes.find(t => t.id === selectedTheme);
-                                            
-                                            // Handle color mixing cleanly in JS since Tailwind arbitrary colors don't map dynamic opacities smoothly
-                                            return (
-                                                <div 
-                                                    key={item.id} 
-                                                    className={`h-20 rounded-xl transition-all flex flex-col items-center justify-center relative overflow-hidden ${count > 0 ? 'border border-border/20 shadow-sm' : 'bg-muted/20 border border-transparent'}`}
-                                                >
-                                                    <div 
-                                                        className="absolute inset-0 z-0" 
-                                                        style={{ 
-                                                            backgroundColor: themeObj?.color || '#000', 
-                                                            opacity: Number.isNaN(opacity) ? 0 : 0.15 + (opacity * 0.75) 
-                                                        }} 
-                                                    />
-                                                    <div className="z-10 text-center font-bold">
-                                                        <span className="text-xs opacity-90">{item.name}</span><br/>
-                                                        <span className="text-lg text-foreground drop-shadow-sm">{count}</span>
-                                                    </div>
-                                                </div>
-                                            );
-                                        })}
+                                    
+                                    <div className="flex justify-center items-center py-2">
+                                        <SouthKoreaMap 
+                                            data={themeByRegionData.map(d => ({
+                                                region: d.region,
+                                                count: (d as any)[selectedTheme]
+                                            }))}
+                                            color={themes.find(t => t.id === selectedTheme)?.color || 'hsl(var(--primary))'}
+                                        />
                                     </div>
                                 </section>
                                 
@@ -249,22 +223,24 @@ const FestivalDashboard = () => {
                             </div>
 
                             {/* Right: Bar Chart */}
-                            <div className="lg:col-span-7 glass-panel p-6 md:p-8 rounded-3xl border border-border/30 h-[550px] flex flex-col">
-                                <h3 className="text-lg font-bold mb-6 flex items-center gap-2 text-primary">
+                            <div className="lg:col-span-6 glass-panel p-6 md:p-8 rounded-3xl border border-border/30 h-[700px] flex flex-col">
+                                <h3 className="text-lg font-bold mb-12 flex items-center gap-2 text-primary">
                                     <TrendingUp className="w-5 h-5" /> 지역별 테마 보유 집중도 현황
                                 </h3>
                                 <div className="flex-1 w-full relative">
                                     <ResponsiveContainer width="100%" height="100%">
-                                        <BarChart data={filteredData} layout="vertical" margin={{left: 20}}>
+                                        <BarChart data={filteredData} layout="vertical" margin={{left: 20, right: 40}}>
                                             <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="hsl(var(--border) / 0.3)" />
                                             <XAxis type="number" hide />
-                                            <YAxis dataKey="region" type="category" axisLine={false} tickLine={false} width={60} tick={{fontWeight: 600, fill: 'currentColor', opacity: 0.8}} />
+                                            <YAxis dataKey="region" type="category" axisLine={false} tickLine={false} width={60} interval={0} tick={{fontSize: 12, fontWeight: 600, fill: 'currentColor', opacity: 0.8}} />
                                             <Tooltip 
                                                 cursor={{fill: 'hsl(var(--accent) / 0.1)'}} 
                                                 contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', borderRadius: '12px' }}
                                                 itemStyle={{ fontWeight: 'bold' }}
                                             />
-                                            <Bar dataKey="count" fill={themes.find(t => t.id === selectedTheme)?.color || 'currentColor'} radius={[0, 8, 8, 0]} barSize={24} />
+                                            <Bar dataKey="count" fill={themes.find(t => t.id === selectedTheme)?.color || 'currentColor'} radius={[0, 8, 8, 0]} barSize={24}>
+                                                <LabelList dataKey="count" position="right" style={{ fill: 'currentColor', fontSize: 12, fontWeight: 'bold', opacity: 0.9 }} offset={10} />
+                                            </Bar>
                                         </BarChart>
                                     </ResponsiveContainer>
                                 </div>

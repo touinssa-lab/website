@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import DataDashboard from "@/components/DataDashboard";
+import UNTourismDashboard from "@/components/UNTourismDashboard";
 import CarbonCalculator from "@/components/CarbonCalculator";
 import FestivalDashboard from "@/components/FestivalDashboard";
 import TravelVolumeDashboard from "@/components/TravelVolumeDashboard";
@@ -16,7 +16,8 @@ import {
   ChevronRight,
   LayoutDashboard,
   FileText,
-  MapPin
+  MapPin,
+  Globe
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import AntigravityBackground from "@/components/AntigravityBackground";
@@ -168,7 +169,7 @@ const NewsRoom = () => {
                   {/* Toggle Nav */}
                   <div className="flex justify-center mb-4 overflow-x-auto pb-4 custom-scrollbar w-full max-w-4xl">
                     <div className="inline-flex items-center p-1.5 bg-muted/50 border border-border/40 rounded-xl backdrop-blur-sm min-w-max">
-                      <button
+                        <button
                         onClick={() => setActiveView('data')}
                         className={`flex items-center gap-2 px-5 py-3 rounded-lg text-sm font-bold transition-all duration-300 ${
                           activeView === 'data'
@@ -176,8 +177,8 @@ const NewsRoom = () => {
                             : 'text-muted-foreground hover:text-foreground'
                         }`}
                       >
-                        <BarChart3 className="w-4 h-4" />
-                        관광 데이터 분석 인사이트
+                        <Globe className="w-4 h-4" />
+                        UN Tourism 글로벌 리포트
                       </button>
                       <button
                         onClick={() => setActiveView('travel')}
@@ -227,7 +228,7 @@ const NewsRoom = () => {
                       transition={{ duration: 0.4 }}
                       className="py-4"
                     >
-                      <DataDashboard />
+                      <UNTourismDashboard />
                     </motion.div>
                   )}
                   {activeView === 'festival' && (

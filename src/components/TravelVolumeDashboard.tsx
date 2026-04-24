@@ -39,17 +39,17 @@ const rawData = [
   { year: 2011, count: 156594, countStay: 75594, countDay: 81000, days: 371234, daysStay: 290234, daysDay: 81000, cost: 9123, costStay: 7123, costDay: 2000 },
   { year: 2012, count: 213468, countStay: 108468, countDay: 105000, days: 498765, daysStay: 393765, daysDay: 105000, cost: 13456, costStay: 10456, costDay: 3000 },
   { year: 2013, count: 231035, countStay: 116035, countDay: 115000, days: 541234, daysStay: 426234, daysDay: 115000, cost: 15234, costStay: 11934, costDay: 3300 },
-  { year: 2014, count: 227100, days: 531234, cost: 14890, countStay: 114100, countDay: 113000, costStay: 11690, costDay: 3200 },
-  { year: 2015, count: 238297, days: 556789, cost: 16234, countStay: 120297, countDay: 118000, costStay: 12734, costDay: 3500 },
-  { year: 2016, count: 241750, days: 561234, cost: 17567, countStay: 122750, countDay: 119000, costStay: 13967, costDay: 3600 },
-  { year: 2017, count: 284966, days: 651234, cost: 21456, countStay: 146966, countDay: 138000, costStay: 17256, costDay: 4200 },
-  { year: 2018, count: 311153, days: 712345, cost: 25345, countStay: 164153, countDay: 147000, costStay: 20345, costDay: 5000 },
-  { year: 2019, count: 344750, days: 791234, cost: 29876, countStay: 184750, countDay: 160000, costStay: 24376, costDay: 5500 },
-  { year: 2020, count: 225199, days: 541234, cost: 18567, countStay: 105199, countDay: 120000, costStay: 14567, costDay: 4000 },
-  { year: 2021, count: 245127, days: 581234, cost: 21234, countStay: 115127, countDay: 130000, costStay: 16934, costDay: 4300 },
-  { year: 2022, count: 283722, days: 681234, cost: 27890, countStay: 143722, countDay: 140000, costStay: 22390, costDay: 5500 },
-  { year: 2023, count: 312450, days: 751234, cost: 31456, countStay: 162450, countDay: 150000, costStay: 25456, costDay: 6000 },
-  { year: 2024, count: 335600, days: 812345, cost: 34567, countStay: 175600, countDay: 160000, costStay: 27567, costDay: 7000 }
+  { year: 2014, count: 227100, days: 531234, cost: 14890, countStay: 114100, countDay: 113000, daysStay: 418234, daysDay: 113000, costStay: 11690, costDay: 3200 },
+  { year: 2015, count: 238297, days: 556789, cost: 16234, countStay: 120297, countDay: 118000, daysStay: 438789, daysDay: 118000, costStay: 12734, costDay: 3500 },
+  { year: 2016, count: 241750, days: 561234, cost: 17567, countStay: 122750, countDay: 119000, daysStay: 442234, daysDay: 119000, costStay: 13967, costDay: 3600 },
+  { year: 2017, count: 284966, days: 651234, cost: 21456, countStay: 146966, countDay: 138000, daysStay: 513234, daysDay: 138000, costStay: 17256, costDay: 4200 },
+  { year: 2018, count: 311153, days: 712345, cost: 25345, countStay: 164153, countDay: 147000, daysStay: 565345, daysDay: 147000, costStay: 20345, costDay: 5000 },
+  { year: 2019, count: 344750, days: 791234, cost: 29876, countStay: 184750, countDay: 160000, daysStay: 631234, daysDay: 160000, costStay: 24376, costDay: 5500 },
+  { year: 2020, count: 225199, days: 541234, cost: 18567, countStay: 105199, countDay: 120000, daysStay: 421234, daysDay: 120000, costStay: 14567, costDay: 4000 },
+  { year: 2021, count: 245127, days: 581234, cost: 21234, countStay: 115127, countDay: 130000, daysStay: 451234, daysDay: 130000, costStay: 16934, costDay: 4300 },
+  { year: 2022, count: 283722, days: 681234, cost: 27890, countStay: 143722, countDay: 140000, daysStay: 541234, daysDay: 140000, costStay: 22390, costDay: 5500 },
+  { year: 2023, count: 312450, days: 751234, cost: 31456, countStay: 162450, countDay: 150000, daysStay: 601234, daysDay: 150000, costStay: 25456, costDay: 6000 },
+  { year: 2024, count: 335600, days: 812345, cost: 34567, countStay: 175600, countDay: 160000, daysStay: 652345, daysDay: 160000, costStay: 27567, costDay: 7000 }
 ];
 
 const TravelVolumeDashboard = () => {
