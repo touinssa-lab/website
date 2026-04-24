@@ -125,7 +125,7 @@ const UNTourismDashboard = () => {
         
         <div className="h-[240px] w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={LONG_TERM_TREND} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+            <AreaChart data={LONG_TERM_TREND} margin={{ top: 40, right: 30, left: 0, bottom: 0 }}>
               <defs>
                 <linearGradient id="colorGlobalTotal" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.4}/>
@@ -138,7 +138,7 @@ const UNTourismDashboard = () => {
                 axisLine={false} 
                 tickLine={false} 
                 ticks={[1995, 2005, 2015, 2019, 2023, 2024, 2025]}
-                tick={{fontSize: 11, fill: 'currentColor', opacity: 0.6}}
+                tick={{fontSize: 12, fill: 'currentColor', opacity: 1, fontWeight: 'bold'}}
                 dy={10}
               />
               <YAxis 
@@ -152,9 +152,9 @@ const UNTourismDashboard = () => {
                 itemStyle={{ fontSize: '13px', fontWeight: 600 }}
                 formatter={(value: any) => [`${value.toLocaleString()}천 명`, '글로벌 방문객']}
               />
-              <ReferenceLine x={2019} stroke="hsl(var(--muted-foreground))" strokeDasharray="3 3" label={{ position: 'top', value: '2019 (Ref)', fill: 'currentColor', opacity: 0.5, fontSize: 10 }} />
-              <ReferenceLine x={2023} stroke="#6366f1" strokeDasharray="3 3" label={{ position: 'top', value: '2023', fill: '#6366f1', fontSize: 10, fontWeight: 'bold' }} />
-              <ReferenceLine x={2024} stroke="#10b981" strokeDasharray="3 3" label={{ position: 'top', value: '2024 (Peak)', fill: '#10b981', fontSize: 10, fontWeight: 'bold' }} />
+              <ReferenceLine x={2019} stroke="hsl(var(--muted-foreground))" strokeDasharray="3 3" label={{ position: 'top', value: '2019 (Ref)', fill: 'currentColor', opacity: 0.8, fontSize: 12, fontWeight: 'bold' }} />
+              <ReferenceLine x={2023} stroke="#6366f1" strokeDasharray="3 3" label={{ position: 'top', value: '2023', fill: '#6366f1', fontSize: 12, fontWeight: 'bold', dx: -15, textAnchor: 'end' }} />
+              <ReferenceLine x={2024} stroke="#10b981" strokeDasharray="3 3" label={{ position: 'top', value: '2024 (Peak)', fill: '#10b981', fontSize: 12, fontWeight: 'bold', dx: 15, textAnchor: 'start' }} />
               
               <Area 
                 type="monotone" 
