@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Link } from "react-router-dom";
-import { ArrowRight, BarChart3, Globe, Lightbulb, TrendingUp, Map, PenTool, Database, FileText, LayoutDashboard } from "lucide-react";
+import { ArrowRight, BarChart3, Globe, Lightbulb, TrendingUp, Map, PenTool, Database, FileText, LayoutDashboard, MoreHorizontal } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { newsItems } from "@/data/newsData";
 import AntigravityBackground from "@/components/AntigravityBackground";
 
 const services = [
@@ -16,6 +17,31 @@ const services = [
 ];
 
 const Index = () => {
+  const [currentNewsIndex, setCurrentNewsIndex] = useState(0);
+  const [currentDashIndex, setCurrentDashIndex] = useState(0);
+
+  const dashboards = [
+    { name: 'UN Tourism 글로벌 리포트', image: '/dash_un_tourism.png' },
+    { name: '국민여행 총량 통계', image: '/dash_travel_volume.png' },
+    { name: '지역축제 기후위기 예측', image: '/dash_festival_climate.png' },
+    { name: '여행 탄소 발자국 계산기', image: '/dash_carbon_footprint.png' }
+  ];
+
+  useEffect(() => {
+    const newsInterval = setInterval(() => {
+      setCurrentNewsIndex((prev) => (prev + 1) % Math.min(newsItems.length, 4));
+    }, 4500);
+
+    const dashInterval = setInterval(() => {
+      setCurrentDashIndex((prev) => (prev + 1) % dashboards.length);
+    }, 3800);
+
+    return () => {
+      clearInterval(newsInterval);
+      clearInterval(dashInterval);
+    };
+  }, []);
+
   return (
     <div className="min-h-screen bg-background animate-fade-in focus:outline-none">
       <Header />
@@ -139,113 +165,117 @@ const Index = () => {
         {/* Quick Links Section */}
         <section className="relative mt-12 mb-6 z-20">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+            {/* Card News Carousel */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
+              className="relative group overflow-hidden rounded-2xl bg-sky-50/50 dark:bg-sky-900/10 backdrop-blur-xl border border-sky-200/50 dark:border-sky-500/20 hover:shadow-2xl transition-all duration-300"
             >
-              <Link 
-                to="/news" 
-                className="group flex items-center gap-6 p-6 md:p-8 rounded-2xl bg-sky-50/50 dark:bg-sky-900/10 backdrop-blur-xl border border-sky-200/50 dark:border-sky-500/20 hover:bg-sky-100/50 dark:hover:bg-sky-900/20 transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]"
-              >
-                <div className="relative flex-shrink-0 w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-sky-500/10 flex items-center justify-center group-hover:bg-sky-500/20 transition-colors overflow-visible">
-                  {/* Radar Pulse */}
-                  <motion.div 
-                    className="absolute inset-0 rounded-2xl border-2 border-sky-500/50"
-                    animate={{ scale: [1, 1.5], opacity: [0.6, 0] }}
-                    transition={{ repeat: Infinity, duration: 2, ease: "easeOut" }}
-                  />
-                  
-                  {/* Floating particles */}
-                  {[...Array(3)].map((_, i) => (
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-2">
+                    <div className="p-2 rounded-lg bg-sky-500/10 text-sky-500">
+                      <FileText size={18} />
+                    </div>
+                    <span className="text-base font-bold font-sans">최신 기획 기사</span>
+                  </div>
+                  <MoreHorizontal size={18} className="text-muted-foreground" />
+                </div>
+                
+                <div className="relative h-32 overflow-hidden">
+                  <AnimatePresence mode="wait">
                     <motion.div
-                      key={i}
-                      className="absolute w-1 h-1 bg-sky-400 rounded-full"
-                      animate={{ 
-                        x: [0, (i - 1) * 20, 0], 
-                        y: [0, -30 - (i * 10), 0],
-                        opacity: [0, 1, 0]
-                      }}
-                      transition={{ 
-                        repeat: Infinity, 
-                        duration: 2 + i, 
-                        delay: i * 0.5,
-                        ease: "easeInOut" 
-                      }}
-                      style={{ left: '50%', top: '50%' }}
-                    />
-                  ))}
-
-                  <motion.div
-                    animate={{ y: [0, -5, 0], rotate: [0, 2, 0, -2, 0] }}
-                    transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
-                    className="relative z-10"
-                  >
-                    <FileText className="w-7 h-7 md:w-8 md:h-8 text-sky-500" />
-                  </motion.div>
+                      key={currentNewsIndex}
+                      initial={{ x: 100, opacity: 0 }}
+                      animate={{ x: 0, opacity: 1 }}
+                      exit={{ x: -100, opacity: 0 }}
+                      transition={{ duration: 0.6, ease: "easeInOut" }}
+                      className="absolute inset-0"
+                    >
+                      <Link to={`/news/${newsItems[currentNewsIndex].id}`} className="flex gap-4 items-center h-full group/card">
+                        <div className="flex-shrink-0 w-24 h-24 md:w-28 md:h-28 rounded-xl overflow-hidden shadow-md">
+                          <img 
+                            src={newsItems[currentNewsIndex].thumbnail} 
+                            alt="" 
+                            className="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-500"
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="text-lg md:text-xl font-bold font-sans mb-2 line-clamp-1 group-hover/card:text-sky-600 transition-colors">
+                            {newsItems[currentNewsIndex].title}
+                          </h4>
+                          <p className="text-xs md:text-sm text-muted-foreground line-clamp-2 leading-relaxed">
+                            {newsItems[currentNewsIndex].excerpt}
+                          </p>
+                        </div>
+                      </Link>
+                    </motion.div>
+                  </AnimatePresence>
                 </div>
-                <div className="flex-1">
-                  <h3 className="text-xl md:text-2xl font-bold font-sans mb-1.5 group-hover:text-sky-500 transition-colors">최신 기획 기사</h3>
-                  <p className="text-sm md:text-base text-muted-foreground leading-relaxed">관광 산업의 핵심 시그널을 담은<br className="hidden sm:block" /> 최신 기획 기사를 확인하세요.</p>
-                </div>
-                <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-sky-500 group-hover:translate-x-1 transition-all" />
-              </Link>
+                
+                <Link to="/news" className="mt-6 pt-4 border-t border-sky-200/30 dark:border-sky-500/10 flex items-center justify-between text-sm font-medium text-sky-600 dark:text-sky-400 group/footer">
+                  <span>전체 기사 보기</span>
+                  <ArrowRight size={14} className="group-hover/footer:translate-x-1 transition-transform" />
+                </Link>
+              </div>
             </motion.div>
 
+            {/* Dashboard Carousel */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.1 }}
+              transition={{ delay: 0.1 }}
+              className="relative group overflow-hidden rounded-2xl bg-amber-50/50 dark:bg-amber-900/10 backdrop-blur-xl border border-amber-200/50 dark:border-amber-500/20 hover:shadow-2xl transition-all duration-300"
             >
-              <Link 
-                to="/news?view=dashboard" 
-                className="group flex items-center gap-6 p-6 md:p-8 rounded-2xl bg-amber-50/50 dark:bg-amber-900/10 backdrop-blur-xl border border-amber-200/50 dark:border-amber-500/20 hover:bg-amber-100/50 dark:hover:bg-amber-900/20 transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]"
-              >
-                <div className="relative flex-shrink-0 w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-amber-500/10 flex items-center justify-center group-hover:bg-amber-500/20 transition-colors overflow-visible">
-                  {/* Radar Pulse */}
-                  <motion.div 
-                    className="absolute inset-0 rounded-2xl border-2 border-amber-500/50"
-                    animate={{ scale: [1, 1.5], opacity: [0.6, 0] }}
-                    transition={{ repeat: Infinity, duration: 2, delay: 0.5, ease: "easeOut" }}
-                  />
-
-                  {/* Floating particles */}
-                  {[...Array(3)].map((_, i) => (
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-2">
+                    <div className="p-2 rounded-lg bg-amber-500/10 text-amber-500">
+                      <LayoutDashboard size={18} />
+                    </div>
+                    <span className="text-base font-bold font-sans">데이터분석 대시보드</span>
+                  </div>
+                  <MoreHorizontal size={18} className="text-muted-foreground" />
+                </div>
+                
+                <div className="relative h-32 flex flex-col justify-center overflow-hidden">
+                  <AnimatePresence mode="wait">
                     <motion.div
-                      key={i}
-                      className="absolute w-1.5 h-1.5 bg-amber-400/60 rounded-sm rotate-45"
-                      animate={{ 
-                        x: [0, (i % 2 === 0 ? 25 : -25), 0], 
-                        y: [0, -25 - (i * 5), 0],
-                        opacity: [0, 1, 0],
-                        rotate: [45, 225, 45]
-                      }}
-                      transition={{ 
-                        repeat: Infinity, 
-                        duration: 3 + i, 
-                        delay: i * 0.7,
-                        ease: "easeInOut" 
-                      }}
-                      style={{ left: '50%', top: '50%' }}
-                    />
-                  ))}
+                      key={currentDashIndex}
+                      initial={{ x: 100, opacity: 0 }}
+                      animate={{ x: 0, opacity: 1 }}
+                      exit={{ x: -100, opacity: 0 }}
+                      transition={{ duration: 0.6, ease: "easeInOut" }}
+                      className="absolute inset-0"
+                    >
+                      <Link to="/news?view=dashboard" className="flex gap-4 items-center h-full group/dash">
+                        <div className="flex-shrink-0 w-24 h-24 md:w-28 md:h-28 rounded-xl overflow-hidden shadow-md">
+                          <img 
+                            src={dashboards[currentDashIndex].image} 
+                            alt="" 
+                            className="w-full h-full object-cover group-hover/dash:scale-110 transition-transform duration-500"
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="text-lg md:text-xl font-bold font-sans text-amber-700 dark:text-amber-400 mb-2 group-hover/dash:translate-x-1 transition-transform line-clamp-1">
+                            {dashboards[currentDashIndex].name}
+                          </div>
+                          <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">
+                            관광 산업의 핵심 지표를 실시간 시각화 데이터로 분석합니다.
+                          </p>
+                        </div>
+                      </Link>
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
 
-                  <motion.div
-                    animate={{ scale: [1, 1.15, 1], rotate: [0, 10, 0, -10, 0] }}
-                    transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-                    className="relative z-10"
-                  >
-                    <LayoutDashboard className="w-7 h-7 md:w-8 md:h-8 text-amber-500" />
-                  </motion.div>
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-xl md:text-2xl font-bold font-sans mb-1.5 group-hover:text-amber-500 transition-colors">데이터분석 대시보드</h3>
-                  <p className="text-sm md:text-base text-muted-foreground leading-relaxed">UN Tourism 리포트와 지역별<br className="hidden sm:block" /> 관광 통계를 한눈에 분석합니다.</p>
-                </div>
-                <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-amber-500 group-hover:translate-x-1 transition-all" />
-              </Link>
+                <Link to="/news?view=dashboard" className="mt-6 pt-4 border-t border-amber-200/30 dark:border-amber-500/10 flex items-center justify-between text-sm font-medium text-amber-600 dark:text-amber-400 group/footer">
+                  <span>대시보드 바로가기</span>
+                  <ArrowRight size={14} className="group-hover/footer:translate-x-1 transition-transform" />
+                </Link>
+              </div>
             </motion.div>
           </div>
         </section>
