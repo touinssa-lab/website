@@ -5,7 +5,9 @@ import UNTourismDashboard from "@/components/UNTourismDashboard";
 import CarbonCalculator from "@/components/CarbonCalculator";
 import FestivalDashboard from "@/components/FestivalDashboard";
 import TravelVolumeDashboard from "@/components/TravelVolumeDashboard";
-import { newsItems } from "@/data/newsData";
+import { newsItems as staticNewsItems, NewsArticle } from "@/data/newsData";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/lib/supabase";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   BarChart3, 
@@ -43,6 +45,29 @@ const NewsRoom = () => {
       setMainView('articles');
     }
   }, [location]);
+
+  const { data: newsItems, isLoading } = useQuery({
+    queryKey: ['news_articles'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('news_articles')
+        .select('*')
+        .order('date', { ascending: false });
+      
+      if (error) throw error;
+      
+      // Map DB schema back to Frontend type
+      return (data || []).map(item => ({
+        id: item.article_id,
+        category: item.category,
+        title: item.title,
+        date: item.date,
+        thumbnail: item.thumbnail,
+        excerpt: item.excerpt,
+        contentBlocks: item.content_blocks
+      })) as NewsArticle[];
+    }
+  });
 
   return (
     <div className="min-h-screen bg-background animate-fade-in relative overflow-hidden">
@@ -106,8 +131,14 @@ const NewsRoom = () => {
               <div className="flex flex-col items-center mb-12">
                 <h2 className="text-3xl font-bold font-serif underline-accent text-center">최신 기획 기사</h2>
               </div>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {newsItems.map((news, index) => (
+
+              {isLoading ? (
+                <div className="flex justify-center py-20">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+                </div>
+              ) : (
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {(newsItems || []).map((news, index) => (
                   <motion.div
                     initial={{ opacity: 0, y: 40 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -115,28 +146,31 @@ const NewsRoom = () => {
                     transition={{ duration: 0.5, delay: index * 0.1 }}
                     key={news.id}
                   >
-                    <Link to={`/news/${news.id}`} className="block h-full group">
-                      <article className="glass-panel overflow-hidden border border-border/80 h-full flex flex-col rounded-2xl transition-all duration-300 hover:shadow-2xl hover:border-accent/60 bg-card/70 shadow-sm">
-                        {/* Thumbnail */}
-                        <div className="relative aspect-video overflow-hidden bg-muted">
-                          {news.thumbnail ? (
-                            <img 
-                              src={news.thumbnail} 
-                              alt={news.title}
-                              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                              onError={(e) => {
-                                (e.target as HTMLImageElement).src = '/logo4.png';
-                                (e.target as HTMLImageElement).className = 'w-1/2 h-1/2 m-auto mt-[10%] object-contain opacity-20';
-                              }}
-                            />
-                          ) : (
-                            <div className="w-full h-full bg-muted/50 flex items-center justify-center">
-                              <span className="text-muted-foreground">No Image</span>
+                    {(() => {
+                      const displayThumbnail = news.thumbnail || news.contentBlocks.find(b => b.type === 'image')?.value;
+                      return (
+                        <Link to={`/news/${news.id}`} className="block h-full group">
+                          <article className="glass-panel overflow-hidden border border-border/80 h-full flex flex-col rounded-2xl transition-all duration-300 hover:shadow-2xl hover:border-accent/60 bg-card/70 shadow-sm">
+                            {/* Thumbnail */}
+                            <div className="relative aspect-video overflow-hidden bg-muted">
+                              {displayThumbnail ? (
+                                <img 
+                                  src={displayThumbnail} 
+                                  alt={news.title}
+                                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                  onError={(e) => {
+                                    (e.target as HTMLImageElement).src = '/logo4.png';
+                                    (e.target as HTMLImageElement).className = 'w-1/2 h-1/2 m-auto mt-[10%] object-contain opacity-20';
+                                  }}
+                                />
+                              ) : (
+                                <div className="w-full h-full bg-muted/50 flex items-center justify-center">
+                                  <span className="text-muted-foreground">No Image</span>
+                                </div>
+                              )}
+                              <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-300 pointer-events-none" />
                             </div>
-                          )}
-                          <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-300 pointer-events-none" />
-                        </div>
-
+    
                         {/* Content Container */}
                         <div className="p-6 md:p-8 flex flex-col flex-1">
                           <div className="flex items-center gap-4 text-xs font-medium text-muted-foreground mb-4">
@@ -165,11 +199,14 @@ const NewsRoom = () => {
                             </span>
                           </div>
                         </div>
-                      </article>
-                    </Link>
+                        </article>
+                      </Link>
+                    );
+                  })()}
                   </motion.div>
                 ))}
-              </div>
+                </div>
+              )}
             </motion.div>
           ) : (
             <motion.div

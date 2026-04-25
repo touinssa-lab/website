@@ -9,6 +9,7 @@ import Portfolio from "./pages/Portfolio";
 import NewsRoom from "./pages/NewsRoom";
 import NewsDetail from "./pages/NewsDetail";
 import Contact from "./pages/Contact";
+import AdminNews from "./pages/AdminNews";
 import Intelligence from "./pages/Intelligence";
 import Survey from "./pages/Survey";
 import QuickMenu from "./components/QuickMenu";
@@ -31,6 +32,7 @@ const App = () => (
           <Route path="/intelligence" element={<Intelligence />} />
           <Route path="/survey" element={<Survey />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/admin/news" element={<AdminNews />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         <QuickMenu />

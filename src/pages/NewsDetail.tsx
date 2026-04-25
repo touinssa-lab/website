@@ -2,7 +2,9 @@ import { useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { newsItems } from "@/data/newsData";
+import { NewsArticle } from "@/data/newsData";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/lib/supabase";
 import { ArrowLeft, Calendar, Tag, ChevronLeft, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -15,11 +17,40 @@ const NewsDetail = () => {
     window.scrollTo(0, 0);
   }, [id]);
 
-  const currentIndex = newsItems.findIndex(item => item.id === id);
-  const article = newsItems[currentIndex];
+  // Fetch all news to handle navigation
+  const { data: newsItems, isLoading } = useQuery({
+    queryKey: ['news_articles'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('news_articles')
+        .select('*')
+        .order('date', { ascending: false });
+      if (error) throw error;
+      return (data || []).map(item => ({
+        id: item.article_id,
+        category: item.category,
+        title: item.title,
+        date: item.date,
+        thumbnail: item.thumbnail,
+        excerpt: item.excerpt,
+        contentBlocks: item.content_blocks
+      })) as NewsArticle[];
+    }
+  });
 
-  const prevArticle = currentIndex > 0 ? newsItems[currentIndex - 1] : null;
-  const nextArticle = currentIndex >= 0 && currentIndex < newsItems.length - 1 ? newsItems[currentIndex + 1] : null;
+  const currentIndex = newsItems ? newsItems.findIndex(item => item.id === id) : -1;
+  const article = currentIndex >= 0 ? newsItems![currentIndex] : null;
+
+  const prevArticle = newsItems && currentIndex > 0 ? newsItems[currentIndex - 1] : null;
+  const nextArticle = newsItems && currentIndex >= 0 && currentIndex < newsItems.length - 1 ? newsItems[currentIndex + 1] : null;
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   if (!article) {
     return (
