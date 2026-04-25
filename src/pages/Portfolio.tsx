@@ -2,7 +2,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { portfolioItems } from "@/data/portfolioData";
 import { motion } from "framer-motion";
-import { Calendar, Building2, ChevronRight, BookOpen } from "lucide-react";
+import { Calendar, Building2, ChevronRight, BookOpen, PenTool } from "lucide-react";
 import AntigravityBackground from "@/components/AntigravityBackground";
 
 const Portfolio = () => {
@@ -37,9 +37,9 @@ const Portfolio = () => {
               key={item.id}
               className="glass-panel overflow-hidden border border-border/60 group"
             >
-              <div className="grid lg:grid-cols-2 gap-0 lg:gap-8 items-stretch">
+              <div className="grid lg:grid-cols-12 gap-0 items-stretch">
                 {/* Image Section */}
-                <div className="relative overflow-hidden bg-muted/20 aspect-[4/3] lg:aspect-auto lg:h-[420px]">
+                <div className="lg:col-span-5 relative overflow-hidden bg-muted/20 aspect-[4/3] lg:aspect-auto lg:min-h-[480px]">
                   <motion.img 
                     whileHover={{ scale: 1.05 }}
                     transition={{ duration: 0.5, ease: "easeOut" }}
@@ -52,16 +52,18 @@ const Portfolio = () => {
                 </div>
 
                 {/* Content Section */}
-                <div className="p-8 lg:p-12 flex flex-col justify-center relative">
+                <div className="lg:col-span-7 p-6 lg:px-12 lg:pt-6 lg:pb-10 flex flex-col justify-start relative bg-muted/60 dark:bg-muted/40">
                   <div className="flex flex-wrap items-center gap-3 text-sm font-medium text-accent mb-6">
                     <div className="flex items-center gap-1.5 bg-accent/10 px-3 py-1.5 rounded-full ring-1 ring-accent/20">
                       <Calendar className="w-4 h-4" />
                       {item.year}
                     </div>
-                    <div className="flex items-center gap-1.5 bg-accent/10 px-3 py-1.5 rounded-full ring-1 ring-accent/20">
-                      <BookOpen className="w-4 h-4" />
-                      {item.category}
-                    </div>
+                    {item.categories.map((cat, i) => (
+                      <div key={i} className="flex items-center gap-1.5 bg-accent/10 px-3 py-1.5 rounded-full ring-1 ring-accent/20">
+                        {cat === "연구용역" ? <BookOpen className="w-4 h-4" /> : <PenTool className="w-4 h-4" />}
+                        {cat}
+                      </div>
+                    ))}
                     <div className="flex items-center gap-1.5 bg-background px-3 py-1.5 rounded-full shadow-sm border border-border">
                       <Building2 className="w-4 h-4 text-muted-foreground" />
                       <span className="text-foreground">{item.client}</span>
