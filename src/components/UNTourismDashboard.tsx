@@ -8,6 +8,7 @@ import {
   Calendar, ChevronRight, Info, CheckCircle2 
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import WorldMap from './WorldMap';
 
 // 1995-2025 글로벌 트렌드 데이터 (UN Tourism 자료 기반 추정치)
 const GENERATE_TREND = () => {
@@ -286,41 +287,20 @@ const UNTourismDashboard = () => {
           </div>
 
           {/* Regional Distribution */}
-          <div className="glass-panel p-8 rounded-2xl border border-border/50 bg-card/30 flex-1 shadow-xl">
-            <h3 className="text-base font-bold mb-8 flex items-center gap-2">
-              <Users className="w-5 h-5 text-sky-400" /> 지역별 분석 비중
+          <div className="glass-panel px-5 py-4 rounded-2xl border border-border/50 bg-card/30 shadow-xl flex flex-col h-[420px]">
+            <h3 className="text-base font-bold mb-3 flex items-center gap-2 text-foreground">
+              <Users className="w-5 h-5 text-sky-400" /> 대륙별 분석 비중
             </h3>
-            <div className="space-y-6">
-              {[
-                { name: '유럽 지역', count: 18, color: '#3b82f6' },
-                { name: '아시아 지역', count: 14, color: '#10b981' },
-                { name: '미주 지역', count: 6, color: '#f59e0b' },
-                { name: '기타 (중동/아프리카)', count: 5, color: '#ef4444' }
-              ].map(reg => {
-                const percentage = (reg.count / COUNTRY_DATA.length) * 100;
-                return (
-                  <div key={reg.name}>
-                    <div className="flex justify-between text-sm mb-2 font-bold text-foreground/80 uppercase tracking-wide">
-                      <span>{reg.name}</span>
-                      <span className="text-foreground">{Math.round(percentage)}%</span>
-                    </div>
-                    <div className="w-full bg-muted rounded-full h-2 overflow-hidden shadow-inner">
-                      <motion.div 
-                        initial={{ width: 0 }}
-                        animate={{ width: `${percentage}%` }}
-                        transition={{ duration: 1.5, ease: "easeOut" }}
-                        className="h-full rounded-full" 
-                        style={{ backgroundColor: reg.color }}
-                      />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-            <div className="mt-8 pt-6 border-t border-border/30">
-              <p className="text-[10px] text-muted-foreground leading-relaxed font-medium italic">
-                * UN Tourism 제공 원천 데이터를 기반으로 가공된 정보입니다.
-              </p>
+            
+            <div className="flex-1 w-full relative overflow-hidden">
+              <WorldMap 
+                data={{
+                  europe: 18,
+                  asia: 14,
+                  americas: 6,
+                  others: 5
+                }}
+              />
             </div>
           </div>
         </div>
