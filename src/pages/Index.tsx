@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Link } from "react-router-dom";
-import { ArrowRight, BarChart3, Globe, Lightbulb, TrendingUp, Map, PenTool, Database } from "lucide-react";
+import { ArrowRight, BarChart3, Globe, Lightbulb, TrendingUp, Map, PenTool, Database, FileText, LayoutDashboard } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import AntigravityBackground from "@/components/AntigravityBackground";
 
@@ -34,7 +34,7 @@ const Index = () => {
             }} />
         </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 relative z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 relative z-10">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -136,13 +136,127 @@ const Index = () => {
       </section>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Quick Links Section */}
+        <section className="relative mt-12 mb-6 z-20">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+            >
+              <Link 
+                to="/news" 
+                className="group flex items-center gap-6 p-6 md:p-8 rounded-2xl bg-sky-50/50 dark:bg-sky-900/10 backdrop-blur-xl border border-sky-200/50 dark:border-sky-500/20 hover:bg-sky-100/50 dark:hover:bg-sky-900/20 transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]"
+              >
+                <div className="relative flex-shrink-0 w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-sky-500/10 flex items-center justify-center group-hover:bg-sky-500/20 transition-colors overflow-visible">
+                  {/* Radar Pulse */}
+                  <motion.div 
+                    className="absolute inset-0 rounded-2xl border-2 border-sky-500/50"
+                    animate={{ scale: [1, 1.5], opacity: [0.6, 0] }}
+                    transition={{ repeat: Infinity, duration: 2, ease: "easeOut" }}
+                  />
+                  
+                  {/* Floating particles */}
+                  {[...Array(3)].map((_, i) => (
+                    <motion.div
+                      key={i}
+                      className="absolute w-1 h-1 bg-sky-400 rounded-full"
+                      animate={{ 
+                        x: [0, (i - 1) * 20, 0], 
+                        y: [0, -30 - (i * 10), 0],
+                        opacity: [0, 1, 0]
+                      }}
+                      transition={{ 
+                        repeat: Infinity, 
+                        duration: 2 + i, 
+                        delay: i * 0.5,
+                        ease: "easeInOut" 
+                      }}
+                      style={{ left: '50%', top: '50%' }}
+                    />
+                  ))}
+
+                  <motion.div
+                    animate={{ y: [0, -5, 0], rotate: [0, 2, 0, -2, 0] }}
+                    transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
+                    className="relative z-10"
+                  >
+                    <FileText className="w-7 h-7 md:w-8 md:h-8 text-sky-500" />
+                  </motion.div>
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-xl md:text-2xl font-bold font-sans mb-1.5 group-hover:text-sky-500 transition-colors">최신 기획 기사</h3>
+                  <p className="text-sm md:text-base text-muted-foreground leading-relaxed">관광 산업의 핵심 시그널을 담은<br className="hidden sm:block" /> 최신 기획 기사를 확인하세요.</p>
+                </div>
+                <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-sky-500 group-hover:translate-x-1 transition-all" />
+              </Link>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+            >
+              <Link 
+                to="/news?view=dashboard" 
+                className="group flex items-center gap-6 p-6 md:p-8 rounded-2xl bg-amber-50/50 dark:bg-amber-900/10 backdrop-blur-xl border border-amber-200/50 dark:border-amber-500/20 hover:bg-amber-100/50 dark:hover:bg-amber-900/20 transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]"
+              >
+                <div className="relative flex-shrink-0 w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-amber-500/10 flex items-center justify-center group-hover:bg-amber-500/20 transition-colors overflow-visible">
+                  {/* Radar Pulse */}
+                  <motion.div 
+                    className="absolute inset-0 rounded-2xl border-2 border-amber-500/50"
+                    animate={{ scale: [1, 1.5], opacity: [0.6, 0] }}
+                    transition={{ repeat: Infinity, duration: 2, delay: 0.5, ease: "easeOut" }}
+                  />
+
+                  {/* Floating particles */}
+                  {[...Array(3)].map((_, i) => (
+                    <motion.div
+                      key={i}
+                      className="absolute w-1.5 h-1.5 bg-amber-400/60 rounded-sm rotate-45"
+                      animate={{ 
+                        x: [0, (i % 2 === 0 ? 25 : -25), 0], 
+                        y: [0, -25 - (i * 5), 0],
+                        opacity: [0, 1, 0],
+                        rotate: [45, 225, 45]
+                      }}
+                      transition={{ 
+                        repeat: Infinity, 
+                        duration: 3 + i, 
+                        delay: i * 0.7,
+                        ease: "easeInOut" 
+                      }}
+                      style={{ left: '50%', top: '50%' }}
+                    />
+                  ))}
+
+                  <motion.div
+                    animate={{ scale: [1, 1.15, 1], rotate: [0, 10, 0, -10, 0] }}
+                    transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+                    className="relative z-10"
+                  >
+                    <LayoutDashboard className="w-7 h-7 md:w-8 md:h-8 text-amber-500" />
+                  </motion.div>
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-xl md:text-2xl font-bold font-sans mb-1.5 group-hover:text-amber-500 transition-colors">데이터분석 대시보드</h3>
+                  <p className="text-sm md:text-base text-muted-foreground leading-relaxed">UN Tourism 리포트와 지역별<br className="hidden sm:block" /> 관광 통계를 한눈에 분석합니다.</p>
+                </div>
+                <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-amber-500 group-hover:translate-x-1 transition-all" />
+              </Link>
+            </motion.div>
+          </div>
+        </section>
+
         {/* Intro */}
         <motion.section
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.8 }}
-          className="py-20 md:py-28 text-center max-w-4xl mx-auto"
+          className="pt-8 pb-10 md:pt-12 md:pb-14 text-center max-w-4xl mx-auto"
         >
           <h2 className="text-3xl md:text-4xl font-bold leading-tight mb-6">
             관광의 미래를 여는<br className="hidden md:block" />
@@ -196,13 +310,13 @@ const Index = () => {
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="mb-20 rounded-2xl hero-gradient p-12 md:p-16 text-center text-white shadow-2xl relative overflow-hidden"
+          className="mb-20 rounded-2xl hero-gradient p-10 md:p-12 text-center text-white shadow-2xl relative overflow-hidden"
         >
           <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
           <div className="max-w-2xl mx-auto space-y-6 relative z-10">
             <h2 className="text-3xl md:text-4xl font-bold drop-shadow-sm">함께 성장하는 파트너</h2>
             <p className="text-lg opacity-90 leading-relaxed">
-              다층적 데이터 분석부터 심층 전략 수립까지, 차세대 관광 산업의 성장 로드맵을 함께 완성합니다.
+              다층적 데이터 분석부터 심층 전략 수립까지,<br />차세대 관광 산업의 성장 로드맵을 함께 완성합니다.
             </p>
             <Link
               to="/contact"

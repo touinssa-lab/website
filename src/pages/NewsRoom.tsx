@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import UNTourismDashboard from "@/components/UNTourismDashboard";
@@ -19,13 +19,30 @@ import {
   MapPin,
   Globe
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import AntigravityBackground from "@/components/AntigravityBackground";
 
 
 const NewsRoom = () => {
+  const location = useLocation();
   const [mainView, setMainView] = useState<'articles' | 'dashboard'>('articles');
   const [activeView, setActiveView] = useState<'data' | 'carbon' | 'festival' | 'travel'>('data');
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const view = searchParams.get('view');
+    if (view === 'dashboard') {
+      setMainView('dashboard');
+      
+      const subView = searchParams.get('sub');
+      if (subView === 'carbon') setActiveView('carbon');
+      else if (subView === 'festival') setActiveView('festival');
+      else if (subView === 'travel') setActiveView('travel');
+      else if (subView === 'data') setActiveView('data');
+    } else if (view === 'articles') {
+      setMainView('articles');
+    }
+  }, [location]);
 
   return (
     <div className="min-h-screen bg-background animate-fade-in relative overflow-hidden">
