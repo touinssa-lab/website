@@ -306,7 +306,7 @@ const Index = () => {
             viewport={{ once: true }}
             className="flex items-center justify-between mb-12"
           >
-            <h2 className="text-3xl md:text-4xl font-bold">Our Services</h2>
+            <h2 className="text-3xl md:text-4xl font-bold font-sans">Our Services</h2>
             <Link to="/intelligence#services" className="text-sm font-medium text-muted-foreground hover:text-accent transition-colors flex items-center gap-1">
               전체 보기 <ArrowRight className="h-4 w-4" />
             </Link>
@@ -326,7 +326,7 @@ const Index = () => {
                   className="block h-full group p-8 rounded-2xl glass-card hover:border-accent/50 card-hover"
                 >
                   <service.icon className="h-10 w-10 text-accent mb-4 group-hover:scale-110 transition-transform" />
-                  <h3 className="text-xl font-bold mb-2 font-serif group-hover:text-primary transition-colors">{service.title}</h3>
+                  <h3 className="text-xl font-bold mb-2 font-sans group-hover:text-primary transition-colors">{service.title}</h3>
                   <p className="text-muted-foreground text-sm leading-relaxed">{service.desc}</p>
                 </Link>
               </motion.div>

@@ -76,7 +76,7 @@ const Contact = () => {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Hero Section */}
         <div className="mb-16 text-center space-y-6">
-          <h1 className="text-4xl md:text-5xl lg:text-3xl font-bold leading-tight animate-slide-down break-keep">
+          <h1 className="text-4xl md:text-5xl lg:text-3xl font-bold leading-tight animate-slide-down break-keep font-sans">
             "답은 현장에, 질문은 당신에게 있습니다."
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed animate-slide-up stagger-1 break-keep">
@@ -87,7 +87,7 @@ const Contact = () => {
         <div className="grid lg:grid-cols-2 gap-12">
           {/* Contact Form */}
           <div className="rounded-2xl bg-card border border-border p-8 md:p-10 shadow-xl">
-            <h2 className="text-2xl font-bold mb-8 font-serif">문의하기</h2>
+            <h2 className="text-2xl font-bold mb-8 font-sans">문의하기</h2>
             <form onSubmit={handleSubmit} className="space-y-6 animate-slide-up stagger-2">
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
@@ -216,7 +216,7 @@ const Contact = () => {
           {/* Contact Information */}
           <div className="space-y-8">
             <div className="rounded-2xl bg-card p-8">
-              <h2 className="text-2xl font-bold mb-6">Contact Information</h2>
+              <h2 className="text-2xl font-bold mb-6 font-sans">Contact Information</h2>
               <div className="space-y-6">
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center flex-shrink-0">
@@ -252,7 +252,7 @@ const Contact = () => {
             </div>
 
             <div className="rounded-2xl bg-muted p-8">
-              <h3 className="text-xl font-bold mb-4">자주 묻는 질문 (FAQ)</h3>
+              <h3 className="text-xl font-bold mb-4 font-sans">자주 묻는 질문 (FAQ)</h3>
               <div className="space-y-4 text-sm">
                 <div>
                   <h4 className="font-semibold mb-1">프로젝트나 컨설팅 의뢰는 어떻게 하나요?</h4>

@@ -76,7 +76,7 @@ const Intelligence = () => {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {/* Intro */}
         <section className="mb-20 text-center max-w-3xl mx-auto animate-slide-up">
-          <h2 className="text-3xl font-bold mb-6">Our Intelligence Services</h2>
+          <h2 className="text-3xl font-bold mb-6 font-sans">Our Intelligence Services</h2>
           <p className="text-lg text-muted-foreground leading-relaxed">
             데이터 기반의 정교한 분석과 혁신적인 전략 수립을 통해 <br />
             관광 산업의 새로운 미래를 제시합니다.
@@ -96,7 +96,7 @@ const Intelligence = () => {
             >
               <div className="md:col-span-4 space-y-4">
                 <service.icon className="h-12 w-12 text-accent" />
-                <h2 className="text-3xl font-bold font-serif text-primary dark:text-sky-400 leading-tight drop-shadow-sm">{service.title}</h2>
+                <h2 className="text-3xl font-bold font-sans text-primary dark:text-sky-400 leading-tight drop-shadow-sm">{service.title}</h2>
                 <p className="text-base font-medium text-accent">{service.subtitle}</p>
               </div>
               <div className="md:col-span-8 space-y-5">

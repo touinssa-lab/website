@@ -37,7 +37,7 @@ const Company = () => {
         {/* About */}
         <section className="py-12 grid md:grid-cols-2 gap-12 items-center">
           <div className="space-y-6 animate-slide-up">
-            <h2 className="text-3xl md:text-4xl font-bold">About Us</h2>
+            <h2 className="text-3xl md:text-4xl font-bold font-sans">About Us</h2>
             <p className="text-lg text-muted-foreground leading-relaxed">
               데이터로 관광의 미래를 진단하고, 전략으로 지역의 성장을 설계합니다.
               투어리즘인사이트는 관광 정책 컨설팅과 고도화된 빅데이터 분석을 결합하여 최적의 해법을 제시하는 관광 전략 파트너입니다. 우리는 지역 사회와 관광 유관 기관이 변화하는 환경 속에서 지속 가능한 성장 동력을 확보할 수 있도록 정교한 맞춤형 솔루션을 지원합니다.
@@ -58,7 +58,7 @@ const Company = () => {
         {/* Vision */}
         <section className="py-12 border-t border-border mb-20">
           <div className="text-center w-[90%] md:w-[70%] mx-auto mb-16 animate-slide-up">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">Our Vision</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-6 font-sans">Our Vision</h2>
             <p className="text-lg text-muted-foreground leading-relaxed">
               데이터 기반 의사결정을 통해 지역 특성에 맞는 최적화된 관광 전략을 수립하고,
               AI 플랫폼을 통해 맞춤형 콘텐츠 생성 및 직관적 시각화 데이터를 제공하여
@@ -73,7 +73,7 @@ const Company = () => {
                 className={`p-6 rounded-2xl bg-card border border-border animate-slide-up stagger-${Math.min(index + 1, 4)}`}
               >
                 <value.icon className="h-8 w-8 text-accent mb-3" />
-                <h3 className="text-2xl font-bold mb-2 font-serif">{value.title}</h3>
+                <h3 className="text-2xl font-bold mb-2 font-sans">{value.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{value.desc}</p>
               </div>
             ))}

@@ -14,6 +14,7 @@ import Intelligence from "./pages/Intelligence";
 import Survey from "./pages/Survey";
 import QuickMenu from "./components/QuickMenu";
 import NotFound from "./pages/NotFound";
+import { Analytics } from "@vercel/analytics/react";
 
 const queryClient = new QueryClient();
 
@@ -37,6 +38,7 @@ const App = () => (
         </Routes>
         <QuickMenu />
       </BrowserRouter>
+      <Analytics />
     </TooltipProvider>
   </QueryClientProvider>
 );
