@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Menu, X, Moon, Sun } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 
 const navItems = [
   { label: "Home", path: "/" },
@@ -15,7 +16,17 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDark, setIsDark] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [logoIndex, setLogoIndex] = useState(0);
   const location = useLocation();
+
+  const logos = ["/logo4.png", "/logo5.png"];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setLogoIndex((prev) => (prev === 0 ? 1 : 0));
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
@@ -51,8 +62,19 @@ const Header = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className={`flex items-center justify-between h-14 sm:h-16 lg:h-20 pill-nav px-4 sm:px-8 lg:px-10 transition-all duration-300 ${scrolled ? "shadow-md" : ""}`}>
           {/* Logo */}
-          <Link to="/" className="flex items-center flex-shrink-0 pr-6 lg:pr-12 border-r border-border/30">
-            <img src="/logo4.png" alt="Tourism Insight" className="object-none transition-all duration-300" />
+          <Link to="/" className="flex items-center flex-shrink-0 pr-6 lg:pr-12 border-r border-border/30 overflow-hidden" style={{ width: "172px", height: "30px" }}>
+            <AnimatePresence mode="wait">
+              <motion.img
+                key={logos[logoIndex]}
+                src={logos[logoIndex]}
+                alt="Tourism Insight"
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -5 }}
+                transition={{ duration: 0.8, ease: "easeInOut" }}
+                className="w-full h-full object-contain"
+              />
+            </AnimatePresence>
           </Link>
 
           {/* Desktop Navigation */}
