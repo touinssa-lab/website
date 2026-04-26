@@ -16,6 +16,7 @@ import {
   Calendar, 
   Tag, 
   ChevronRight,
+  ChevronLeft,
   LayoutDashboard,
   FileText,
   MapPin,
@@ -29,6 +30,8 @@ const NewsRoom = () => {
   const location = useLocation();
   const [mainView, setMainView] = useState<'articles' | 'dashboard'>('articles');
   const [activeView, setActiveView] = useState<'data' | 'carbon' | 'festival' | 'travel'>('data');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 9;
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -137,75 +140,121 @@ const NewsRoom = () => {
                   <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
                 </div>
               ) : (
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {(newsItems || []).map((news, index) => (
-                  <motion.div
-                    initial={{ opacity: 0, y: 40 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-50px" }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                    key={news.id}
-                  >
-                    {(() => {
-                      const displayThumbnail = news.thumbnail || news.contentBlocks.find(b => b.type === 'image')?.value;
-                      return (
-                        <Link to={`/news/${news.id}`} className="block h-full group">
-                          <article className="glass-panel overflow-hidden border border-border/80 h-full flex flex-col rounded-2xl transition-all duration-300 hover:shadow-2xl hover:border-accent/60 bg-card/70 shadow-sm">
-                            {/* Thumbnail */}
-                            <div className="relative aspect-video overflow-hidden bg-muted">
-                              {displayThumbnail ? (
-                                <img 
-                                  src={displayThumbnail} 
-                                  alt={news.title}
-                                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                                  onError={(e) => {
-                                    (e.target as HTMLImageElement).src = '/logo4.png';
-                                    (e.target as HTMLImageElement).className = 'w-1/2 h-1/2 m-auto mt-[10%] object-contain opacity-20';
-                                  }}
-                                />
-                              ) : (
-                                <div className="w-full h-full bg-muted/50 flex items-center justify-center">
-                                  <span className="text-muted-foreground">No Image</span>
+                <>
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {(newsItems || []).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((news, index) => (
+                    <motion.div
+                      initial={{ opacity: 0, y: 40 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, margin: "-50px" }}
+                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                      key={news.id}
+                    >
+                      {(() => {
+                        const displayThumbnail = news.thumbnail || news.contentBlocks.find(b => b.type === 'image')?.value;
+                        return (
+                          <Link to={`/news/${news.id}`} className="block h-full group">
+                            <article className="glass-panel overflow-hidden border border-border/80 h-full flex flex-col rounded-2xl transition-all duration-300 hover:shadow-2xl hover:border-accent/60 bg-card/70 shadow-sm">
+                              {/* Thumbnail */}
+                              <div className="relative aspect-video overflow-hidden bg-muted">
+                                {displayThumbnail ? (
+                                  <img 
+                                    src={displayThumbnail} 
+                                    alt={news.title}
+                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                    onError={(e) => {
+                                      (e.target as HTMLImageElement).src = '/logo4.png';
+                                      (e.target as HTMLImageElement).className = 'w-1/2 h-1/2 m-auto mt-[10%] object-contain opacity-20';
+                                    }}
+                                  />
+                                ) : (
+                                  <div className="w-full h-full bg-muted/50 flex items-center justify-center">
+                                    <span className="text-muted-foreground">No Image</span>
+                                  </div>
+                                )}
+                                <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-300 pointer-events-none" />
+                              </div>
+      
+                              {/* Content Container */}
+                              <div className="p-6 md:p-8 flex flex-col flex-1">
+                                <div className="flex items-center gap-4 text-xs font-medium text-muted-foreground mb-4">
+                                  <div className="flex items-center gap-1.5 text-accent">
+                                    <Tag className="w-3.5 h-3.5" />
+                                    {news.category}
+                                  </div>
+                                  <div className="flex items-center gap-1.5">
+                                    <Calendar className="w-3.5 h-3.5" />
+                                    {news.date}
+                                  </div>
                                 </div>
-                              )}
-                              <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-300 pointer-events-none" />
-                            </div>
-    
-                        {/* Content Container */}
-                        <div className="p-6 md:p-8 flex flex-col flex-1">
-                          <div className="flex items-center gap-4 text-xs font-medium text-muted-foreground mb-4">
-                            <div className="flex items-center gap-1.5 text-accent">
-                              <Tag className="w-3.5 h-3.5" />
-                              {news.category}
-                            </div>
-                            <div className="flex items-center gap-1.5">
-                              <Calendar className="w-3.5 h-3.5" />
-                              {news.date}
-                            </div>
-                          </div>
 
-                          <h2 className="text-xl font-bold mb-3 font-serif line-clamp-2 leading-snug group-hover:text-primary transition-colors">
-                            {news.title}
-                          </h2>
+                                <h2 className="text-xl font-bold mb-3 font-serif line-clamp-2 leading-snug group-hover:text-primary transition-colors">
+                                  {news.title}
+                                </h2>
 
-                          <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3 mb-6 flex-1">
-                            {news.excerpt}
-                          </p>
+                                <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3 mb-6 flex-1">
+                                  {news.excerpt}
+                                </p>
 
-                          <div className="mt-auto pt-4 border-t border-border/80">
-                            <span className="flex items-center gap-2 text-sm font-semibold text-foreground group-hover:text-accent transition-colors">
-                              기사 자세히 보기
-                              <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                            </span>
-                          </div>
-                        </div>
-                        </article>
-                      </Link>
-                    );
-                  })()}
-                  </motion.div>
-                ))}
-                </div>
+                                <div className="mt-auto pt-4 border-t border-border/80">
+                                  <span className="flex items-center gap-2 text-sm font-semibold text-foreground group-hover:text-accent transition-colors">
+                                    기사 자세히 보기
+                                    <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                                  </span>
+                                </div>
+                              </div>
+                            </article>
+                          </Link>
+                        );
+                      })()}
+                    </motion.div>
+                  ))}
+                  </div>
+
+                  {/* Pagination UI */}
+                  {(newsItems || []).length > itemsPerPage && (
+                    <div className="flex justify-center items-center gap-2 mt-16">
+                      <button
+                        onClick={() => {
+                          setCurrentPage(prev => Math.max(prev - 1, 1));
+                          window.scrollTo({ top: 400, behavior: 'smooth' });
+                        }}
+                        disabled={currentPage === 1}
+                        className="p-2 rounded-lg border border-border bg-card hover:bg-muted disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                      >
+                        <ChevronLeft className="w-5 h-5" />
+                      </button>
+                      
+                      {Array.from({ length: Math.ceil((newsItems || []).length / itemsPerPage) }, (_, i) => i + 1).map((pageNum) => (
+                        <button
+                          key={pageNum}
+                          onClick={() => {
+                            setCurrentPage(pageNum);
+                            window.scrollTo({ top: 400, behavior: 'smooth' });
+                          }}
+                          className={`w-10 h-10 rounded-lg border font-bold transition-all ${
+                            currentPage === pageNum
+                              ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20'
+                              : 'border-border bg-card text-muted-foreground hover:bg-muted'
+                          }`}
+                        >
+                          {pageNum}
+                        </button>
+                      ))}
+
+                      <button
+                        onClick={() => {
+                          setCurrentPage(prev => Math.min(prev + 1, Math.ceil((newsItems || []).length / itemsPerPage)));
+                          window.scrollTo({ top: 400, behavior: 'smooth' });
+                        }}
+                        disabled={currentPage === Math.ceil((newsItems || []).length / itemsPerPage)}
+                        className="p-2 rounded-lg border border-border bg-card hover:bg-muted disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                      >
+                        <ChevronRight className="w-5 h-5" />
+                      </button>
+                    </div>
+                  )}
+                </>
               )}
             </motion.div>
           ) : (
