@@ -151,7 +151,8 @@ const NewsRoom = () => {
                       key={news.id}
                     >
                       {(() => {
-                        const displayThumbnail = news.thumbnail || news.contentBlocks.find(b => b.type === 'image')?.value;
+                        const firstImageBlock = (news.contentBlocks || []).find(b => b.type === 'image' && b.value);
+                        const displayThumbnail = news.thumbnail || firstImageBlock?.value;
                         return (
                           <Link to={`/news/${news.id}`} className="block h-full group">
                             <article className="glass-panel overflow-hidden border border-border/80 h-full flex flex-col rounded-2xl transition-all duration-300 hover:shadow-2xl hover:border-accent/60 bg-card/70 shadow-sm">

@@ -68,12 +68,21 @@ const AdminNews = () => {
   // Save mutation
   const saveMutation = useMutation({
     mutationFn: async (article: Partial<NewsArticle>) => {
+      // 썸네일이 비어있을 경우 본문에서 첫 번째 이미지를 찾아 자동으로 설정
+      let finalThumbnail = article.thumbnail;
+      if (!finalThumbnail && article.contentBlocks) {
+        const firstImageBlock = article.contentBlocks.find(b => b.type === 'image');
+        if (firstImageBlock) {
+          finalThumbnail = firstImageBlock.value;
+        }
+      }
+
       const payload = {
         article_id: article.id,
         category: article.category,
         title: article.title,
         date: article.date,
-        thumbnail: article.thumbnail,
+        thumbnail: finalThumbnail,
         excerpt: article.excerpt,
         content_blocks: article.contentBlocks
       };
@@ -252,8 +261,22 @@ const AdminNews = () => {
                 {(articles || []).map(article => (
                   <Card key={article.id} className="hover:shadow-md transition-shadow">
                     <CardContent className="flex items-center p-4">
-                      <div className="w-16 h-16 rounded overflow-hidden bg-muted mr-4 flex-shrink-0">
-                        <img src={article.thumbnail} alt="" className="w-full h-full object-cover" />
+                      <div className="w-16 h-16 rounded overflow-hidden bg-muted mr-4 flex-shrink-0 flex items-center justify-center">
+                        {(() => {
+                          const firstImageBlock = (article.contentBlocks || []).find(b => b.type === 'image' && b.value);
+                          const displayThumbnail = article.thumbnail || firstImageBlock?.value;
+                          return (
+                            <img 
+                              src={displayThumbnail} 
+                              alt="" 
+                              className="w-full h-full object-cover" 
+                              onError={(e) => {
+                                (e.target as HTMLImageElement).src = '/logo4.png';
+                                (e.target as HTMLImageElement).className = 'w-1/2 h-auto opacity-20 object-contain';
+                              }}
+                            />
+                          );
+                        })()}
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
