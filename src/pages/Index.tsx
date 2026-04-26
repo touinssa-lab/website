@@ -4,7 +4,9 @@ import Footer from "@/components/Footer";
 import { Link } from "react-router-dom";
 import { ArrowRight, BarChart3, Globe, Lightbulb, TrendingUp, Map, PenTool, Database, FileText, LayoutDashboard, MoreHorizontal } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { newsItems } from "@/data/newsData";
+import { newsItems as staticNewsItems, NewsArticle } from "@/data/newsData";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/lib/supabase";
 import AntigravityBackground from "@/components/AntigravityBackground";
 
 const services = [
@@ -20,6 +22,30 @@ const Index = () => {
   const [currentNewsIndex, setCurrentNewsIndex] = useState(0);
   const [currentDashIndex, setCurrentDashIndex] = useState(0);
 
+  // Fetch news from Supabase
+  const { data: newsItems = [] } = useQuery({
+    queryKey: ['news_articles_main'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('news_articles')
+        .select('*')
+        .order('date', { ascending: false })
+        .limit(4);
+      
+      if (error) throw error;
+      
+      return (data || []).map(item => ({
+        id: item.article_id,
+        category: item.category,
+        title: item.title,
+        date: item.date,
+        thumbnail: item.thumbnail,
+        excerpt: item.excerpt,
+        contentBlocks: item.content_blocks
+      })) as NewsArticle[];
+    }
+  });
+
   const dashboards = [
     { name: 'UN Tourism 글로벌 리포트', image: '/dash_un_tourism.png' },
     { name: '국민여행 총량 통계', image: '/dash_travel_volume.png' },
@@ -28,18 +54,21 @@ const Index = () => {
   ];
 
   useEffect(() => {
+    if (newsItems.length === 0) return;
+
     const newsInterval = setInterval(() => {
-      setCurrentNewsIndex((prev) => (prev + 1) % Math.min(newsItems.length, 4));
+      setCurrentNewsIndex((prev) => (prev + 1) % newsItems.length);
     }, 4500);
 
+    return () => clearInterval(newsInterval);
+  }, [newsItems.length]);
+
+  useEffect(() => {
     const dashInterval = setInterval(() => {
       setCurrentDashIndex((prev) => (prev + 1) % dashboards.length);
     }, 3800);
 
-    return () => {
-      clearInterval(newsInterval);
-      clearInterval(dashInterval);
-    };
+    return () => clearInterval(dashInterval);
   }, []);
 
   return (
