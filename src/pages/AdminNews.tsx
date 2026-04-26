@@ -21,7 +21,9 @@ import {
   Pencil,
   Eye,
   Upload,
-  Lock
+  Lock,
+  ChevronUp,
+  ChevronDown
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -142,6 +144,18 @@ const AdminNews = () => {
       ...prev,
       contentBlocks: (prev.contentBlocks || []).filter((_, i) => i !== index)
     }));
+  };
+
+  const handleMoveBlock = (index: number, direction: 'up' | 'down') => {
+    setCurrentArticle(prev => {
+      const blocks = [...(prev.contentBlocks || [])];
+      if (direction === 'up' && index > 0) {
+        [blocks[index], blocks[index - 1]] = [blocks[index - 1], blocks[index]];
+      } else if (direction === 'down' && index < blocks.length - 1) {
+        [blocks[index], blocks[index + 1]] = [blocks[index + 1], blocks[index]];
+      }
+      return { ...prev, contentBlocks: blocks };
+    });
   };
 
   const handleImageUpload = async (file: File, callback: (url: string) => void) => {
@@ -392,14 +406,34 @@ const AdminNews = () => {
 
                     {currentArticle.contentBlocks?.map((block, idx) => (
                       <Card key={idx} className="relative group">
-                        <Button 
-                          variant="destructive" 
-                          size="icon" 
-                          className="absolute -right-2 -top-2 w-6 h-6 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                          onClick={() => handleRemoveBlock(idx)}
-                        >
-                          <Trash2 className="w-3 h-3" />
-                        </Button>
+                        <div className="absolute -right-2 -top-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                          <Button 
+                            variant="secondary" 
+                            size="icon" 
+                            className="w-6 h-6 rounded-full shadow-sm border border-border"
+                            onClick={() => handleMoveBlock(idx, 'up')}
+                            disabled={idx === 0}
+                          >
+                            <ChevronUp className="w-3 h-3" />
+                          </Button>
+                          <Button 
+                            variant="secondary" 
+                            size="icon" 
+                            className="w-6 h-6 rounded-full shadow-sm border border-border"
+                            onClick={() => handleMoveBlock(idx, 'down')}
+                            disabled={idx === (currentArticle.contentBlocks?.length || 0) - 1}
+                          >
+                            <ChevronDown className="w-3 h-3" />
+                          </Button>
+                          <Button 
+                            variant="destructive" 
+                            size="icon" 
+                            className="w-6 h-6 rounded-full shadow-sm"
+                            onClick={() => handleRemoveBlock(idx)}
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </Button>
+                        </div>
                         <CardContent className="p-4 space-y-3">
                           <div className="flex items-center gap-2 text-xs font-bold text-muted-foreground uppercase">
                             {block.type === 'text' ? <Type className="w-3 h-3" /> : <ImageIcon className="w-3 h-3" />}
