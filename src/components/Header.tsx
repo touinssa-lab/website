@@ -62,7 +62,7 @@ const Header = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className={`flex items-center justify-between h-14 sm:h-16 lg:h-20 pill-nav px-4 sm:px-8 lg:px-10 transition-all duration-300 ${scrolled ? "shadow-md" : ""}`}>
           {/* Logo */}
-          <Link to="/" className="flex items-center flex-shrink-0 pr-6 lg:pr-12 border-r border-border/30 overflow-hidden" style={{ width: "172px", height: "30px" }}>
+          <Link to="/" className="flex items-center flex-shrink-0 pr-6 lg:pr-12 border-r border-border/30 overflow-hidden" style={{ width: "218px", height: "38px" }}>
             <AnimatePresence mode="wait">
               <motion.img
                 key={logos[logoIndex]}
