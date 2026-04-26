@@ -214,42 +214,48 @@ const Index = () => {
                 
                 <div className="relative h-32 overflow-hidden">
                   <AnimatePresence mode="wait">
-                    <motion.div
-                      key={currentNewsIndex}
-                      initial={{ x: 100, opacity: 0 }}
-                      animate={{ x: 0, opacity: 1 }}
-                      exit={{ x: -100, opacity: 0 }}
-                      transition={{ duration: 0.6, ease: "easeInOut" }}
-                      className="absolute inset-0"
-                    >
-                      <Link to={`/news/${newsItems[currentNewsIndex].id}`} className="flex gap-4 items-center h-full group/card">
-                        <div className="flex-shrink-0 w-24 h-24 md:w-28 md:h-28 rounded-xl overflow-hidden shadow-md">
-                          {(() => {
-                            const displayThumbnail = newsItems[currentNewsIndex].thumbnail || 
-                              newsItems[currentNewsIndex].contentBlocks.find(b => b.type === 'image')?.value;
-                            return (
-                              <img 
-                                src={displayThumbnail} 
-                                alt="" 
-                                className="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-500"
-                                onError={(e) => {
-                                  (e.target as HTMLImageElement).src = '/logo4.png';
-                                  (e.target as HTMLImageElement).className = 'w-1/2 h-1/2 m-auto mt-[10%] object-contain opacity-20';
-                                }}
-                              />
-                            );
-                          })()}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h4 className="text-lg md:text-xl font-bold font-sans mb-2 line-clamp-1 group-hover/card:text-sky-600 transition-colors">
-                            {newsItems[currentNewsIndex].title}
-                          </h4>
-                          <p className="text-xs md:text-sm text-muted-foreground line-clamp-2 leading-relaxed">
-                            {newsItems[currentNewsIndex].excerpt}
-                          </p>
-                        </div>
-                      </Link>
-                    </motion.div>
+                    {newsItems.length > 0 ? (
+                      <motion.div
+                        key={currentNewsIndex}
+                        initial={{ x: 100, opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        exit={{ x: -100, opacity: 0 }}
+                        transition={{ duration: 0.6, ease: "easeInOut" }}
+                        className="absolute inset-0"
+                      >
+                        <Link to={`/news/${newsItems[currentNewsIndex].id}`} className="flex gap-4 items-center h-full group/card">
+                          <div className="flex-shrink-0 w-24 h-24 md:w-28 md:h-28 rounded-xl overflow-hidden shadow-md">
+                            {(() => {
+                              const displayThumbnail = newsItems[currentNewsIndex].thumbnail || 
+                                (newsItems[currentNewsIndex].contentBlocks || []).find(b => b.type === 'image' && b.value)?.value;
+                              return (
+                                <img 
+                                  src={displayThumbnail} 
+                                  alt="" 
+                                  className="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-500"
+                                  onError={(e) => {
+                                    (e.target as HTMLImageElement).src = '/logo4.png';
+                                    (e.target as HTMLImageElement).className = 'w-1/2 h-1/2 m-auto mt-[10%] object-contain opacity-20';
+                                  }}
+                                />
+                              );
+                            })()}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="text-lg md:text-xl font-bold font-sans mb-2 line-clamp-1 group-hover/card:text-sky-600 transition-colors">
+                              {newsItems[currentNewsIndex].title}
+                            </h4>
+                            <p className="text-xs md:text-sm text-muted-foreground line-clamp-2 leading-relaxed">
+                              {newsItems[currentNewsIndex].excerpt}
+                            </p>
+                          </div>
+                        </Link>
+                      </motion.div>
+                    ) : (
+                      <div className="flex items-center justify-center h-full text-muted-foreground">
+                        소식을 불러오는 중입니다...
+                      </div>
+                    )}
                   </AnimatePresence>
                 </div>
                 
