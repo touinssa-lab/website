@@ -41,15 +41,26 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
     setIsAuthenticated(auth);
   }, []);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    const correctPassword = import.meta.env.VITE_ADMIN_PASSWORD;
-    if (inputPassword === correctPassword) {
-      setIsAuthenticated(true);
-      sessionStorage.setItem("admin_auth", "true");
-      toast.success("관리자 인증 성공");
-    } else {
-      toast.error("비밀번호가 올바르지 않습니다.");
+    try {
+      const response = await fetch('/api/admin-auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: inputPassword }),
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        setIsAuthenticated(true);
+        sessionStorage.setItem("admin_auth", "true");
+        toast.success("관리자 인증 성공");
+      } else {
+        toast.error(result.error || "비밀번호가 올바르지 않습니다.");
+      }
+    } catch (error) {
+      toast.error("인증 서버 오류가 발생했습니다.");
     }
   };
 
