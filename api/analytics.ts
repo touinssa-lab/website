@@ -1,7 +1,6 @@
 import { BetaAnalyticsDataClient } from '@google-analytics/data';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
-// Initialize the client with credentials from environment variables
 const propertyId = process.env.GOOGLE_GA4_PROPERTY_ID;
 const credentials = process.env.GOOGLE_CREDENTIALS ? JSON.parse(process.env.GOOGLE_CREDENTIALS) : null;
 
@@ -18,7 +17,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    // 1. Fetch Weekly Active Users (for the chart)
+    // 1. Fetch Real-time Active Users (Last 30 mins)
+    const [realtimeResponse] = await analyticsDataClient.runRealtimeReport({
+      property: `properties/${propertyId}`,
+      metrics: [{ name: 'activeUsers' }],
+    });
+
+    const activeUsers = parseInt(realtimeResponse.rows?.[0]?.metricValues?.[0]?.value || '0');
+
+    // 2. Fetch Weekly Active Users (for the chart)
     const [response] = await analyticsDataClient.runReport({
       property: `properties/${propertyId}`,
       dateRanges: [{ startDate: '30daysAgo', endDate: 'today' }],
@@ -32,7 +39,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       count: parseInt(row.metricValues?.[0].value || '0'),
     })) || [];
 
-    // 2. Fetch Total Stats (Pageviews, Total Users)
+    // 3. Fetch Total Stats (Pageviews, Total Users)
     const [statsResponse] = await analyticsDataClient.runReport({
       property: `properties/${propertyId}`,
       dateRanges: [{ startDate: '30daysAgo', endDate: 'today' }],
@@ -50,6 +57,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     };
 
     return res.status(200).json({
+      activeUsers,
       chartData,
       totals,
     });

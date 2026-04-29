@@ -11,7 +11,8 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   MousePointer2,
-  Eye
+  Eye,
+  Activity
 } from "lucide-react";
 import { 
   BarChart, 
@@ -69,8 +70,10 @@ const Dashboard = () => {
         console.error('Failed to fetch analytics:', error);
         return null;
       }
-    }
+    },
+    refetchInterval: 30000, // Refresh every 30 seconds for real-time feel
   });
+
 
   // Format GA4 chart data
   const visitorChartData = analytics?.chartData?.slice(-14).map((item: any) => ({
@@ -83,13 +86,23 @@ const Dashboard = () => {
     <AdminLayout>
       <div className="space-y-8">
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+          <StatCard 
+            title="현재 접속자" 
+            value={analytics?.activeUsers || 0} 
+            icon={Activity} 
+            color="bg-rose-500" 
+            trend="Live"
+            isPositive={true}
+            loading={analyticsLoading}
+            highlight={true}
+          />
           <StatCard 
             title="최근 30일 방문자" 
             value={analytics?.totals?.activeUsers || 0} 
             icon={Users} 
             color="bg-indigo-600" 
-            trend="실시간 수집 중"
+            trend="방문자 추이"
             isPositive={true}
             loading={analyticsLoading}
           />
@@ -98,7 +111,7 @@ const Dashboard = () => {
             value={analytics?.totals?.pageViews || 0} 
             icon={Eye} 
             color="bg-orange-500" 
-            trend="수치 안정적"
+            trend="콘텐츠 조회"
             isPositive={true}
             loading={analyticsLoading}
           />
@@ -107,7 +120,7 @@ const Dashboard = () => {
             value={stats?.articles || 0} 
             icon={FileText} 
             color="bg-blue-500" 
-            trend="+2건 (이번 달)"
+            trend="뉴스 룸"
             loading={statsLoading}
           />
           <StatCard 
@@ -115,11 +128,12 @@ const Dashboard = () => {
             value={stats?.responses || 0} 
             icon={BarChart3} 
             color="bg-violet-500" 
-            trend="+156건 (전체)"
+            trend="조사 참여"
             isPositive={true}
             loading={statsLoading}
           />
         </div>
+
 
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -213,28 +227,30 @@ interface StatCardProps {
   trend: string;
   isPositive?: boolean;
   loading?: boolean;
+  highlight?: boolean;
 }
 
-const StatCard = ({ title, value, icon: Icon, color, trend, isPositive, loading }: StatCardProps) => (
-  <Card className="border-none shadow-sm hover:shadow-md transition-shadow">
-    <CardContent className="p-6">
-      <div className="flex items-center justify-between mb-4">
-        <div className={`p-3 rounded-2xl ${color} bg-opacity-10`}>
-          <Icon className={`w-6 h-6 ${color.replace('bg-', 'text-')}`} />
+const StatCard = ({ title, value, icon: Icon, color, trend, isPositive, loading, highlight }: StatCardProps) => (
+  <Card className={`border-none shadow-sm hover:shadow-md transition-all duration-300 ${highlight ? 'ring-2 ring-rose-500/20 bg-rose-50/10' : ''}`}>
+    <CardContent className="p-5">
+      <div className="flex items-center justify-between mb-3">
+        <div className={`p-2.5 rounded-xl ${color} bg-opacity-10`}>
+          <Icon className={`w-5 h-5 ${color.replace('bg-', 'text-')}`} />
         </div>
-        <div className={`flex items-center gap-1 text-[11px] font-bold ${isPositive ? 'text-emerald-600' : 'text-slate-400'}`}>
-          {isPositive ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
+        <div className={`flex items-center gap-1 text-[10px] font-bold ${highlight ? 'text-rose-500 animate-pulse' : (isPositive ? 'text-emerald-600' : 'text-slate-400')}`}>
+          {highlight && <div className="w-1.5 h-1.5 rounded-full bg-rose-500 mr-1" />}
           {trend}
         </div>
       </div>
       <div>
-        <p className="text-sm font-medium text-slate-500 mb-1">{title}</p>
-        <h3 className="text-3xl font-bold text-slate-900">
+        <p className="text-[12px] font-medium text-slate-500 mb-0.5">{title}</p>
+        <h3 className="text-2xl font-bold text-slate-900">
           {loading ? "..." : value.toLocaleString()}
         </h3>
       </div>
     </CardContent>
   </Card>
 );
+
 
 export default Dashboard;
