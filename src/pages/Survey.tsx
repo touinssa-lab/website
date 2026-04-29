@@ -99,11 +99,12 @@ const Survey = () => {
                   <UserPlus className="w-4 h-4" />
                   <span>설문조사 패널 상시 모집</span>
                 </div>
-                <h2 className="text-3xl md:text-4xl font-bold font-serif leading-tight">
+                <h2 className="text-3xl md:text-4xl font-bold font-sans leading-tight">
                   당신의 경험이 <br className="hidden md:block"/> 한국 관광의 미래를 만듭니다.
                 </h2>
                 <p className="text-muted-foreground text-lg max-w-xl">
-                  투어리즘인사이트의 조사 패널이 되어주세요. 설문에 참여하실 때마다 특별한 리워드와 최신 관광 트렌드 리포트를 보내드립니다.
+                  투어리즘인사이트의 조사 패널이 되어주세요. <br />
+                  소셜 로그인으로 안전하고 빠르게 패널 회원이 되실 수 있습니다.
                 </p>
                 <div className="flex items-center gap-6 pt-2">
                   <div className="flex items-center gap-2">
@@ -112,7 +113,7 @@ const Survey = () => {
                   </div>
                   <div className="flex items-center gap-2">
                     <Gift className="w-5 h-5 text-primary" />
-                    <span className="text-sm font-medium">참여 리워드 지급</span>
+                    <span className="text-sm font-medium">참여 리워드 지급 예정</span>
                   </div>
                 </div>
               </div>
