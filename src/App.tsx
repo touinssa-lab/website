@@ -9,12 +9,19 @@ import Portfolio from "./pages/Portfolio";
 import NewsRoom from "./pages/NewsRoom";
 import NewsDetail from "./pages/NewsDetail";
 import Contact from "./pages/Contact";
-import AdminNews from "./pages/AdminNews";
 import Intelligence from "./pages/Intelligence";
 import Survey from "./pages/Survey";
+import SurveyDetail from "./pages/SurveyDetail";
+import SurveyThankYou from "./pages/SurveyThankYou";
 import QuickMenu from "./components/QuickMenu";
 import NotFound from "./pages/NotFound";
 import { Analytics } from "@vercel/analytics/react";
+
+// Admin Pages
+import AdminDashboard from "./pages/admin/Dashboard";
+import AdminNews from "./pages/admin/News";
+import AdminPanels from "./pages/admin/Panels";
+import AdminSurveys from "./pages/admin/Surveys";
 
 const queryClient = new QueryClient();
 
@@ -32,8 +39,16 @@ const App = () => (
           <Route path="/news/:id" element={<NewsDetail />} />
           <Route path="/intelligence" element={<Intelligence />} />
           <Route path="/survey" element={<Survey />} />
+          <Route path="/survey/thank-you" element={<SurveyThankYou />} />
+          <Route path="/survey/:id" element={<SurveyDetail />} />
           <Route path="/contact" element={<Contact />} />
+          
+          {/* Admin Routes */}
+          <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/news" element={<AdminNews />} />
+          <Route path="/admin/panels" element={<AdminPanels />} />
+          <Route path="/admin/surveys" element={<AdminSurveys />} />
+          
           <Route path="*" element={<NotFound />} />
         </Routes>
         <QuickMenu />
