@@ -8,6 +8,10 @@ import { newsItems as staticNewsItems, NewsArticle } from "@/data/newsData";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import AntigravityBackground from "@/components/AntigravityBackground";
+import { useAuth } from "@/hooks/useAuth";
+import { PanelRegistrationModal } from "@/components/survey/PanelRegistrationModal";
+import { Lock } from "lucide-react";
+import PanelAccessNoticeModal from "@/components/survey/PanelAccessNoticeModal";
 
 const services = [
   { icon: Map, title: "Local Branding", desc: "지역 고유의 매력을 브랜드로 구축합니다", path: "/intelligence#services" },
@@ -19,8 +23,11 @@ const services = [
 ];
 
 const Index = () => {
+  const { panelInfo } = useAuth();
   const [currentNewsIndex, setCurrentNewsIndex] = useState(0);
   const [currentDashIndex, setCurrentDashIndex] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isNoticeModalOpen, setIsNoticeModalOpen] = useState(false);
 
   // Fetch news from Supabase
   const { data: newsItems = [] } = useQuery({
@@ -41,7 +48,8 @@ const Index = () => {
         date: item.date,
         thumbnail: item.thumbnail,
         excerpt: item.excerpt,
-        contentBlocks: item.content_blocks
+        contentBlocks: item.content_blocks,
+        visibility: item.visibility || 'all'
       })) as NewsArticle[];
     }
   });
@@ -223,12 +231,23 @@ const Index = () => {
                         transition={{ duration: 0.6, ease: "easeInOut" }}
                         className="absolute inset-0"
                       >
-                        <Link to={`/news/${newsItems[currentNewsIndex].id}`} className="flex gap-4 items-center h-full group/card">
-                          <div className="flex-shrink-0 w-24 h-24 md:w-28 md:h-28 rounded-xl overflow-hidden shadow-md">
-                            {(() => {
-                              const displayThumbnail = newsItems[currentNewsIndex].thumbnail || 
-                                (newsItems[currentNewsIndex].contentBlocks || []).find(b => b.type === 'image' && b.value)?.value;
-                              return (
+                        {(() => {
+                          const news = newsItems[currentNewsIndex];
+                          const displayThumbnail = news.thumbnail || 
+                            (news.contentBlocks || []).find(b => b.type === 'image' && b.value)?.value;
+
+                          const handleNewsClick = (e: React.MouseEvent) => {
+                            e.preventDefault();
+                            navigate('/news');
+                          };
+
+                          return (
+                            <Link 
+                              to={`/news/${news.id}`} 
+                              onClick={handleNewsClick}
+                              className="flex gap-4 items-center h-full group/card"
+                            >
+                              <div className="flex-shrink-0 w-24 h-24 md:w-28 md:h-28 rounded-xl overflow-hidden shadow-md relative">
                                 <img 
                                   src={displayThumbnail} 
                                   alt="" 
@@ -238,18 +257,26 @@ const Index = () => {
                                     (e.target as HTMLImageElement).className = 'w-1/2 h-1/2 m-auto mt-[10%] object-contain opacity-20';
                                   }}
                                 />
-                              );
-                            })()}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <h4 className="text-lg md:text-xl font-bold font-sans mb-2 line-clamp-1 group-hover/card:text-sky-600 transition-colors">
-                              {newsItems[currentNewsIndex].title}
-                            </h4>
-                            <p className="text-xs md:text-sm text-muted-foreground line-clamp-2 leading-relaxed">
-                              {newsItems[currentNewsIndex].excerpt}
-                            </p>
-                          </div>
-                        </Link>
+                                {news.visibility === 'panel' && (
+                                  <div className="absolute top-2 left-2 z-10">
+                                    <div className="flex items-center gap-1 px-2.5 py-1 bg-rose-600/80 backdrop-blur-lg border border-white/20 text-white text-[10px] font-extrabold rounded-full shadow-xl tracking-wider">
+                                      <Lock className="w-3 h-3 fill-white/20" />
+                                      패널전용
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <h4 className="text-lg md:text-xl font-bold font-sans mb-2 line-clamp-1 group-hover/card:text-sky-600 transition-colors">
+                                  {news.title}
+                                </h4>
+                                <p className="text-xs md:text-sm text-muted-foreground line-clamp-2 leading-relaxed">
+                                  {news.excerpt}
+                                </p>
+                              </div>
+                            </Link>
+                          );
+                        })()}
                       </motion.div>
                     ) : (
                       <div className="flex items-center justify-center h-full text-muted-foreground">
@@ -404,6 +431,17 @@ const Index = () => {
       </main>
 
       <Footer />
+      
+      <PanelRegistrationModal isOpen={isModalOpen} onOpenChange={setIsModalOpen} />
+      
+      <PanelAccessNoticeModal
+        isOpen={isNoticeModalOpen}
+        onClose={() => setIsNoticeModalOpen(false)}
+        onConfirm={() => {
+          setIsNoticeModalOpen(false);
+          setIsModalOpen(true);
+        }}
+      />
     </div>
   );
 };

@@ -10,6 +10,7 @@ export interface NewsArticle {
   thumbnail: string;
   excerpt: string;
   contentBlocks: ContentBlock[];
+  visibility?: 'all' | 'panel'; // 'all': 일반 노출, 'panel': 패널 노출
 }
 
 export const newsItems: NewsArticle[] = [

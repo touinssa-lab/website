@@ -22,15 +22,23 @@ import {
   MapPin,
   Globe
 } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import AntigravityBackground from "@/components/AntigravityBackground";
+import { PanelRegistrationModal } from "@/components/survey/PanelRegistrationModal";
+import PanelAccessNoticeModal from "@/components/survey/PanelAccessNoticeModal";
+import { Lock, UserPlus, ArrowLeft } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 
 const NewsRoom = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, panelInfo } = useAuth();
   const [mainView, setMainView] = useState<'articles' | 'dashboard'>('articles');
   const [activeView, setActiveView] = useState<'data' | 'carbon' | 'festival' | 'travel'>('data');
   const [currentPage, setCurrentPage] = useState(1);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isNoticeModalOpen, setIsNoticeModalOpen] = useState(false);
   const itemsPerPage = 9;
 
   useEffect(() => {
@@ -67,7 +75,8 @@ const NewsRoom = () => {
         date: item.date,
         thumbnail: item.thumbnail,
         excerpt: item.excerpt,
-        contentBlocks: item.content_blocks
+        contentBlocks: item.content_blocks,
+        visibility: item.visibility || 'all'
       })) as NewsArticle[];
     }
   });
@@ -131,8 +140,26 @@ const NewsRoom = () => {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.5 }}
             >
-              <div className="flex flex-col items-center mb-12">
-                <h2 className="text-3xl font-bold font-serif underline-accent text-center">최신 기획 기사</h2>
+              <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-12 bg-white/50 backdrop-blur-sm p-6 md:p-8 rounded-[2rem] border border-slate-100 shadow-sm">
+                <div className="flex flex-col gap-2 text-center md:text-left">
+                  <h2 className="text-3xl font-bold font-serif underline-accent">최신 기획 기사</h2>
+                  <p className="text-muted-foreground text-sm">투어리즘인사이트가 분석한 관광 산업의 전문 인사이트입니다.</p>
+                </div>
+
+                {!panelInfo && (
+                  <div className="flex flex-col sm:flex-row items-center gap-6 bg-primary/5 px-6 py-4 rounded-2xl border border-primary/10">
+                    <div className="text-center sm:text-left">
+                      <p className="text-[15px] font-semibold text-slate-900 leading-snug">패널 전용 기사는 설문패널 가입 회원에게만 제공되는 기획 기사입니다.</p>
+                      <p className="text-xs text-muted-foreground mt-1">설문패널에 간편가입하시면 기사를 보실 수 있습니다.</p>
+                    </div>
+                    <button 
+                      onClick={() => setIsModalOpen(true)}
+                      className="whitespace-nowrap px-6 py-3 bg-primary text-white text-sm font-bold rounded-xl hover:bg-primary/90 transition-all hover:scale-105 shadow-lg shadow-primary/10"
+                    >
+                      설문패널 회원 가입 하기
+                    </button>
+                  </div>
+                )}
               </div>
 
               {isLoading ? (
@@ -153,9 +180,22 @@ const NewsRoom = () => {
                       {(() => {
                         const firstImageBlock = (news.contentBlocks || []).find(b => b.type === 'image' && b.value);
                         const displayThumbnail = news.thumbnail || firstImageBlock?.value;
+                        const isRestricted = news.visibility === 'panel' && !panelInfo;
+
+                        const handleArticleClick = (e: React.MouseEvent) => {
+                          if (isRestricted) {
+                            e.preventDefault();
+                            setIsNoticeModalOpen(true);
+                          }
+                        };
+
                         return (
-                          <Link to={`/news/${news.id}`} className="block h-full group">
-                            <article className="glass-panel overflow-hidden border border-border/80 h-full flex flex-col rounded-2xl transition-all duration-300 hover:shadow-2xl hover:border-accent/60 bg-card/70 shadow-sm">
+                          <Link 
+                            to={`/news/${news.id}`} 
+                            onClick={handleArticleClick}
+                            className="block h-full group"
+                          >
+                            <article className="glass-panel overflow-hidden border border-border/80 h-full flex flex-col rounded-2xl transition-all duration-300 hover:shadow-2xl hover:border-accent/60 bg-card/70 shadow-sm relative">
                               {/* Thumbnail */}
                               <div className="relative aspect-video overflow-hidden bg-muted">
                                 {displayThumbnail ? (
@@ -174,6 +214,16 @@ const NewsRoom = () => {
                                   </div>
                                 )}
                                 <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-300 pointer-events-none" />
+                                
+                                {/* Restricted Badge */}
+                                {news.visibility === 'panel' && (
+                                  <div className="absolute top-4 left-4 z-20">
+                                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-rose-600/80 backdrop-blur-lg border border-white/20 text-white text-[11px] font-extrabold rounded-full shadow-2xl tracking-wider">
+                                      <Lock className="w-3.5 h-3.5 fill-white/20" />
+                                      패널전용기사
+                                    </div>
+                                  </div>
+                                )}
                               </div>
       
                               {/* Content Container */}
@@ -188,18 +238,18 @@ const NewsRoom = () => {
                                     {news.date}
                                   </div>
                                 </div>
-
+ 
                                 <h2 className="text-xl font-bold mb-3 font-serif line-clamp-2 leading-snug group-hover:text-primary transition-colors">
                                   {news.title}
                                 </h2>
-
+ 
                                 <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3 mb-6 flex-1">
                                   {news.excerpt}
                                 </p>
-
+ 
                                 <div className="mt-auto pt-4 border-t border-border/80">
                                   <span className="flex items-center gap-2 text-sm font-semibold text-foreground group-hover:text-accent transition-colors">
-                                    기사 자세히 보기
+                                    {isRestricted ? "패널 등록 후 읽기" : "기사 자세히 보기"}
                                     <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                                   </span>
                                 </div>
@@ -379,6 +429,20 @@ const NewsRoom = () => {
       </main>
 
       <Footer />
+      
+      <PanelRegistrationModal 
+        isOpen={isModalOpen} 
+        onOpenChange={setIsModalOpen} 
+      />
+
+      <PanelAccessNoticeModal
+        isOpen={isNoticeModalOpen}
+        onClose={() => setIsNoticeModalOpen(false)}
+        onConfirm={() => {
+          setIsNoticeModalOpen(false);
+          setIsModalOpen(true);
+        }}
+      />
     </div>
   );
 };

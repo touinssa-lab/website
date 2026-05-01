@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { motion } from "framer-motion";
-import { ClipboardList, ExternalLink, UserPlus, Gift, Clock, ShieldCheck } from "lucide-react";
+import { ClipboardList, ExternalLink, UserPlus, Gift, Clock, ShieldCheck, ArrowRight } from "lucide-react";
 import AntigravityBackground from "@/components/AntigravityBackground";
 import { PanelRegistrationModal } from "@/components/survey/PanelRegistrationModal";
 import { PreSurveyInfoModal } from "@/components/survey/PreSurveyInfoModal";
@@ -118,14 +118,24 @@ const Survey = () => {
                 </div>
               </div>
               
-              <div className="flex-shrink-0 w-full md:w-auto">
+              <div className="flex-shrink-0 w-full md:w-auto flex flex-col gap-3">
                 {isLoggedInPanel ? (
-                  <div className="w-full md:w-auto px-10 py-5 rounded-2xl bg-primary/10 text-primary font-bold text-lg flex items-center justify-center gap-3 border-2 border-primary/20 shadow-lg shadow-primary/5 animate-pulse-subtle">
-                    <div className="bg-primary text-primary-foreground p-1 rounded-full">
-                      <ShieldCheck className="w-6 h-6" />
+                  <>
+                    <div className="w-full md:w-auto px-10 py-5 rounded-2xl bg-primary/10 text-primary font-bold text-lg flex items-center justify-center gap-3 border-2 border-primary/20 shadow-lg shadow-primary/5">
+                      <div className="bg-primary text-primary-foreground p-1 rounded-full">
+                        <ShieldCheck className="w-6 h-6" />
+                      </div>
+                      패널 가입 완료
                     </div>
-                    패널 가입 완료
-                  </div>
+                    <button 
+                      onClick={() => navigate('/news')}
+                      className="w-full md:w-auto px-10 py-4 rounded-2xl bg-rose-600 text-white font-bold text-lg hover:bg-rose-700 transition-all hover:scale-105 hover:shadow-xl hover:shadow-rose-200 flex items-center justify-center gap-2 group"
+                    >
+                      <ClipboardList className="w-5 h-5" />
+                      패널 전용 기획기사 보기
+                      <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                    </button>
+                  </>
                 ) : (
                   <button 
                     onClick={() => setIsPanelModalOpen(true)}

@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "sonner";
 import { 
   Plus, 
@@ -40,7 +41,8 @@ const NewsManagement = () => {
     date: new Date().toLocaleDateString('ko-KR').replace(/\s/g, '').replace(/\.$/, ''),
     thumbnail: "",
     excerpt: "",
-    contentBlocks: []
+    contentBlocks: [],
+    visibility: "all"
   });
 
   // Fetch articles
@@ -59,7 +61,8 @@ const NewsManagement = () => {
         date: item.date,
         thumbnail: item.thumbnail,
         excerpt: item.excerpt,
-        contentBlocks: item.content_blocks
+        contentBlocks: item.content_blocks,
+        visibility: item.visibility || "all"
       })) as NewsArticle[];
     }
   });
@@ -88,7 +91,8 @@ const NewsManagement = () => {
         date: article.date,
         thumbnail: finalThumbnail,
         excerpt: article.excerpt,
-        content_blocks: article.contentBlocks
+        content_blocks: article.contentBlocks,
+        visibility: article.visibility || "all"
       };
       const { error } = await supabase
         .from('news_articles')
@@ -199,7 +203,8 @@ const NewsManagement = () => {
       date: new Date().toLocaleDateString('ko-KR'),
       thumbnail: "",
       excerpt: "",
-      contentBlocks: []
+      contentBlocks: [],
+      visibility: "all"
     });
     setIsEditing(true);
   };
@@ -266,6 +271,9 @@ const NewsManagement = () => {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-3 mb-2">
                         <span className="text-[10px] bg-primary/10 text-primary px-2.5 py-1 rounded-full font-bold uppercase tracking-wider">{article.category}</span>
+                        {article.visibility === 'panel' && (
+                          <span className="text-[10px] bg-amber-100 text-amber-700 px-2.5 py-1 rounded-full font-bold uppercase tracking-wider">패널 전용</span>
+                        )}
                         <span className="text-xs text-slate-400 font-medium">{article.date}</span>
                       </div>
                       <h2 className="font-bold text-slate-800 text-lg truncate group-hover:text-primary transition-colors">{article.title}</h2>
@@ -321,13 +329,19 @@ const NewsManagement = () => {
                       </div>
                       <div className="space-y-2">
                         <Label className="text-slate-600">카테고리</Label>
-                        <select 
-                          className="w-full h-11 rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                        <Input 
+                          list="category-suggestions"
                           value={currentArticle.category} 
                           onChange={e => setCurrentArticle(p => ({ ...p, category: e.target.value }))}
-                        >
-                          {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
-                        </select>
+                          placeholder="카테고리를 선택하거나 직접 입력하세요"
+                          className="h-11"
+                        />
+                        <datalist id="category-suggestions">
+                          {Array.from(new Set([
+                            ...CATEGORIES,
+                            ...(articles?.map(a => a.category) || [])
+                          ])).map(c => <option key={c} value={c} />)}
+                        </datalist>
                       </div>
                     </div>
                     <div className="space-y-2">
@@ -420,7 +434,7 @@ const NewsManagement = () => {
                           <Textarea 
                             value={block.value} 
                             onChange={e => handleUpdateBlock(idx, e.target.value)} 
-                            placeholder="본문 내용을 입력하세요. **강조** 사용 가능."
+                            placeholder="본문 내용을 입력하세요. **볼드**, *이태릭*, ***볼드+이태릭*** 사용 가능."
                             className="min-h-[160px] border-slate-100 focus:ring-primary/10"
                           />
                         ) : (
@@ -469,15 +483,35 @@ const NewsManagement = () => {
               {/* Sidebar / Actions */}
               <div className="space-y-6">
                 <Card className="sticky top-28 border-none shadow-sm">
-                  <CardHeader className="border-b border-slate-50"><CardTitle className="text-lg">최종 작업</CardTitle></CardHeader>
-                  <CardContent className="space-y-3 pt-6">
-                    <Button className="w-full h-12 gap-2 text-base font-bold shadow-lg shadow-primary/20" onClick={() => saveMutation.mutate(currentArticle)} disabled={saveMutation.isPending}>
-                      {saveMutation.isPending ? <Loader2 className="animate-spin w-5 h-5" /> : <Save className="w-5 h-5" />}
-                      기사 저장하기
-                    </Button>
-                    <Button variant="outline" className="w-full h-11 font-medium border-slate-200" onClick={() => setIsEditing(false)}>
-                      편집 취소
-                    </Button>
+                  <CardHeader className="border-b border-slate-50"><CardTitle className="text-lg">노출 및 저장</CardTitle></CardHeader>
+                  <CardContent className="space-y-6 pt-6">
+                    <div className="space-y-3">
+                      <Label className="text-slate-600">노출 권한 설정</Label>
+                      <RadioGroup 
+                        value={currentArticle.visibility || "all"} 
+                        onValueChange={(v: "all" | "panel") => setCurrentArticle(p => ({ ...p, visibility: v }))}
+                        className="space-y-2"
+                      >
+                        <div className="flex items-center space-x-2 p-3 rounded-lg border border-slate-100 hover:bg-slate-50 cursor-pointer transition-colors">
+                          <RadioGroupItem value="all" id="v-all" />
+                          <Label htmlFor="v-all" className="flex-1 cursor-pointer font-medium">일반 노출 (모두 공개)</Label>
+                        </div>
+                        <div className="flex items-center space-x-2 p-3 rounded-lg border border-slate-100 hover:bg-slate-50 cursor-pointer transition-colors">
+                          <RadioGroupItem value="panel" id="v-panel" />
+                          <Label htmlFor="v-panel" className="flex-1 cursor-pointer font-medium text-amber-600">패널 전용 (로그인 필수)</Label>
+                        </div>
+                      </RadioGroup>
+                    </div>
+
+                    <div className="space-y-3 pt-4 border-t border-slate-50">
+                      <Button className="w-full h-12 gap-2 text-base font-bold shadow-lg shadow-primary/20" onClick={() => saveMutation.mutate(currentArticle)} disabled={saveMutation.isPending}>
+                        {saveMutation.isPending ? <Loader2 className="animate-spin w-5 h-5" /> : <Save className="w-5 h-5" />}
+                        기사 저장하기
+                      </Button>
+                      <Button variant="outline" className="w-full h-11 font-medium border-slate-200" onClick={() => setIsEditing(false)}>
+                        편집 취소
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
               </div>

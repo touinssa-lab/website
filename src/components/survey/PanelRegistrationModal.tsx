@@ -18,7 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ArrowRight, CheckCircle2, Loader2 } from "lucide-react";
+import { ArrowRight, CheckCircle2, Loader2, X } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/lib/supabase";
@@ -175,20 +175,19 @@ export const PanelRegistrationModal = ({ isOpen, onOpenChange }: PanelRegistrati
     }}>
       <DialogContent className="sm:max-w-[550px] p-0 overflow-hidden bg-card/95 backdrop-blur-xl border-border">
         <div className="bg-muted/30 px-6 py-4 border-b border-border/50">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-4 relative">
             <DialogTitle className="text-xl font-bold font-serif">설문조사 패널 가입</DialogTitle>
-            <div className="flex gap-2">
-              {[1, 2, 3].map((i) => (
-                <div 
-                  key={i} 
-                  className={`w-2.5 h-2.5 rounded-full ${step >= i ? 'bg-primary' : 'bg-muted-foreground/30'}`} 
-                />
-              ))}
+            <div className="flex gap-2 items-center">
+              <div className="flex gap-1.5 mr-4">
+                <div className={`w-2 h-2 rounded-full ${step === 1 ? 'bg-primary' : 'bg-muted-foreground/30'}`} />
+                <div className={`w-2 h-2 rounded-full ${step === 2 ? 'bg-primary' : 'bg-muted-foreground/30'}`} />
+                <div className={`w-2 h-2 rounded-full ${step === 3 ? 'bg-primary' : 'bg-muted-foreground/30'}`} />
+              </div>
             </div>
           </div>
           <p className="text-sm text-muted-foreground">
             {step === 1 && "1단계: 약관 동의"}
-            {step === 2 && "2단계: 간편 가입 계정 선택"}
+            {step === 2 && "2단계: 소셜 로그인"}
             {step === 3 && "3단계: 추가 정보 입력"}
           </p>
         </div>
@@ -385,18 +384,22 @@ export const PanelRegistrationModal = ({ isOpen, onOpenChange }: PanelRegistrati
           )}
         </div>
 
-        {/* Footer Actions */}
         <div className="bg-muted/30 px-6 py-4 border-t border-border/50 flex justify-end gap-3">
-          {step === 3 && !isSubmitting && (
-             <Button variant="ghost" onClick={async () => {
+          <Button variant="ghost" onClick={() => onOpenChange(false)}>
+            {step === 3 ? "가입 나중에 하기" : "취소"}
+          </Button>
+          
+          {step === 3 && (
+            <Button 
+              variant="outline" 
+              className="text-xs text-muted-foreground"
+              onClick={async () => {
                 await supabase.auth.signOut();
                 onOpenChange(false);
-             }}>
-               가입 취소 (로그아웃)
-             </Button>
-          )}
-          {step < 3 && (
-            <Button variant="ghost" onClick={() => onOpenChange(false)}>취소</Button>
+              }}
+            >
+              로그아웃
+            </Button>
           )}
 
           {step === 1 && (
