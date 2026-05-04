@@ -102,6 +102,7 @@ const chatbotTranslations = {
     guideSuffix: "가이드",
     changeLang: "언어 변경하기",
     otherRegion: "다른 지역 여행하기",
+    limitExceeded: "질문 횟수가 초과되었습니다.",
     infoText: (selectedPersona: any, isUnlimited: boolean) => (
       <ul className="space-y-0.5 list-disc list-inside">
         <li className="marker:text-primary">로컬 스토리 챗봇은 정식서비스가 아닙니다. AI 페르소나의 답변에는 오류가 있을 수 있습니다.</li>
@@ -125,12 +126,16 @@ const chatbotTranslations = {
     guideSuffix: "Guide",
     changeLang: "Change Language",
     otherRegion: "Travel to other regions",
+    limitExceeded: "Question limit exceeded.",
     infoText: (selectedPersona: any, isUnlimited: boolean) => (
-      <>
-        {!isUnlimited && <span>Question limit is 5 per day. </span>}
-        {isUnlimited && <span className="text-green-600 font-bold">Admin: Unlimited questions. </span>}
-        Click the <span className="font-bold text-primary underline underline-offset-2 italic">place name</span> to see on map.
-      </>
+      <ul className="space-y-0.5 list-disc list-inside">
+        <li>Local Story Chatbot is not a formal service. AI answers may contain errors.</li>
+        {!isUnlimited && <li className="text-red-500 font-bold">Please wait a moment after asking. Limit: 5 questions per day.</li>}
+        {isUnlimited && <li className="text-green-600 font-bold">Admin Mode: Unlimited questions.</li>}
+        <li>Click the <span className="font-bold text-primary underline underline-offset-2 italic">place name</span> to see detailed location on map.</li>
+        <li>Click the <span className="text-red-500 font-bold">'Red Map Pin'</span> next to the place to get directions from your current location.</li>
+        <li>Try: <span className="text-primary font-bold">"Can you plan a full-day course for '{selectedPersona?.district || 'this area'}'?"</span></li>
+      </ul>
     ),
   },
   zh: {
@@ -145,17 +150,21 @@ const chatbotTranslations = {
     guideSuffix: "指南",
     changeLang: "更改语言",
     otherRegion: "去其他地区旅行",
+    limitExceeded: "提问次数已超过限制。",
     infoText: (selectedPersona: any, isUnlimited: boolean) => (
-      <>
-        {!isUnlimited && <span>每日提问限制为 5 次。</span>}
-        {isUnlimited && <span className="text-green-600 font-bold">管理员：无限制提问。</span>}
-        点击 <span className="font-bold text-primary underline underline-offset-2 italic">地点名称</span> 在地图上查看。
-      </>
+      <ul className="space-y-0.5 list-disc list-inside">
+        <li>当地故事聊天机器人不是正式服务。AI的回答可能存在错误。</li>
+        {!isUnlimited && <li className="text-red-500 font-bold">输入问题后请稍等片刻。每日提问限制为 5 次。</li>}
+        {isUnlimited && <li className="text-green-600 font-bold">管理员模式：无限制提问。</li>}
+        <li>点击 <span className="font-bold text-primary underline underline-offset-2 italic">地点名称</span> 即可在地图上查看详细位置。</li>
+        <li>点击地点名称前的 <span className="text-red-500 font-bold">'红色地图大头针'</span> 即可查看从当前位置到该地点的路线指引。</li>
+        <li>试着输入：<span className="text-primary font-bold">"请帮我安排一个在'{selectedPersona?.district || '这里'}'玩一整天的行程"</span></li>
+      </ul>
     ),
   },
   ja: {
     selectRegion: "旅行したい地域を選択してください。",
-    chatbotTitle: "ロー컬ストーリーチャットボット",
+    chatbotTitle: "ローカルストーリーチャットボット",
     chatbotSubtitle: "地元の方の視点で旅行を設計しましょう",
     inputPlaceholder: "質問を入力してください...",
     loadingStatus: "回答中です。少々お待ちください",
@@ -164,13 +173,17 @@ const chatbotTranslations = {
     hobbies: "趣味・関心事",
     guideSuffix: "ガイド",
     changeLang: "言語を変更",
-    otherRegion: "他の地域へ行く",
+    otherRegion: "다른 지역 여행하기",
+    limitExceeded: "質問回数が制限を超えました。",
     infoText: (selectedPersona: any, isUnlimited: boolean) => (
-      <>
-        {!isUnlimited && <span>質問回数は1日5回までです。</span>}
-        {isUnlimited && <span className="text-green-600 font-bold">管理者：質問無制限。</span>}
-        <span className="font-bold text-primary underline underline-offset-2 italic">場所名</span>をクリックして地図を表示。
-      </>
+      <ul className="space-y-0.5 list-disc list-inside">
+        <li>ローカルストーリーチャットボットは正式なサービスではありません。AIの回答에는 誤りがある場合があります。</li>
+        {!isUnlimited && <li className="text-red-500 font-bold">質問入力後, 少々お待ちください. 質問回수는 1일 5회까지입니다.</li>}
+        {isUnlimited && <li className="text-green-600 font-bold">管理者モード：質問無制限。</li>}
+        <li>AI가 안내한 <span className="font-bold text-primary underline underline-offset-2 italic">場所名</span> をクリックすると, 地図で詳細な位置を表示합니다.</li>
+        <li>場所名の前に表示されている <span className="text-red-500 font-bold">'赤い地図ピン'</span> をクリック하면, 현재 위치에서 해당 장소까지 길안내를 보여줍니다.</li>
+        <li>次のように入力してみてください：<span className="text-primary font-bold">"'{selectedPersona?.district || 'この地域'}'で一日中遊べるコースを立ててください"</span></li>
+      </ul>
     ),
   }
 };
@@ -258,7 +271,7 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
     const introText = {
       ko: `저는 ${translateContent(randomPersona.district, 'districts', 'ko').replace('-', ' ')}에 살고 있는 ${translateContent(randomPersona.occupation, 'occupations', 'ko')}입니다. 우리 동네에 대해 궁금한 거 있으면 뭐든 물어보세요!`,
       en: `I am a ${translateContent(randomPersona.occupation, 'occupations', 'en')} living in ${translateContent(randomPersona.district, 'districts', 'en').replace('-', ' ')}. Ask me anything about our neighborhood!`,
-      zh: `我是住在 ${translateContent(randomPersona.district, 'districts', 'zh').replace('-', ' ')} 的一名 ${translateContent(randomPersona.occupation, 'occupations', 'zh')}。如果您对我们这里有什么好奇의，尽管问我！`,
+      zh: `我是住在 ${translateContent(randomPersona.district, 'districts', 'zh').replace('-', ' ')} 的一名 ${translateContent(randomPersona.occupation, 'occupations', 'zh')}。如果您对我们这里有什么好奇的，尽管问我！`,
       ja: `私は ${translateContent(randomPersona.district, 'districts', 'ja').replace('-', ' ')} に住んでいる ${translateContent(randomPersona.occupation, 'occupations', 'ja')} です. 私たちの街について気になることがあれば, 何でも聞いてください！`
     };
 
@@ -281,7 +294,7 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
 
     if (!isUnlimited && chatCount >= 5) {
       setTimeout(() => {
-        setMessages((prev) => [...prev, { role: "bot", content: "질문 횟수가 초과되었습니다." }]);
+        setMessages((prev) => [...prev, { role: "bot", content: t.limitExceeded }]);
       }, 500);
       return;
     }
