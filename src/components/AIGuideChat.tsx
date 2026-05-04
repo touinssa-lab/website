@@ -108,6 +108,8 @@ const chatbotTranslations = {
         {!isUnlimited && <li className="marker:text-red-500 text-red-500 font-bold">질문 횟수는 5회로 제한됩니다.</li>}
         {isUnlimited && <li className="marker:text-green-600 text-green-600 font-bold">관리자 모드: 질문 횟수 제한이 없습니다.</li>}
         <li className="marker:text-primary">AI가 안내한 <span className="font-bold text-primary underline underline-offset-2 italic">장소명</span>을 클릭하면 지도로 상세 위치를 보여줍니다.</li>
+        <li className="marker:text-primary">장소명 앞에 표시된 <span className="text-red-500 font-bold">'빨간색 지도핀'</span>을 클릭하면 현재 위치에서 해당 장소까지 길안내를 보여줍니다.</li>
+        <li className="marker:text-primary"><span className="text-primary font-bold">"'{selectedPersona?.district || '지역명'}'에서 하루종일 놀 수 있는 코스 짜주세요"</span> 라고 입력해 보세요.</li>
       </ul>
     ),
   },
@@ -409,22 +411,24 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
           </motion.div>
 
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="flex flex-col h-[750px] bg-card rounded-3xl border shadow-xl overflow-hidden">
-            <div className="p-6 border-b bg-muted/30 flex justify-between items-center">
+            <div className="p-4 md:p-6 border-b bg-muted/30 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary"><MessageSquare className="h-5 w-5" /></div>
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0"><MessageSquare className="h-5 w-5" /></div>
                 <div>
-                  <h3 className="font-bold text-lg">{t.chatbotTitle}</h3>
-                  <p className="text-xs text-muted-foreground">{t.chatbotSubtitle}</p>
+                  <h3 className="font-bold text-base md:text-lg whitespace-nowrap">{t.chatbotTitle}</h3>
+                  <p className="text-[11px] md:text-xs text-muted-foreground">{t.chatbotSubtitle}</p>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 w-full md:w-auto">
                 {isLoading && (
-                  <motion.div animate={{ opacity: [0.6, 1, 0.6] }} transition={{ repeat: Infinity, duration: 1.5 }} className="h-11 flex items-center justify-center px-8 rounded-xl bg-red-500 text-white shadow-lg text-[13px] font-black mr-1">
+                  <motion.div animate={{ opacity: [0.6, 1, 0.6] }} transition={{ repeat: Infinity, duration: 1.5 }} className="h-10 md:h-11 flex items-center justify-center px-4 md:px-8 rounded-xl bg-red-500 text-white shadow-lg text-[11px] md:text-[13px] font-black mr-1 whitespace-nowrap">
                     {t.loadingStatus}
                   </motion.div>
                 )}
-                <Button variant="outline" onClick={() => setSelectedPersona(null)} className="border-primary text-primary hover:bg-primary/10 gap-2 font-extrabold h-11 px-6"><Languages className="h-5 w-5" /> {t.changeLang}</Button>
-                <Button variant="default" onClick={() => setSelectedPersona(null)} className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 font-extrabold h-11 px-6"><MapIcon className="h-5 w-5" /> {t.otherRegion}</Button>
+                <div className="flex gap-2 w-full md:w-auto">
+                  <Button variant="outline" onClick={() => setSelectedPersona(null)} className="flex-1 md:flex-none border-primary text-primary hover:bg-primary/10 gap-1.5 md:gap-2 font-extrabold h-10 md:h-11 px-3 md:px-6 text-xs md:text-sm"><Languages className="h-4 w-4 md:h-5 md:w-5" /> {t.changeLang}</Button>
+                  <Button variant="default" onClick={() => setSelectedPersona(null)} className="flex-1 md:flex-none bg-primary hover:bg-primary/90 text-primary-foreground gap-1.5 md:gap-2 font-extrabold h-10 md:h-11 px-3 md:px-6 text-xs md:text-sm"><MapIcon className="h-4 w-4 md:h-5 md:w-5" /> {t.otherRegion}</Button>
+                </div>
               </div>
             </div>
 
