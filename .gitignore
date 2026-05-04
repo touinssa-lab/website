@@ -13,3 +13,4 @@ build/
 # 운영체제 생성 파일 (불필요)
 .DS_Store
 Thumbs.db
+.vercel

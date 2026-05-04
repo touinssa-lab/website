@@ -84,7 +84,8 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
+    font-family: "Inter", "Pretendard Variable", "Pretendard", "Noto Sans KR", "PingFang SC", "Microsoft YaHei", "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
+    @apply bg-background text-foreground antialiased;
   }
 
   html {
@@ -92,7 +93,8 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-serif tracking-tight;
+    font-family: "Noto Serif KR", "Noto Serif SC", "Noto Serif JP", "Songti SC", "SimSun", "Yu Mincho", serif;
+    @apply tracking-tight;
   }
 }
 

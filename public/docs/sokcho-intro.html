@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>강원 속초 아바이마을 관광상품 기획</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+<style>
+/* ─── 변수 ─────────────────────────────────── */
+:root{
+  --ink:     #1A1714;
+  --paper:   #F5F0E8;
+  --paper2:  #EDE7D9;
+  --sea:     #1C3F5E;
+  --sea-lt:  #2E6090;
+  --rust:    #C0462A;
+  --sand:    #C8A96E;
+  --muted:   #7A7060;
+  --r:       8px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:'Noto Sans KR',sans-serif;
+  font-weight:300;
+  overflow-x:hidden;
+}
+
+/* ─── 노이즈 텍스처 오버레이 ──────────────── */
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:0;opacity:.4;
+}
+
+/* ─── 히어로 ────────────────────────────────── */
+.hero{
+  min-height:100vh;
+  background-color:var(--sea);
+  background-image: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 60%, rgba(0,0,0,0.4) 100%), url('images/sokcho1.jpg');
+  background-size: cover;
+  background-position: center;
+  position:relative;
+  display:flex;flex-direction:column;
+  justify-content:flex-end;
+  padding:80px 72px;
+  overflow:hidden;
+}
+.hero-bg{
+  position:absolute;inset:0;
+  background: radial-gradient(circle at 70% 30%, rgba(42,90,128,0.2) 0%, transparent 70%);
+  z-index:0;
+}
+/* 물결 SVG 장식 */
+.hero-wave{
+  position:absolute;bottom:0;left:0;right:0;z-index:1;opacity:.12;
+}
+.hero-tag{
+  position:relative;z-index:2;
+  display:inline-flex;align-items:center;gap:10px;
+  margin-bottom:28px;
+  animation:fadeUp .8s ease both;
+}
+.hero-tag-line{width:32px;height:1px;background:var(--sand)}
+.hero-tag-text{
+  font-family:'Noto Sans KR',sans-serif;
+  font-size:18px;letter-spacing:1px;
+  font-weight: 400;
+  color:black;
+  text-transform:uppercase;
+}
+.hero-headline{
+  position:relative;z-index:2;
+  font-family:'Noto Serif KR', serif;
+  font-weight: 400;
+  font-size:clamp(38px,6vw,76px);
+  line-height:1.3;
+  color:black;
+  margin-bottom:162px;
+  letter-spacing: -0.03em;
+  animation:fadeUp .8s .1s ease both;
+}
+.hero-headline em{
+  font-family: 'Noto Sans KR', sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  color: rgb(78, 49, 62);
+  font-size: 1.1em;
+  text-shadow: 0 4px 12px rgba(78, 49, 62, 0.3);
+}
+.hero-sub{
+  position:relative;z-index:2;
+  font-size:15px;line-height:1.8;
+  color:rgba(245,240,232, 1);
+  font-weight: 500;
+  max-width:700px;
+  margin-bottom:16px;
+  animation:fadeUp .8s .2s ease both;
+}
+.hero-data-row{
+  position:relative;z-index:2;
+  display:flex;gap:48px;
+  border-top:1px solid rgba(245,240,232,.15);
+  padding-top:32px;
+  animation:fadeUp .8s .3s ease both;
+}
+.hero-stat .num{
+  font-family:'Outfit',sans-serif;
+  font-size:48px;font-weight:700;
+  color:var(--sand);line-height:1;
+  letter-spacing: -0.02em;
+}
+.hero-stat .label{
+  font-size:17px;font-weight:600;
+  color:rgba(245,240,232, 1);
+  margin-top:6px;letter-spacing:.5px;
+}
+
+/* ─── 인트로 텍스트 ──────────────────────────── */
+.intro{
+  padding:96px 72px;
+  max-width:1200px;margin:0 auto;
+  display:grid;grid-template-columns:1fr 1.2fr;gap:80px;align-items:center;
+}
+.intro-label{
+  font-family:'Outfit',sans-serif;
+  font-size:20px;letter-spacing:1px;
+  color:var(--muted);text-transform:uppercase;
+  font-weight:700;
+  margin-bottom: 24px;
+}
+.intro-body p{
+  font-family:'Noto Serif KR',serif;
+  font-size:22px;line-height:1.85;
+  font-weight:300;color:var(--ink);
+  margin-bottom:20px;
+}
+.intro-body p strong{
+  font-weight:600;color:var(--sea);
+}
+.intro-img-box{
+  width: 100%; height: 480px;
+  border-radius: var(--r);
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+.intro-img-box img{
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+
+/* ─── 데이터 스트립 ─────────────────────────── */
+.data-strip{
+  background:var(--sea);
+  padding:48px 72px;
+  display:flex;gap:0;
+  overflow:hidden;
+}
+.ds-item{
+  width:25%;flex:none;
+  padding:0 40px;
+  border-left:1px solid rgba(245,240,232,.1);
+  box-sizing: border-box;
+}
+.ds-item:first-child{border:none;padding-left:0}
+.ds-num{
+  font-family:'Outfit',sans-serif;
+  font-size:48px;font-weight:700;
+  color:var(--sand);line-height:1;
+  margin-bottom:8px;
+  letter-spacing: -0.02em;
+}
+.ds-label{
+  font-size:17px;font-weight:600;
+  color:rgba(245,240,232,1);line-height:1.5;
+}
+.ds-sub{
+  font-size:14px;color:rgba(245,240,232,.5);
+  margin-top:4px;
+}
+
+/* ─── 타깃 섹션 ──────────────────────────────── */
+.target-section{
+  padding:96px 72px;
+  max-width:1100px;margin:0 auto;
+}
+.section-eyebrow{
+  font-family:'Outfit',sans-serif;
+  font-size:20px;letter-spacing:1px;color:var(--muted);
+  text-transform:uppercase;margin-bottom:20px;
+  font-weight:700;
+  display:flex;align-items:center;gap:12px;
+}
+.section-eyebrow::after{content:'';flex:1;height:1px;background:var(--paper2)}
+.section-title{
+  font-family:'Outfit',sans-serif;
+  font-size:clamp(44px,6vw,72px);font-weight:700;
+  margin-bottom:48px;line-height:1.2;
+}
+
+.persona-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:24px;
+  margin-bottom:64px;
+}
+.persona-card{
+  background:#fff;
+  border:1px solid #dbdbdb;
+  border-radius:8px;
+  overflow:hidden;
+  display:flex;flex-direction:column;
+  transition:transform .3s;
+}
+.persona-card:hover{transform:translateY(-8px);box-shadow:0 12px 30px rgba(0,0,0,0.08)}
+
+.ig-header{
+  padding:12px 16px;
+  display:flex;align-items:center;gap:12px;
+}
+.ig-avatar{
+  width:32px;height:32px;border-radius:50%;overflow:hidden;
+  border:1px solid #efefef;
+}
+.ig-avatar img{width:100%;height:100%;object-fit:cover}
+.ig-user-info{display:flex;flex-direction:column}
+.ig-username{font-family:'Outfit',sans-serif;font-size:14px;font-weight:700;color:#262626}
+.ig-location{font-size:11px;color:#8e8e8e}
+
+.ig-image{
+  width:100%;aspect-ratio:1/1;overflow:hidden;background:#fafafa;
+}
+.ig-image img{width:100%;height:100%;object-fit:cover}
+
+.ig-actions{
+  padding:12px 16px 8px;
+  display:flex;gap:16px;
+}
+.ig-actions svg{width:24px;height:24px;fill:none;stroke:#262626;stroke-width:2}
+
+.ig-caption{
+  padding:0 16px 16px;
+  font-family:'Noto Serif KR',serif;
+  font-size:14px;line-height:1.6;color:#262626;
+}
+.ig-username-inline{font-family:'Outfit',sans-serif;font-weight:700;margin-right:6px}
+
+.ig-data{
+  padding:12px 16px;
+  border-top:1px solid #efefef;
+  background:#fafafa;
+  font-family:'Outfit',sans-serif;
+  font-size:12px;font-weight:600;color:var(--sea);
+  display:flex;flex-wrap:wrap;gap:8px;
+}
+.ig-tag{color:#00376b}
+
+/* ─── 코스 섹션 ──────────────────────────────── */
+.course-section{
+  background-color:var(--ink);
+  background-image: linear-gradient(rgba(26,23,20,0.92), rgba(26,23,20,0.92)), url('images/sokcho3.jpg');
+  background-size: cover;
+  background-position: center;
+  padding:96px 72px;
+  position:relative;overflow:hidden;
+}
+.course-section::before{
+  content:'SOKCHO';
+  position:absolute;right:-40px;top:50%;transform:translateY(-50%);
+  font-family:'Playfair Display',serif;
+  font-size:200px;font-weight:700;
+  color:rgba(255,255,255,.03);
+  white-space:nowrap;pointer-events:none;
+}
+.course-inner{max-width:1100px;margin:0 auto}
+.course-section .section-eyebrow{color:rgba(245,240,232,.3)}
+.course-section .section-eyebrow::after{background:rgba(245,240,232,.08)}
+.course-section .section-title{color:var(--paper)}
+
+.course-timeline{
+  display:flex;flex-direction:column;gap:0;
+}
+.ct-day{
+  display:grid;grid-template-columns:180px 1fr;gap:60px;
+  position:relative;
+}
+.ct-day:not(:last-child){margin-bottom:0}
+.ct-day-label{
+  padding:32px 0;
+  text-align:right;
+}
+.ct-day-tag{
+  font-family:'Outfit',sans-serif;
+  font-size:12px;letter-spacing:2px;font-weight:700;
+  color:#fff;text-transform:uppercase;
+}
+.ct-day-name{
+  font-family:'Outfit',sans-serif;
+  font-size:24px;color:rgba(245,240,232,1);font-weight:700;
+  margin-top:4px;
+}
+.ct-steps{
+  border-left:1px solid rgba(245,240,232,.1);
+  padding:0 0 0 40px;
+}
+.ct-step{
+  padding:28px 0;
+  border-bottom:1px solid rgba(245,240,232,.06);
+  display:flex;gap:20px;align-items:flex-start;
+}
+.ct-step:last-child{border:none}
+.ct-num{
+  width:28px;height:28px;border-radius:50%;
+  border:1px solid rgba(255,255,255,0.4);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Outfit',sans-serif;font-size:14px;font-weight:700;
+  color:#fff;flex-shrink:0;margin-top:2px;
+}
+.ct-content{}
+.ct-title{
+  font-family:'Outfit',sans-serif;
+  font-size:18px;font-weight:700;
+  color:var(--paper);margin-bottom:8px;
+}
+.ct-desc{
+  font-family:'Noto Serif KR',serif;
+  font-size:15px;color:rgba(245,240,232,.7);line-height:1.8;
+}
+.ct-badge{
+  display:inline-block;margin-top:12px;
+  font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;
+  padding:8px 16px;border-radius:6px;
+  background:rgba(255,255,255,0.5);color:#1c3f5e;
+}
+
+/* ─── 차별화 섹션 ────────────────────────────── */
+.diff-section{
+  padding:96px 72px;
+  max-width:1100px;margin:0 auto;
+}
+.diff-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:24px;
+}
+.diff-card{
+  border:1px solid var(--paper2);
+  border-radius:var(--r);
+  padding:32px;
+  position:relative;
+  transition:border-color .2s,background .2s;
+}
+.diff-card:hover{
+  background:var(--paper2);
+  border-color:var(--sea);
+}
+.diff-num{
+  font-family:'Outfit',sans-serif;
+  font-size:16px;font-weight:700;
+  color:var(--gold);margin-bottom:16px;
+  letter-spacing:2px;
+}
+.diff-title{
+  font-family:'Outfit',sans-serif;
+  font-size:20px;font-weight:700;
+  color:var(--sea);margin-bottom:16px;
+  line-height:1.4;
+}
+.diff-body{
+  font-family:'Noto Serif KR',serif;
+  font-size:15px;line-height:1.8;
+  color:rgba(28,63,94,.7);
+}
+
+/* ─── 가격 / CTA ──────────────────────────────── */
+.cta-section{
+  background:var(--rust);
+  padding:80px 72px;
+  position:relative;overflow:hidden;
+}
+.cta-section::before{
+  content:'';
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 80% at 80% 50%,rgba(0,0,0,.25),transparent);
+}
+.cta-inner{
+  max-width:1200px;margin:0 auto;
+  display:grid;grid-template-columns:1fr 1.4fr;gap:80px;align-items:center;
+  position:relative;z-index:1;
+}
+.cta-left .eyebrow{
+  font-family:'Outfit',sans-serif;
+  font-size:20px;letter-spacing:1px;
+  color:rgba(245,240,232,1);margin-bottom:20px;
+  font-weight:700;
+}
+.cta-left h2{
+  font-family:'Noto Serif KR',serif;
+  font-size:clamp(28px,4vw,44px);
+  font-weight:700;
+  color:var(--paper);line-height:1.2;margin-bottom:20px;
+}
+.cta-left p{
+  font-family:'Noto Serif KR',serif;
+  font-size:15px;font-weight:700;
+  color:rgba(245,240,232,.9);line-height:1.8;
+}
+.price-block{
+  background:rgba(253, 250, 245, 0.8);
+  padding:48px 40px;
+  border-radius:2px;
+  box-shadow:0 30px 60px rgba(0,0,0,0.15);
+  position:relative;
+  color:#1c3f5e;
+  backdrop-filter:blur(8px);
+}
+/* 지그재그 하단 디테일 */
+.price-block::after {
+  content:'';
+  position:absolute;
+  bottom:-12px;left:0;right:0;
+  height:12px;
+  background: linear-gradient(-135deg, rgba(253, 250, 245, 0.8) 6px, transparent 0),
+              linear-gradient(135deg, rgba(253, 250, 245, 0.8) 6px, transparent 0);
+  background-size:12px 12px;
+}
+.price-row{
+  display:flex;justify-content:space-between;
+  align-items:center;
+  padding:16px 0;
+  border-bottom:1px dashed rgba(28,63,94,.15);
+}
+.price-row:last-of-type{border:none}
+.price-row .item{
+  font-family:'Noto Serif KR',serif;
+  font-size:15px;font-weight:700;color:rgba(28,63,94,.9);
+}
+.price-row .val{
+  font-family:'Outfit',sans-serif;
+  font-size:17px;font-weight:700;color:#1c3f5e;
+}
+.price-total{
+  margin-top:32px;padding-top:32px;
+  border-top:2px solid #1c3f5e;
+  display:flex;justify-content:space-between;align-items:baseline;
+}
+.price-total .tlabel{
+  font-family:'Noto Serif KR',serif;
+  font-size:18px;font-weight:700;color:#1c3f5e;
+}
+.price-total .tval{
+  font-family:'Noto Serif KR',serif;
+  font-size:44px;font-weight:700;color:#1c3f5e;
+}
+
+/* ─── 푸터 ───────────────────────────────────── */
+.footer{
+  background:var(--ink);
+  padding:48px 72px;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.footer-left{
+  font-family:'Outfit',sans-serif;
+  font-size:14px;color:var(--paper);
+  line-height:1.8;
+  opacity:0.85;
+}
+.footer-right img{
+  height:64px;
+  opacity:1;
+  transition:transform 0.3s ease;
+}
+.footer-right img:hover{
+  transform:scale(1.05);
+}
+.footer-right{
+  font-family:'Playfair Display',serif;
+  font-size:22px;font-style:italic;
+  color:rgba(245,240,232,.12);
+}
+
+/* ─── 애니메이션 ──────────────────────────────── */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(24px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.reveal{
+  opacity:0;transform:translateY(20px);
+  transition:opacity .7s ease,transform .7s ease;
+}
+.reveal.visible{opacity:1;transform:translateY(0)}
+</style>
+</head>
+<body>
+
+<!-- ── 히어로 ── -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <svg class="hero-wave" viewBox="0 0 1440 120" preserveAspectRatio="none">
+    <path d="M0,60 C360,120 720,0 1080,60 C1260,90 1380,50 1440,60 L1440,120 L0,120Z" fill="#F5F0E8"/>
+  </svg>
+  <div class="hero-tag">
+    <div class="hero-tag-text">강원 속초 아바이마을 관광상품 기획</div>
+  </div>
+  <h1 class="hero-headline">
+    달리는 순간 속초가 된다!<br><em>런케이션</em>
+  </h1>
+  <p class="hero-sub">
+    러닝(Running)과 워케이션(Workation)이 만나는 속초 아바이마을.<br>
+    해파랑길 45코스·청초호·영금정을 달리고, 실향민 골목에서 회복하는 새로운 여행 문법.
+  </p>
+  <div class="hero-data-row">
+    <div class="hero-stat">
+      <div class="num">6,403</div>
+      <div class="label">강원 언급 페르소나</div>
+    </div>
+    <div class="hero-stat">
+      <div class="num">43%</div>
+      <div class="label">친구 동반 비중</div>
+    </div>
+    <div class="hero-stat">
+      <div class="num">20.4%</div>
+      <div class="label">로컬·현지인 추구</div>
+    </div>
+    <div class="hero-stat">
+      <div class="num">#1</div>
+      <div class="label">미식이 1위 니즈인 유일 권역</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── 인트로 ── -->
+<section class="intro reveal">
+  <div class="intro-content">
+    <div class="intro-label">런케이션 배경</div>
+    <div class="intro-body">
+      <p>
+        한국관광공사 해양관광 활성화 사업이 속초 아바이마을에 부여한 핵심 테마는 <strong>'런케이션(Runcation)'</strong>이다. 러닝(Running)과 워케이션(Workation)을 결합한 체류형 여행으로, 달리고·일하고·회복하는 새로운 여행 문법을 제안한다.
+      </p>
+      <p>
+        페르소나 데이터 6,403건이 보여주는 강원 방문객 패턴과 런케이션 테마는 정확히 맞닿는다. <strong>해파랑길 45코스(17.6km)가 아바이마을을 통과</strong>하고, 청초호·영금정·영랑호로 이어지는 동해안 러닝 루트는 속초를 달리기에 최적의 목적지로 만든다.
+      </p>
+    </div>
+  </div>
+  <div class="intro-img-box">
+    <img src="images/sokcho2.jpg" alt="속초 아바이마을 전경">
+  </div>
+</section>
+
+<!-- ── 데이터 스트립 ── -->
+<div class="data-strip reveal">
+  <div class="ds-item">
+    <div class="ds-num">17.6km</div>
+    <div class="ds-label">해파랑길 45코스</div>
+    <div class="ds-sub">아바이마을 경유 · 동해 조망 러닝</div>
+  </div>
+  <div class="ds-item">
+    <div class="ds-num">3코스</div>
+    <div class="ds-label">난이도별 러닝 루트</div>
+    <div class="ds-sub">5km 입문 / 10km 중급 / 17.6km 해파랑</div>
+  </div>
+  <div class="ds-item">
+    <div class="ds-num">20.4%</div>
+    <div class="ds-label">로컬·현지인 추구</div>
+    <div class="ds-sub">달리며 발견하는 골목 — 전국 2위</div>
+  </div>
+  <div class="ds-item">
+    <div class="ds-num">43%</div>
+    <div class="ds-label">친구 동반 비중</div>
+    <div class="ds-sub">러닝 크루 + 워케이션 조합 수요</div>
+  </div>
+</div>
+
+<!-- ── 핵심 타깃 ── -->
+<section class="target-section reveal">
+  <div class="section-eyebrow">핵심 타깃 페르소나</div>
+  <h2 class="section-title">데이터가 그린<br>런케이션 타깃 셋</h2>
+
+  <div class="persona-grid">
+    <!-- Persona 1 -->
+    <div class="persona-card">
+      <div class="ig-header">
+        <div class="ig-avatar"><img src="images/p1.png" alt="P1"></div>
+        <div class="ig-user-info">
+          <div class="ig-username">runcation_sokcho</div>
+          <div class="ig-location">속초 아바이마을</div>
+        </div>
+      </div>
+      <div class="ig-image">
+        <img src="images/p1_ig.png" alt="러닝 크루 여성">
+      </div>
+      <div class="ig-actions">
+        <svg viewBox="0 0 24 24" style="width:24px;height:24px;"><path d="M16.792 3.904A4.989 4.989 0 0121.5 9.122c0 3.072-2.652 4.959-5.197 7.222-2.512 2.243-3.865 3.469-4.303 3.752-.477-.309-2.143-1.823-4.303-3.752C5.141 14.072 2.5 12.185 2.5 9.122a4.989 4.989 0 014.708-5.218 4.21 4.21 0 013.675 1.941c.03.044.07.086.117.127.47.456 1.146.456 1.615 0a.45.45 0 01.117-.127A4.21 4.21 0 0116.792 3.904z" fill="#ed4956" stroke="#ed4956"/></svg>
+        <svg viewBox="0 0 24 24" style="width:24px;height:24px;"><path d="M20.656 17.008a9.993 9.993 0 10-3.59 3.615L22 22z" fill="none" stroke="#262626" stroke-width="2"/></svg>
+        <svg viewBox="0 0 24 24" style="width:24px;height:24px;"><line x1="22" y1="2" x2="11" y2="13" stroke="#262626" stroke-width="2"/><polygon points="22 2 15 22 11 13 2 9 22 2" fill="none" stroke="#262626" stroke-width="2"/></svg>
+      </div>
+      <div class="ig-caption">
+        <span class="ig-username-inline">러닝 크루 여성 2030</span>
+        평소 한강·공원에서 달리는 러닝 크루 멤버. 주말 여행지에서도 새벽 런을 포기하지 않습니다. 해파랑길처럼 경치 좋은 코스를 달리고, 달리기 후 로컬 카페와 노포 미식으로 회복하는 루틴을 제안합니다.
+      </div>
+      <div class="ig-data">
+        <span class="ig-tag">#2030대</span>
+        <span class="ig-tag">#친구동반43%</span>
+        <span class="ig-tag">#SNS공유적극</span>
+        <span class="ig-tag">#N=1,420</span>
+      </div>
+    </div>
+    <!-- Persona 2 -->
+    <div class="persona-card">
+      <div class="ig-header">
+        <div class="ig-avatar"><img src="images/p2.png" alt="P2"></div>
+        <div class="ig-user-info">
+          <div class="ig-username">workation_nomad</div>
+          <div class="ig-location">청초호 워케이션 센터</div>
+        </div>
+      </div>
+      <div class="ig-image">
+        <img src="images/p2_ig.png" alt="디지털 노마드">
+      </div>
+      <div class="ig-actions">
+        <svg viewBox="0 0 24 24" style="width:24px;height:24px;"><path d="M16.792 3.904A4.989 4.989 0 0121.5 9.122c0 3.072-2.652 4.959-5.197 7.222-2.512 2.243-3.865 3.469-4.303 3.752-.477-.309-2.143-1.823-4.303-3.752C5.141 14.072 2.5 12.185 2.5 9.122a4.989 4.989 0 014.708-5.218 4.21 4.21 0 013.675 1.941c.03.044.07.086.117.127.47.456 1.146.456 1.615 0a.45.45 0 01.117-.127A4.21 4.21 0 0116.792 3.904z" fill="#ed4956" stroke="#ed4956"/></svg>
+        <svg viewBox="0 0 24 24" style="width:24px;height:24px;"><path d="M20.656 17.008a9.993 9.993 0 10-3.59 3.615L22 22z" fill="none" stroke="#262626" stroke-width="2"/></svg>
+        <svg viewBox="0 0 24 24" style="width:24px;height:24px;"><line x1="22" y1="2" x2="11" y2="13" stroke="#262626" stroke-width="2"/><polygon points="22 2 15 22 11 13 2 9 22 2" fill="none" stroke="#262626" stroke-width="2"/></svg>
+      </div>
+      <div class="ig-caption">
+        <span class="ig-username-inline">디지털 노마드 워케이셔너</span>
+        재택근무·프리랜서 종사자. 노트북 하나로 어디서든 일하고, 퇴근 후 러닝으로 스트레스를 풉니다. 빠른 와이파이와 집중할 수 있는 공간, 그리고 저녁엔 바다가 보이는 숙소를 제공합니다.
+      </div>
+      <div class="ig-data">
+        <span class="ig-tag">#25-38세</span>
+        <span class="ig-tag">#체류형</span>
+        <span class="ig-tag">#계획형20.7%</span>
+        <span class="ig-tag">#워케이션수요</span>
+      </div>
+    </div>
+    <!-- Persona 3 -->
+    <div class="persona-card">
+      <div class="ig-header">
+        <div class="ig-avatar"><img src="images/p3.png" alt="P3"></div>
+        <div class="ig-user-info">
+          <div class="ig-username">local_discovery</div>
+          <div class="ig-location">속초 영금정 골목</div>
+        </div>
+      </div>
+      <div class="ig-image">
+        <img src="images/p3_ig.png" alt="로컬 발견형">
+      </div>
+      <div class="ig-actions">
+        <svg viewBox="0 0 24 24" style="width:24px;height:24px;"><path d="M16.792 3.904A4.989 4.989 0 0121.5 9.122c0 3.072-2.652 4.959-5.197 7.222-2.512 2.243-3.865 3.469-4.303 3.752-.477-.309-2.143-1.823-4.303-3.752C5.141 14.072 2.5 12.185 2.5 9.122a4.989 4.989 0 014.708-5.218 4.21 4.21 0 013.675 1.941c.03.044.07.086.117.127.47.456 1.146.456 1.615 0a.45.45 0 01.117-.127A4.21 4.21 0 0116.792 3.904z" fill="#ed4956" stroke="#ed4956"/></svg>
+        <svg viewBox="0 0 24 24" style="width:24px;height:24px;"><path d="M20.656 17.008a9.993 9.993 0 10-3.59 3.615L22 22z" fill="none" stroke="#262626" stroke-width="2"/></svg>
+        <svg viewBox="0 0 24 24" style="width:24px;height:24px;"><line x1="22" y1="2" x2="11" y2="13" stroke="#262626" stroke-width="2"/><polygon points="22 2 15 22 11 13 2 9 22 2" fill="none" stroke="#262626" stroke-width="2"/></svg>
+      </div>
+      <div class="ig-caption">
+        <span class="ig-username-inline">로컬 발견형 런트리퍼</span>
+        여행지의 관광 동선이 아닌 골목길을 달리며 도시를 발견합니다. 달리다 만난 노포에서 즉흥 식사, 달리다 발견한 뷰포인트에서 인증샷. '달리는 것'이 여행의 목적이자 방법인 이들을 위한 루트입니다.
+      </div>
+      <div class="ig-data">
+        <span class="ig-tag">#30대</span>
+        <span class="ig-tag">#로컬추구20.4%</span>
+        <span class="ig-tag">#혼행족</span>
+        <span class="ig-tag">#골목러닝</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── 코스 ── -->
+<section class="course-section">
+  <div class="course-inner">
+    <div class="section-eyebrow" style="color:rgba(200,169,110,.6)">런케이션 코스</div>
+    <h2 class="section-title">속초 아바이마을 런케이션 1박 2일<br><span style="font-style:italic;color:rgba(245,240,232,.3);font-size:0.8em">달리고 · 일하고 · 회복하다</span></h2>
+
+    <div class="course-timeline">
+      <div class="ct-day">
+        <div class="ct-day-label">
+          <div class="ct-day-tag">Day 1</div>
+          <div class="ct-day-name">이동 · 런 · 회복</div>
+        </div>
+        <div class="ct-steps">
+          <div class="ct-step">
+            <div class="ct-num">1</div>
+            <div class="ct-content">
+              <div class="ct-title">서울 출발 → KTX-이음 강릉역 → 속초 버스</div>
+              <div class="ct-desc">청량리역 KTX-이음 강릉역 약 1시간 30~45분 (첫차 05:27 / 편도 26,000원) → 강릉역에서 시내버스로 강릉시외버스터미널 약 30분 → 속초 시외버스 직통 약 1시간, 완행 약 1시간 20분 (첫차 07:14, 막차 21:00 / 하루 21회).</div>
+              <div class="ct-badge">
+                <svg viewBox="0 0 24 24" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom;margin-right:6px;fill:none;stroke:currentColor;stroke-width:2.5;"><path d="M12 16v-4m0-4h.01M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10z"/></svg>속초에는 철도역이 없음 — 강릉역 하차 후 시내버스+시외버스 2회 환승
+              </div>
+            </div>
+          </div>
+          <div class="ct-step">
+            <div class="ct-num">2</div>
+            <div class="ct-content">
+              <div class="ct-title">속초 도착 · 워케이션 공간 입장 (오후)</div>
+              <div class="ct-desc">청초호 뷰 코워킹 카페 or 숙소 체크인 후 업무 세팅. 빠른 와이파이·전원·집중 가능 공간 연계 제공. 이동 중 밀린 업무 처리 후 저녁 러닝 준비.</div>
+            </div>
+          </div>
+          <div class="ct-step">
+            <div class="ct-num">3</div>
+            <div class="ct-content">
+              <div class="ct-title">아바이마을 입문 런 5km (저녁)</div>
+              <div class="ct-desc">갯배선착장 → 청호동 해안길 → 설악대교 → 아바이마을 골목 순환 약 5km. 러닝 후 골목에서 자연스럽게 마주치는 노포 — 아바이순대·함흥냉면으로 저녁 회복식.</div>
+              <div class="ct-badge">
+                <svg viewBox="0 0 24 24" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom;margin-right:6px;fill:none;stroke:currentColor;stroke-width:2.5;"><path d="M13 4v4M6 9l3-3M18 9l-3-3M5 13h4M15 13h4M6 19l3 3M18 19l-3 3M12 1v2M12 21v2M21 12h2M1 12h2"/></svg>초보 가능 · 경사 없음 · 야간 조명 良
+              </div>
+            </div>
+          </div>
+          <div class="ct-step">
+            <div class="ct-num">4</div>
+            <div class="ct-content">
+              <div class="ct-title">청초호 뷰 독채·풀빌라 체크인</div>
+              <div class="ct-desc">속초 또는 고성. 러닝 후 스트레칭·샤워 가능한 공간 연계. 내일 새벽 런을 위한 루트 지도 제공.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ct-day">
+        <div class="ct-day-label">
+          <div class="ct-day-tag">Day 2</div>
+          <div class="ct-day-name">새벽 런 · 귀환</div>
+        </div>
+        <div class="ct-steps">
+          <div class="ct-step">
+            <div class="ct-num">5</div>
+            <div class="ct-content">
+              <div class="ct-title">새벽 런 — 난이도별 3선 택일</div>
+              <div class="ct-desc">
+                <strong>[입문 5km]</strong> 아바이마을 → 속초해수욕장 → 갯배선착장 순환 · 경사 없음<br>
+                <strong>[중급 10km]</strong> 아바이마을 → 갯배 → 영금정 → 속초등대전망대 → 청초호 순환<br>
+                <strong>[해파랑 17.6km]</strong> 해파랑길 45코스 일부 — 설악대교 → 아바이마을 → 영랑호 · 동해 조망
+              </div>
+              <div class="ct-badge">
+                <svg viewBox="0 0 24 24" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom;margin-right:6px;fill:none;stroke:currentColor;stroke-width:2.5;"><path d="M12 7V3M5 10l-2-2M19 10l2-2M12 21a9 9 0 100-18 9 9 0 000 18z"/></svg>새벽 동해 일출 런 — 속초 8경 영금정 경유
+              </div>
+            </div>
+          </div>
+          <div class="ct-step">
+            <div class="ct-num">6</div>
+            <div class="ct-content">
+              <div class="ct-title">러닝 후 회복 — 현지 조식 + 로컬 카페</div>
+              <div class="ct-desc">아바이마을 골목 국밥·순대국 조식. 청초호 뷰 로컬 카페에서 런 기록 정리. 현지 러너가 즐겨 찾는 카페 2곳 큐레이션.</div>
+            </div>
+          </div>
+          <div class="ct-step">
+            <div class="ct-num">7</div>
+            <div class="ct-content">
+              <div class="ct-title">속초 → 강릉 버스 → KTX-이음 귀환</div>
+              <div class="ct-desc">속초 시외버스 직통 강릉 약 1시간 → 강릉시외버스터미널에서 강릉역 시내버스 약 30분 → KTX-이음 강릉역 청량리 약 1시간 30~45분 (막차 22:27).</div>
+              <div class="ct-badge">
+                <svg viewBox="0 0 24 24" style="width:14px;height:14px;display:inline-block;vertical-align:text-bottom;margin-right:6px;fill:none;stroke:currentColor;stroke-width:2.5;"><path d="M15 5l-9 4V4L4 5l2 1v3L2 13l2 1 4-2 9 4 5-9-7-2z"/></svg>양양국제공항 이용 시 제주 연계 런케이션 루트 A 연결 가능
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── 차별화 ── -->
+<section class="diff-section reveal">
+  <div class="section-eyebrow">경쟁 차별화 포인트</div>
+  <h2 class="section-title">왜 이 런케이션인가</h2>
+  <div class="diff-grid">
+    <div class="diff-card">
+      <div class="diff-num">01</div>
+      <div class="diff-title">해파랑길 45코스 — 달리며 만나는 아바이마을</div>
+      <div class="diff-body">국내 유일하게 해파랑길 정규 코스(17.6km)가 아바이마을을 경유한다. 단순 관광지 방문이 아닌 "달리다 자연스럽게 마주치는 실향민 골목" — 런케이션 콘텐츠로서 타 지역이 복제할 수 없는 지리적 USP.</div>
+    </div>
+    <div class="diff-card">
+      <div class="diff-num">02</div>
+      <div class="diff-title">3단계 난이도 러닝 루트 설계</div>
+      <div class="diff-body">입문(5km 아바이마을 순환) · 중급(10km 영금정 코스) · 고급(17.6km 해파랑 코스) 3선을 패키지 내에서 선택 가능. 러닝 초보부터 마라토너까지 동일 상품 안에서 수용하는 구조.</div>
+    </div>
+    <div class="diff-card">
+      <div class="diff-num">03</div>
+      <div class="diff-title">달리기 전·후 회복 동선의 완성</div>
+      <div class="diff-body">러닝 전 코워킹·업무 → 러닝 → 노포 회복식 → 독채 숙박 → 새벽 런 → 로컬 카페 기록. 아바이마을 골목의 아바이순대·함흥냉면이 러닝 후 회복식으로 재포지셔닝된다.</div>
+    </div>
+    <div class="diff-card">
+      <div class="diff-num">04</div>
+      <div class="diff-title">교통 동선 통합 안내 — 진입 장벽 제거</div>
+      <div class="diff-body">속초에 철도역이 없다는 사실이 첫 번째 장벽. 강릉역 → 시내버스 30분 → 시외버스 터미널 → 속초 1시간의 3단계 환승을 패키지에 완전 통합해 설계 부담 제거.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA / 가격 ── -->
+<section class="cta-section">
+  <div class="cta-inner">
+    <div class="cta-left">
+      <div class="eyebrow">런케이션 패키지 가격 구성</div>
+      <h2>1인 132,000원~<br>1박 2일 런케이션</h2>
+      <p>
+        교통·숙박·워케이션 공간·러닝 루트가<br>
+        묶인 체류형 패키지. 2인 동반 기준.<br><br>
+        핵심 타깃: 수도권 거주 20-30대 러닝 크루, 디지털 노마드
+      </p>
+    </div>
+    <div class="price-block">
+      <div class="price-row">
+        <span class="item">KTX-이음 왕복 (청량리↔강릉, 편도 26,000원)</span>
+        <span class="val">52,000원</span>
+      </div>
+      <div class="price-row">
+        <span class="item">강릉↔속초 버스 왕복</span>
+        <span class="val">12,000원</span>
+      </div>
+      <div class="price-row">
+        <span class="item">독채 펜션 1박 (2인 기준)</span>
+        <span class="val">50,000원</span>
+      </div>
+      <div class="price-row">
+        <span class="item">코워킹 공간 이용 (반일)</span>
+        <span class="val">8,000원</span>
+      </div>
+      <div class="price-row">
+        <span class="item">러닝 루트 지도 + 회복 키트</span>
+        <span class="val">10,000원</span>
+      </div>
+      <div class="price-total">
+        <span class="tlabel">합계 (1인)</span>
+        <span class="tval">132,000원~</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── 푸터 ── -->
+<footer class="footer">
+  <div class="footer-left">
+    강원 속초 아바이마을 관광상품 기획<br>
+    Nemotron-Personas-Korea 100만 건 전수 분석 · 강원 언급 페르소나 6,403명<br>
+    한국관광공사 해양관광 활성화 사업 기반
+  </div>
+  <div class="footer-right">
+    <img src="/logo6.png" alt="Tourism Insight Logo">
+  </div>
+</footer>
+
+<script>
+// 스크롤 reveal
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible') });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

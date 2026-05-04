@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Link } from "react-router-dom";
-import { ArrowRight, BarChart3, Globe, Lightbulb, TrendingUp, Map, PenTool, Database, FileText, LayoutDashboard, MoreHorizontal } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { ArrowRight, BarChart3, Globe, Lightbulb, TrendingUp, Map, PenTool, Database, FileText, LayoutDashboard, MoreHorizontal, MessageCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { newsItems as staticNewsItems, NewsArticle } from "@/data/newsData";
 import { useQuery } from "@tanstack/react-query";
@@ -26,8 +26,10 @@ const Index = () => {
   const { panelInfo } = useAuth();
   const [currentNewsIndex, setCurrentNewsIndex] = useState(0);
   const [currentDashIndex, setCurrentDashIndex] = useState(0);
+  const [currentPersonaIndex, setCurrentPersonaIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isNoticeModalOpen, setIsNoticeModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   // Fetch news from Supabase
   const { data: newsItems = [] } = useQuery({
@@ -61,13 +63,54 @@ const Index = () => {
     { name: '여행 탄소 발자국 계산기', image: '/dash_carbon_footprint.png' }
   ];
 
+  const personas = [
+    {
+      id: 1,
+      image: "/ai-guides/persona_30f.png",
+      name: "부산광역시 가이드",
+      location: "부산 연제구",
+      info: "33세 · 영업원",
+      quote: "반갑습니데이! 우리 동네에 대해 궁금한 거 있으면 뭐든 물어보세요!"
+    },
+    {
+      id: 2,
+      image: "/ai-guides/persona_40f.png",
+      name: "서울특별시 가이드",
+      location: "서울 송파구",
+      info: "43세 · 기업 임원",
+      quote: "안녕하세요! 송파에서 가족들과 진짜 자주 가는 곳들 알려드릴까요?"
+    },
+    {
+      id: 3,
+      image: "/ai-guides/persona_50m.png",
+      name: "제주특별자치도 가이드",
+      location: "제주 서귀포",
+      info: "58세 · 감귤 농장",
+      quote: "혼저옵서예! 제주 현지인들만 아는 숨은 명소들 제가 다 알려드릴게요."
+    },
+    {
+      id: 4,
+      image: "/ai-guides/persona_30m.png",
+      name: "전라남도 가이드",
+      location: "전남 여수시",
+      info: "35세 · 카페 사장",
+      quote: "여수 밤바다도 좋지만, 현지인들만 가는 찐 맛집 골목 알려드릴까요?"
+    },
+    {
+      id: 5,
+      image: "/ai-guides/persona_20f.png",
+      name: "강원특별자치도 가이드",
+      location: "강원 속초시",
+      info: "24세 · 프리랜서",
+      quote: "속초의 푸른 바다가 보이는 조용한 카페에서 힐링하고 가세요!"
+    }
+  ];
+
   useEffect(() => {
     if (newsItems.length === 0) return;
-
     const newsInterval = setInterval(() => {
       setCurrentNewsIndex((prev) => (prev + 1) % newsItems.length);
     }, 4500);
-
     return () => clearInterval(newsInterval);
   }, [newsItems.length]);
 
@@ -75,9 +118,15 @@ const Index = () => {
     const dashInterval = setInterval(() => {
       setCurrentDashIndex((prev) => (prev + 1) % dashboards.length);
     }, 3800);
-
     return () => clearInterval(dashInterval);
-  }, []);
+  }, [dashboards.length]);
+
+  useEffect(() => {
+    const personaInterval = setInterval(() => {
+      setCurrentPersonaIndex((prev) => (prev + 1) % personas.length);
+    }, 5000);
+    return () => clearInterval(personaInterval);
+  }, [personas.length]);
 
   return (
     <div className="min-h-screen bg-background animate-fade-in focus:outline-none">
@@ -130,69 +179,116 @@ const Index = () => {
               </div>
             </motion.div>
 
-            {/* Floating Data Dashboard Visuals */}
+            {/* AI Persona SNS Card */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
+              initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1, delay: 0.2 }}
-              className="hidden lg:flex flex-col items-end justify-center h-full relative"
+              className="hidden lg:flex flex-col items-center justify-center h-full relative"
             >
-              <motion.div
-                animate={{ y: [-5, 5, -5] }}
-                transition={{ repeat: Infinity, duration: 8, ease: "easeInOut" }}
-                className="glass-panel p-8 rounded-2xl w-full max-w-sm text-foreground dark:text-white shadow-2xl relative z-20"
-              >
-                <div className="flex items-center gap-3 mb-6 border-b border-border/30 pb-4">
-                  <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center">
-                    <Database className="w-5 h-5 text-accent" />
-                  </div>
-                  <div>
-                    <h3 className="text-2xl font-black tracking-tight mb-1">대한민국 관광 지표</h3>
-                    <p className="text-xs text-muted-foreground">Korea Tourism Data Lab</p>
-                  </div>
-                </div>
+              <div className="relative w-full max-w-[440px] aspect-[1/0.95] [perspective:1000px]">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={currentPersonaIndex}
+                    initial={{ opacity: 0, rotateY: 15, x: 20 }}
+                    animate={{ opacity: 1, rotateY: 0, x: 0 }}
+                    exit={{ opacity: 0, rotateY: -15, x: -20 }}
+                    transition={{ duration: 0.6, ease: "easeOut" }}
+                    className="absolute inset-0 bg-white/75 dark:bg-zinc-900/75 backdrop-blur-xl rounded-[2rem] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.2),0_0_20px_rgba(79,70,229,0.1)] overflow-hidden border border-white/60 dark:border-white/10 ring-2 ring-indigo-500/20 flex flex-col"
+                  >
+                    {/* Card Body */}
+                    <div className="flex-1 px-8 pt-6 flex flex-col relative z-20">
+                      {/* Main Title Section (Moved to Top) */}
+                      <div className="mb-3">
+                        <h2 className="text-[22px] font-sans font-black leading-tight mb-2 tracking-tight bg-gradient-to-r from-indigo-600 to-blue-500 bg-clip-text text-transparent">
+                          로컬 친구를 만나보세요
+                        </h2>
+                        <p className="text-[15px] text-zinc-500 leading-relaxed font-semibold">
+                          700만 한국형 AI 페르소나가 들려주는 진짜 우리 동네 이야기
+                        </p>
+                      </div>
 
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-[16px] font-bold text-black dark:text-white">내국인 방문자수</span>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm text-muted-foreground font-medium">(외지인)전년동기대비</span>
-                      <span className="text-[15px] text-red-500 dark:text-red-400 font-bold bg-red-500/10 px-2 py-0.5 rounded">▲5.8%</span>
-                    </div>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-[16px] font-bold text-black dark:text-white">방한 외래객수</span>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm text-muted-foreground font-medium">전년동기대비</span>
-                      <span className="text-[15px] text-red-500 dark:text-red-400 font-bold bg-red-500/10 px-2 py-0.5 rounded">▲19.6%</span>
-                    </div>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-[16px] font-bold text-black dark:text-white">내국인 관광소비</span>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm text-muted-foreground font-medium">(외지인)전년동기대비</span>
-                      <span className="text-[15px] text-red-500 dark:text-red-400 font-bold bg-red-500/10 px-2 py-0.5 rounded">▲4.7%</span>
-                    </div>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-[16px] font-bold text-black dark:text-white">외국인 관광소비</span>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm text-muted-foreground font-medium">전년동기대비</span>
-                      <span className="text-[15px] text-red-500 dark:text-red-400 font-bold bg-red-500/10 px-2 py-0.5 rounded">▲23.9%</span>
-                    </div>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-[16px] font-bold text-black dark:text-white">관광사업체수</span>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm text-muted-foreground font-medium">전년동기대비</span>
-                      <span className="text-[15px] text-red-500 dark:text-red-400 font-bold bg-red-500/10 px-2 py-0.5 rounded">▲11.8%</span>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
+                      {/* Card Header / Profile Section (Moved below Title) */}
+                      <div className="mb-3 flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                          <div className="p-[3px] rounded-full bg-gradient-to-tr from-amber-400 to-rose-500 shadow-xl">
+                            <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-white dark:border-zinc-900 bg-white">
+                              <img src={personas[currentPersonaIndex].image} alt="" className="w-full h-full object-cover" />
+                            </div>
+                          </div>
+                          <div className="space-y-1.5">
+                            <h3 className="font-extrabold text-zinc-900 dark:text-white leading-none text-lg">{personas[currentPersonaIndex].name}</h3>
+                            <div className="flex items-center gap-1.5 text-zinc-500 font-bold text-[13px]">
+                              <span>{personas[currentPersonaIndex].location}</span>
+                              <span className="w-1 h-1 rounded-full bg-zinc-300" />
+                              <span>{personas[currentPersonaIndex].info}</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="px-3 py-1.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-[10px] font-black text-zinc-600 dark:text-zinc-400 flex items-center gap-1.5 shadow-sm">
+                          <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                          LIVE
+                        </div>
+                      </div>
 
-              {/* Decorative nodes */}
-              <div className="absolute top-[10%] right-[5%] w-[400px] h-[400px] border border-white/10 rounded-full border-dashed mix-blend-overlay animate-[spin_60s_linear_infinite] -z-10" />
+                      {/* Quote Box Section */}
+                      <div className="relative mt-2 mb-4">
+                        {/* Speech Bubble Tail */}
+                        <div className="absolute -top-3 left-10 w-0 h-0 border-l-[12px] border-l-transparent border-r-[12px] border-r-transparent border-b-[15px] border-b-amber-100 dark:border-b-amber-800/60 z-10" />
+                        
+                        <div className="bg-amber-100 dark:bg-amber-900/50 p-5 rounded-2xl rounded-tl-sm relative border border-amber-200/50 dark:border-amber-500/30 shadow-sm">
+                          <p className="text-[15px] font-semibold text-amber-900 dark:text-amber-200 italic leading-relaxed text-center">
+                            "{personas[currentPersonaIndex].quote}"
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Footer CTA */}
+                    <div className="p-6 pt-0">
+                      <button 
+                        onClick={() => navigate('/ai-guide')}
+                        className="group relative w-full py-4 rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-black text-base flex items-center justify-center gap-3 overflow-hidden shadow-xl hover:shadow-[0_15px_35px_-10px_rgba(79,70,229,0.5)] transition-all duration-300 active:scale-[0.98] border border-white/10"
+                      >
+                        {/* Shine Effect Animation */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:animate-[shine_1.5s_infinite]" />
+                        
+                        <MessageCircle className="w-5 h-5 fill-white/20" />
+                        <span>동네 친구 만나기</span>
+
+                        <style dangerouslySetInnerHTML={{ __html: `
+                          @keyframes shine {
+                            0% { transform: translateX(-100%); }
+                            100% { transform: translateX(100%); }
+                          }
+                        `}} />
+                      </button>
+
+                      {/* Compact Progress Bar (Moved to requested position) */}
+                      <div className="mt-4 w-3/5 mx-auto flex gap-1.5">
+                        {personas.map((_, idx) => (
+                          <div key={idx} className="h-[2px] flex-1 bg-zinc-200 dark:bg-zinc-800 rounded-full overflow-hidden">
+                            <motion.div
+                              initial={{ width: 0 }}
+                              animate={{ width: currentPersonaIndex === idx ? "100%" : currentPersonaIndex > idx ? "100%" : "0%" }}
+                              transition={{ duration: currentPersonaIndex === idx ? 5 : 0.3, ease: "linear" }}
+                              className="h-full bg-indigo-600"
+                            />
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="mt-4 flex items-center justify-center">
+                        <p className="text-[11px] text-zinc-400 font-bold uppercase tracking-widest italic">AI Lab • Recommended</p>
+                      </div>
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
+
+                {/* Background decorative elements */}
+                <div className="absolute top-[10%] right-[-10%] w-[350px] h-[350px] border border-white/10 rounded-full border-dashed mix-blend-overlay -z-10" />
+                <div className="absolute bottom-[5%] left-[-15%] w-24 h-24 bg-amber-400/20 rounded-full blur-2xl -z-10" />
+              </div>
             </motion.div>
           </div>
         </div>

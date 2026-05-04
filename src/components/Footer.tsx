@@ -19,11 +19,14 @@ const Footer = () => {
           {/* Quick Links */}
           <div>
             <h3 className="font-semibold mb-4">Quick Links</h3>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link to="/company" className="hover:text-accent transition-colors">About</Link></li>
-              <li><Link to="/news" className="hover:text-accent transition-colors">Signals</Link></li>
+            <ul className="grid grid-cols-2 gap-x-8 gap-y-2 text-sm text-muted-foreground">
+              <li><Link to="/company" className="hover:text-accent transition-colors">Company</Link></li>
+              <li><Link to="/news" className="hover:text-accent transition-colors">Signal</Link></li>
               <li><Link to="/intelligence" className="hover:text-accent transition-colors">Intelligence</Link></li>
+              <li><Link to="/ai-guide" className="hover:text-accent transition-colors">AI Lab</Link></li>
               <li><Link to="/portfolio" className="hover:text-accent transition-colors">Impact</Link></li>
+              <li><Link to="/survey" className="hover:text-accent transition-colors">Survey</Link></li>
+              <li><Link to="/contact" className="hover:text-accent transition-colors">Contact</Link></li>
             </ul>
           </div>
 

@@ -10,6 +10,7 @@ import NewsRoom from "./pages/NewsRoom";
 import NewsDetail from "./pages/NewsDetail";
 import Contact from "./pages/Contact";
 import Intelligence from "./pages/Intelligence";
+import AITravelGuide from "./pages/AITravelGuide";
 import Survey from "./pages/Survey";
 import SurveyDetail from "./pages/SurveyDetail";
 import SurveyThankYou from "./pages/SurveyThankYou";
@@ -42,6 +43,7 @@ const App = () => (
           <Route path="/survey/thank-you" element={<SurveyThankYou />} />
           <Route path="/survey/:id" element={<SurveyDetail />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/ai-guide" element={<AITravelGuide />} />
           
           {/* Admin Routes */}
           <Route path="/admin" element={<AdminDashboard />} />

@@ -4,10 +4,10 @@ import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 
 const navItems = [
-  { label: "Home", path: "/" },
-  { label: "About", path: "/company" },
-  { label: "Signals", path: "/news" },
+  { label: "Company", path: "/company" },
+  { label: "Signal", path: "/news" },
   { label: "Intelligence", path: "/intelligence" },
+  { label: "AI Lab", path: "/ai-guide" },
   { label: "Impact", path: "/portfolio" },
   { label: "Survey", path: "/survey" },
   { label: "Contact", path: "/contact" },

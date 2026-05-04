@@ -2,7 +2,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { portfolioItems } from "@/data/portfolioData";
 import { motion } from "framer-motion";
-import { Calendar, Building2, ChevronRight, BookOpen, PenTool } from "lucide-react";
+import { Calendar, ChevronRight, BookOpen, PenTool } from "lucide-react";
 import AntigravityBackground from "@/components/AntigravityBackground";
 
 const Portfolio = () => {
@@ -64,11 +64,7 @@ const Portfolio = () => {
                         {cat}
                       </div>
                     ))}
-                    <div className="flex items-center gap-1.5 bg-background px-3 py-1.5 rounded-full shadow-sm border border-border">
-                      <Building2 className="w-4 h-4 text-muted-foreground" />
-                      <span className="text-foreground">{item.client}</span>
                     </div>
-                  </div>
 
                   <h2 className="text-2xl md:text-3xl font-bold mb-6 font-serif leading-snug group-hover:text-primary transition-colors">
                     {item.title}
