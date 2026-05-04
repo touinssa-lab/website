@@ -465,7 +465,7 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
 
             <div className="p-6 border-t bg-muted/10 space-y-4">
               <form onSubmit={(e) => { e.preventDefault(); handleSend(); }} className="flex gap-2">
-                <Input placeholder={t.inputPlaceholder} value={input} onChange={(e) => setInput(e.target.value)} className="flex-1 h-12 rounded-xl bg-background border-primary/20 !text-xl font-semibold" />
+                <Input placeholder={t.inputPlaceholder} value={input} onChange={(e) => setInput(e.target.value)} className="flex-1 h-12 rounded-xl bg-background border-primary/20 text-base font-semibold" />
                 <Button type="submit" disabled={isLoading} className="h-12 w-12 rounded-xl bg-primary shadow-md"><Send className="h-5 w-5" /></Button>
               </form>
               <div className="flex items-start gap-3 text-[13px] text-muted-foreground px-1 bg-white/50 p-3 rounded-xl border border-border/50">
