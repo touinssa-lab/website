@@ -234,7 +234,8 @@ const Index = () => {
                       {/* Quote Box Section */}
                       <div className="relative mt-2 mb-4">
                         {/* Speech Bubble Tail */}
-                        <div className="absolute -top-3 left-10 w-0 h-0 border-l-[12px] border-l-transparent border-r-[12px] border-r-transparent border-b-[15px] border-b-amber-100 dark:border-b-amber-800/60 z-10" />
+                        {/* Speech Bubble Tail - Refined alignment to center of persona photo */}
+                        <div className="absolute -top-3 left-[34px] w-0 h-0 border-l-[12px] border-l-transparent border-r-[12px] border-r-transparent border-b-[15px] border-b-amber-100 dark:border-b-amber-800/60 z-10" />
                         
                         <div className="bg-amber-100 dark:bg-amber-900/50 p-5 rounded-2xl rounded-tl-sm relative border border-amber-200/50 dark:border-amber-500/30 shadow-sm">
                           <p className="text-[15px] font-semibold text-amber-900 dark:text-amber-200 italic leading-relaxed text-center">
