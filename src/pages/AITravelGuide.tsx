@@ -13,7 +13,7 @@ const translations = {
     heroTitle: <>로컬 친구가 들려주는,<br /><span className="text-sky-600">우리 동네 이야기</span></>,
     heroSubtitle: "한국형 AI 페르소나가 지역의 숨은 매력을 전해 드립니다.",
     analysisData: "분석 데이터: Nemotron-Personas-Korea 700만 건",
-    curationTitle: "700만 명의 리얼 보이스로 설계한 지역 맞춤형 여행 큐레이션",
+    curationTitle: "700만 명의 한국형 AI 페르소나로 설계한 지역 맞춤형 여행 큐레이션",
     curationDesc: <>골목의 단골집부터 동네 사람만 아는 숨겨진 맛집까지,<br />진짜 지역의 이야기를 들려드립니다.</>,
     guideTitle: "로컬 AI 여행가이드",
     analysisTitle: "Data & AI Analysis",
@@ -94,7 +94,7 @@ const AITravelGuide = () => {
                     </div>
                     <div className="bg-white/90 backdrop-blur-sm border border-sky-200/50 rounded-full px-5 py-2 flex items-center gap-2.5 shadow-sm">
                       <Sparkles className="w-4 h-4 text-sky-500" />
-                      <span className="text-[13px] font-bold text-slate-700">Powered by Gemini AI</span>
+                      <span className="text-[13px] font-bold text-slate-700">Powered by NVIDIA</span>
                     </div>
                   </div>
 
