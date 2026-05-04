@@ -7,9 +7,20 @@ export interface PortfolioItem {
   description: string;
   imageUrl: string;
   externalLink?: string;
+  isSpecialDetail?: boolean; // 특수 상세 페이지 여부
 }
 
 export const portfolioItems: PortfolioItem[] = [
+  {
+    id: "7",
+    year: "2025",
+    title: "지구를 위한 하루, 경남 고성 기후여행",
+    client: "투어리즘인사이트",
+    categories: ["POC실증사업"],
+    description: "탄소를 줄이는 여행, 이미 시작되었습니다. 투어리즘인사이트는 현장의 기후친화 프로그램을 발굴하고, 데이터로 검증하여 확산시킵니다. 숲길에서 펼치는 몰입형 기후법정 '기후의 변호인들', 치유숲 산책과 족욕을 통한 '지구 명상', 자연 소재를 활용한 '기후 아트 경매' 등 다채로운 프로그램을 통해 참여자들의 기후 감수성을 높이고 지속가능한 관광의 실천적 대안을 제시했습니다.",
+    imageUrl: "https://images.unsplash.com/photo-1448375240586-882707db888b?w=800&h=600&fit=crop",
+    isSpecialDetail: true
+  },
   {
     id: "1",
     year: "2025",
