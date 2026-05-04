@@ -105,7 +105,7 @@ const chatbotTranslations = {
     infoText: (selectedPersona: any, isUnlimited: boolean) => (
       <ul className="space-y-0.5 list-disc list-inside">
         <li className="marker:text-primary">로컬 스토리 챗봇은 정식서비스가 아닙니다. AI 페르소나의 답변에는 오류가 있을 수 있습니다.</li>
-        {!isUnlimited && <li className="marker:text-red-500 text-red-500 font-bold">질문 횟수는 5회로 제한됩니다.</li>}
+        {!isUnlimited && <li className="marker:text-red-500 text-red-500 font-bold">질문 입력 후 잠시만 기다려 주세요. 질문 횟수는 5회로 제한됩니다.</li>}
         {isUnlimited && <li className="marker:text-green-600 text-green-600 font-bold">관리자 모드: 질문 횟수 제한이 없습니다.</li>}
         <li className="marker:text-primary">AI가 안내한 <span className="font-bold text-primary underline underline-offset-2 italic">장소명</span>을 클릭하면 지도로 상세 위치를 보여줍니다.</li>
         <li className="marker:text-primary">장소명 앞에 표시된 <span className="text-red-500 font-bold">'빨간색 지도핀'</span>을 클릭하면 현재 위치에서 해당 장소까지 길안내를 보여줍니다.</li>
