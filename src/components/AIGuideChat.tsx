@@ -339,7 +339,7 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
               key={key}
               onClick={() => !selectedPersona && setSelectedLang(key as Language)}
               disabled={!!selectedPersona}
-              className={`px-6 py-2 rounded-full text-sm font-bold transition-all duration-300 ${selectedLang === key 
+              className={`px-3 md:px-6 py-2 rounded-xl text-xs md:text-sm font-bold transition-all duration-300 whitespace-nowrap ${selectedLang === key 
                 ? 'bg-sky-500 text-white shadow-md' 
                 : 'text-slate-500 hover:bg-sky-50 hover:text-sky-600'} ${selectedPersona ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
