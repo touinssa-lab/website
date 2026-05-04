@@ -8,6 +8,7 @@ const QuickMenu = () => {
   const location = useLocation();
 
   const isAdmin = location.pathname.startsWith('/admin');
+  const isAIGuide = location.pathname === '/ai-guide';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -29,7 +30,7 @@ const QuickMenu = () => {
   };
 
   return (
-    <div className="fixed right-6 top-40 z-[100] flex flex-col gap-4 items-end pointer-events-none">
+    <div className={`fixed right-6 top-40 z-[100] flex flex-col gap-4 items-end pointer-events-none ${isAIGuide ? 'hidden lg:flex' : 'hidden md:flex'}`}>
       <AnimatePresence>
         {isVisible && (
           <motion.div
