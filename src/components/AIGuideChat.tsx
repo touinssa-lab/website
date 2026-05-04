@@ -49,7 +49,7 @@ const provinceTranslations: Record<string, Record<Language, string>> = {
   "충남": { ko: "충청남도", en: "Chungnam", zh: "忠清南道", ja: "忠清南道" },
   "전북": { ko: "전북특별자치도", en: "Jeonbuk", zh: "全羅北道", ja: "全羅北道" },
   "전남": { ko: "전라남도", en: "Jeonnam", zh: "全羅南道", ja: "全羅南道" },
-  "경북": { ko: "경상북도", en: "Gyeongbuk", zh: "慶상北道", ja: "慶尚北道" },
+  "경북": { ko: "경상북도", en: "Gyeongbuk", zh: "慶尚北道", ja: "慶尚北道" },
   "경남": { ko: "경상남도", en: "Gyeongnam", zh: "慶尚南道", ja: "慶尚南道" },
   "제주": { ko: "제주특별자치도", en: "Jeju", zh: "済州道", ja: "済州道" },
 };
@@ -180,7 +180,7 @@ const chatbotTranslations = {
         <li>ローカルストーリーチャットボットは正式なサービスではありません。AIの回答には誤りがある場合があります。</li>
         {!isUnlimited && <li className="text-red-500 font-bold">質問入力後、少々お待ちください。質問回数は1日5回までです。</li>}
         {isUnlimited && <li className="text-green-600 font-bold">管理者モード：質問回数に制限はありません。</li>}
-        <li>AI가 안내한 <span className="font-bold text-primary underline underline-offset-2 italic">場所名</span> をクリックすると、地図で詳細な位置を表示します。</li>
+        <li>AIが案内した <span className="font-bold text-primary underline underline-offset-2 italic">場所名</span> をクリックすると、地図で詳細な位置を表示します。</li>
         <li>場所名の前に表示されている <span className="text-red-500 font-bold">'赤い地図ピン'</span> をクリックすると、現在地からその場所までのルート案内を表示します。</li>
         <li>次のように入力してみてください：<span className="text-primary font-bold">"'{translateContent(selectedPersona?.district, 'districts', 'ja') || 'この地域'}'で一日中遊べるコースを立ててください"</span></li>
       </ul>
@@ -271,7 +271,7 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
     const introText = {
       ko: `저는 ${translateContent(randomPersona.district, 'districts', 'ko').replace('-', ' ')}에 살고 있는 ${translateContent(randomPersona.occupation, 'occupations', 'ko')}입니다. 우리 동네에 대해 궁금한 거 있으면 뭐든 물어보세요!`,
       en: `I am a ${translateContent(randomPersona.occupation, 'occupations', 'en')} living in ${translateContent(randomPersona.district, 'districts', 'en').replace('-', ' ')}. Ask me anything about our neighborhood!`,
-      zh: `我是住在 ${translateContent(randomPersona.district, 'districts', 'zh').replace('-', ' ')} 的一名 ${translateContent(randomPersona.occupation, 'occupations', 'zh')}。如果您对我们这里有什么好奇的，尽管问我！`,
+      zh: `我是住在 ${translateContent(randomPersona.district, 'districts', 'zh').replace('-', ' ')} 的一名 ${translateContent(randomPersona.occupation, 'occupations', 'zh')}。如果您对我们这里有什么好奇의，尽管问我！`,
       ja: `私は ${translateContent(randomPersona.district, 'districts', 'ja').replace('-', ' ')} に住んでいる ${translateContent(randomPersona.occupation, 'occupations', 'ja')} です. 私たちの街について気になることがあれば, 何でも聞いてください！`
     };
 
