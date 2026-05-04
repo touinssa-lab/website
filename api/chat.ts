@@ -12,7 +12,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   // Use the key from environment variables
-  const API_KEY = process.env.GEMINI_API_KEY || process.env.GOOGLE_GEMINI_API_KEY || process.env.VITE_GOOGLE_GEMINI_API_KEY;
+  const rawKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GEMINI_API_KEY || process.env.VITE_GOOGLE_GEMINI_API_KEY;
+  const API_KEY = rawKey?.trim();
 
   if (!API_KEY) {
     return res.status(500).json({ error: 'Gemini API Key not configured on server' });
