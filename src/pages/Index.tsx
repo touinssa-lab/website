@@ -184,7 +184,7 @@ const Index = () => {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1, delay: 0.2 }}
-              className="hidden lg:flex flex-col items-center justify-center h-full relative"
+              className="flex flex-col items-center justify-center h-full relative mt-12 lg:mt-0"
             >
               <div className="relative w-full max-w-[440px] aspect-[1/0.95] [perspective:1000px]">
                 <AnimatePresence mode="wait">

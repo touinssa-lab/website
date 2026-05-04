@@ -489,6 +489,68 @@ body::before{
   transition:opacity .7s ease,transform .7s ease;
 }
 .reveal.visible{opacity:1;transform:translateY(0)}
+
+/* ─── 모바일 반응형 ────────────────────────── */
+@media (max-width: 768px) {
+  .hero{ padding: 60px 24px; min-height: auto; padding-top: 120px; }
+  .hero-headline{ margin-bottom: 80px; font-size: 38px; }
+  .hero-data-row{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px 20px;
+  }
+  .hero-stat .num{ font-size: 32px; }
+  .hero-stat .label{ font-size: 14px; }
+
+  .intro{
+    padding: 60px 24px;
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .intro-img-box{ height: 260px; order: -1; }
+  .intro-body p{ font-size: 18px; }
+
+  .data-strip{
+    padding: 40px 24px;
+    flex-direction: column;
+    gap: 0;
+  }
+  .ds-item{
+    width: 100%;
+    padding: 24px 0;
+    border-left: none;
+    border-bottom: 1px solid rgba(245,240,232,.1);
+  }
+  .ds-item:first-child{ padding-top: 0; }
+  .ds-item:last-child{ border-bottom: none; padding-bottom: 0; }
+  .ds-num{ font-size: 36px; }
+
+  .target-section{ padding: 60px 24px; }
+  .persona-grid{ grid-template-columns: 1fr; gap: 32px; }
+
+  .course-section{ padding: 60px 24px; }
+  .course-section::before{ display: none; }
+  .ct-day{ grid-template-columns: 1fr; gap: 0; }
+  .ct-day-label{ text-align: left; padding-bottom: 0; padding-top: 24px; }
+  .ct-steps{ border-left: none; padding-left: 0; }
+  .ct-step{ padding: 24px 0; border-bottom: 1px solid rgba(245,240,232,.1); flex-direction: column; gap: 12px; }
+  .ct-num{ width: 24px; height: 24px; font-size: 12px; }
+
+  .diff-section{ padding: 60px 24px; }
+  .diff-grid{ grid-template-columns: 1fr; }
+
+  .cta-section{ padding: 60px 24px; }
+  .cta-inner{ grid-template-columns: 1fr; gap: 40px; }
+  .price-block{ padding: 32px 24px; }
+  .price-total .tval{ font-size: 32px; }
+
+  .footer{
+    padding: 40px 24px;
+    flex-direction: column;
+    gap: 24px;
+    text-align: center;
+  }
+}
 </style>
 </head>
 <body>
