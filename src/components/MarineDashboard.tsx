@@ -563,8 +563,8 @@ const MarineDashboard = () => {
                   <div className="absolute inset-0 p-8 md:p-12 flex flex-col justify-end">
                     <div className="flex flex-col md:flex-row items-end justify-between gap-6">
                       <div className="flex-1">
-                        <div className="mb-14">
-                          <h3 className="text-6xl font-semibold font-sans tracking-tighter drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)] text-amber-400">
+                        <div className="mb-6 md:mb-14">
+                          <h3 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold font-sans tracking-tighter drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)] text-amber-400 break-keep">
                             {activeRegion.name}
                           </h3>
                         </div>
