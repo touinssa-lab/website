@@ -10,7 +10,8 @@ import {
   X,
   Lock,
   ChevronRight,
-  Globe
+  Globe,
+  Sparkles
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,6 +28,7 @@ const MENU_ITEMS = [
   { path: "/admin/news", icon: FileText, label: "기획기사 관리" },
   { path: "/admin/panels", icon: Users, label: "설문패널 관리" },
   { path: "/admin/surveys", icon: BarChart3, label: "설문데이터 분석" },
+  { path: "/admin/ai-guide", icon: Sparkles, label: "로컬 AI 여행가이드" },
 ];
 
 const AdminLayout = ({ children }: AdminLayoutProps) => {

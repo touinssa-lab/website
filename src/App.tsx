@@ -23,6 +23,7 @@ import AdminDashboard from "./pages/admin/Dashboard";
 import AdminNews from "./pages/admin/News";
 import AdminPanels from "./pages/admin/Panels";
 import AdminSurveys from "./pages/admin/Surveys";
+import AdminAIGuide from "./pages/admin/AIGuide";
 
 const queryClient = new QueryClient();
 
@@ -50,6 +51,7 @@ const App = () => (
           <Route path="/admin/news" element={<AdminNews />} />
           <Route path="/admin/panels" element={<AdminPanels />} />
           <Route path="/admin/surveys" element={<AdminSurveys />} />
+          <Route path="/admin/ai-guide" element={<AdminAIGuide />} />
           
           <Route path="*" element={<NotFound />} />
         </Routes>
