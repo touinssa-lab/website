@@ -27,6 +27,7 @@ const services = [
     subtitle: "데이터·AI 분석",
     desc: "데이터 분석을 통해 여행자 수요와 행동을 예측하고, 관광 자원을 효과적으로 관리할 수 있는 인사이트를 제공합니다. AI 플랫폼을 통해 맞춤형 콘텐츠 생성 및 직관적 시각화 데이터를 제공합니다.",
     features: ["관광 데이터 수집 및 분석", "AI 기반 수요 예측 모델", "맞춤형 데이터 시각화"],
+    link: "/ai-guide?view=analysis",
   },
   {
     icon: Lightbulb,

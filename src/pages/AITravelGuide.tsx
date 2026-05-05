@@ -3,8 +3,9 @@ import { useSearchParams } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { motion, AnimatePresence } from "framer-motion";
-import { Database, Sparkles, Bot, BarChart as BarChartIcon, Ship, LayoutGrid } from "lucide-react";
+import { Database, Sparkles, Bot, BarChart as BarChartIcon, Ship, LayoutGrid, CloudAlert } from "lucide-react";
 import MarineDashboard from "@/components/MarineDashboard";
+import FestivalDashboard from "@/components/FestivalDashboard";
 import AntigravityBackground from "@/components/AntigravityBackground";
 import AIGuideChat from "@/components/AIGuideChat";
 
@@ -17,18 +18,22 @@ const translations = {
     curationDesc: <>골목의 단골집부터 동네 사람만 아는 숨겨진 맛집까지,<br />진짜 지역의 이야기를 들려드립니다.</>,
     guideTitle: "로컬 AI 여행가이드",
     analysisTitle: "Data & AI Analysis",
+    dashboardTitle: "데이터분석 대시보드",
   }
 };
 
 const AITravelGuide = () => {
   const [searchParams] = useSearchParams();
-  const initialView = searchParams.get('view') === 'analysis' ? 'analysis' : 'guide';
-  const [mainView, setMainView] = useState<'guide' | 'analysis'>(initialView);
+  const initialView = searchParams.get('view') === 'analysis' ? 'analysis' : (searchParams.get('view') === 'dashboard' ? 'dashboard' : 'guide');
+  const [mainView, setMainView] = useState<'guide' | 'analysis' | 'dashboard'>(initialView);
   const [activeAnalysis, setActiveAnalysis] = useState<'marine'>('marine');
+  const [activeDashboard, setActiveDashboard] = useState<'festival'>('festival');
 
   useEffect(() => {
     const view = searchParams.get('view');
-    setMainView(view === 'analysis' ? 'analysis' : 'guide');
+    if (view === 'analysis') setMainView('analysis');
+    else if (view === 'dashboard') setMainView('dashboard');
+    else setMainView('guide');
   }, [searchParams]);
 
   const t = translations.ko;
@@ -71,11 +76,21 @@ const AITravelGuide = () => {
               <BarChartIcon className="w-5 h-5" />
               {translations.ko.analysisTitle}
             </button>
+            <button
+              onClick={() => setMainView('dashboard')}
+              className={`flex items-center gap-2 px-8 py-3.5 rounded-xl transition-all duration-300 ${mainView === 'dashboard'
+                  ? 'bg-[#255282] text-white shadow-lg font-bold scale-[1.02]'
+                  : 'text-muted-foreground hover:text-foreground font-medium'
+                }`}
+            >
+              <LayoutGrid className="w-5 h-5" />
+              {translations.ko.dashboardTitle}
+            </button>
           </div>
         </div>
 
         <AnimatePresence mode="wait">
-          {mainView === 'guide' ? (
+          {mainView === 'guide' && (
             <motion.div key="guide-view" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} className="space-y-12">
               <div style={{ backgroundColor: '#fbfcf9' }} className="rounded-[40px] py-10 md:py-12 px-10 md:px-16 mb-12 relative overflow-hidden shadow-sm border border-sky-100/50">
                 <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(to right, #e0f2fe, #f0f9ff 50%, #fbfcf9 70%)' }} />
@@ -113,12 +128,13 @@ const AITravelGuide = () => {
               {/* 공통 챗봇 컴포넌트 호출 (일반 사용자용: 질문 제한 활성) */}
               <AIGuideChat isUnlimited={false} />
             </motion.div>
-          ) : (
+          )}
+          {mainView === 'analysis' && (
             <motion.div key="analysis-view" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8">
               <div className="flex flex-wrap justify-center gap-3 mb-10">
                 <button
                   onClick={() => setActiveAnalysis('marine')}
-                  className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold border transition-all ${activeAnalysis === 'marine' ? 'bg-primary text-white border-primary shadow-lg' : 'bg-card text-muted-foreground border-border hover:border-primary/50'}`}
+                  className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold border transition-all ${activeAnalysis === 'marine' ? 'bg-[#255282] text-white border-[#255282] shadow-lg' : 'bg-card text-muted-foreground border-border hover:border-primary/50'}`}
                 >
                   <Ship className="w-4 h-4" />
                   해양 관광 콘텐츠 AI
@@ -129,6 +145,24 @@ const AITravelGuide = () => {
                 </button>
               </div>
               {activeAnalysis === 'marine' && <MarineDashboard />}
+            </motion.div>
+          )}
+          {mainView === 'dashboard' && (
+            <motion.div key="dashboard-view" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-8">
+              <div className="flex flex-wrap justify-center gap-3 mb-10">
+                <button
+                  onClick={() => setActiveDashboard('festival')}
+                  className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold border transition-all ${activeDashboard === 'festival' ? 'bg-[#255282] text-white border-[#255282] shadow-lg' : 'bg-card text-muted-foreground border-border hover:border-primary/50'}`}
+                >
+                  <CloudAlert className="w-4 h-4" />
+                  지역축제 기후위기 예측
+                </button>
+                <button disabled className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold border border-dashed border-border text-muted-foreground/50 cursor-not-allowed">
+                  <LayoutGrid className="w-4 h-4" />
+                  Coming Soon
+                </button>
+              </div>
+              {activeDashboard === 'festival' && <FestivalDashboard />}
             </motion.div>
           )}
         </AnimatePresence>

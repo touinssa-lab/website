@@ -1,7 +1,7 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import TravelSurvey from "@/components/survey/TravelSurvey";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ClipboardList } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import { useEffect } from "react";
 
@@ -31,16 +31,19 @@ const SurveyDetail = () => {
         </div>
 
         <div className="bg-white rounded-2xl shadow-sm border border-border/50 p-6 md:p-10">
-          <div className="border-b border-border/60 pb-6 mb-8 text-center">
-            <h1 className="text-2xl md:text-3xl font-bold font-serif mb-2">{surveyTitle}</h1>
-            <p className="text-muted-foreground text-sm">
-              본 조사는 통계법 제33조에 의해 비밀이 보장되며, 통계 작성 목적 외에는 사용되지 않습니다.
+          <div className="max-w-2xl mx-auto py-12 text-center">
+            <ClipboardList className="w-16 h-16 text-muted-foreground/30 mx-auto mb-6" />
+            <h2 className="text-3xl font-bold text-slate-800 mb-4">설문조사 준비중입니다.</h2>
+            <p className="text-lg text-muted-foreground leading-relaxed mb-8">
+              현재 해당 설문조사는 준비 중이거나 기간이 종료되었습니다.<br />
+              새로운 설문조사가 오픈되면 당신의 경험을 남겨 주세요.
             </p>
-          </div>
-
-          <div className="max-w-2xl mx-auto">
-            {/* The TravelSurvey component will handle the multi-step logic internally */}
-            <TravelSurvey surveyMonth="2026년 4월" />
+            <Link 
+              to="/survey" 
+              className="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-primary text-white font-bold hover:bg-primary/90 transition-all"
+            >
+              다른 설문조사 보기
+            </Link>
           </div>
         </div>
       </main>

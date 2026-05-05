@@ -10,6 +10,7 @@ import { PanelRegistrationModal } from "@/components/survey/PanelRegistrationMod
 import { PreSurveyInfoModal } from "@/components/survey/PreSurveyInfoModal";
 
 const surveys = [
+/*
   {
     id: 1,
     title: "국내 여행 참여 실태 및 수요 전환 조사",
@@ -23,6 +24,7 @@ const surveys = [
     requirePhone: false,
     image: "/images/bright_tourism.png"
   }
+*/
 ];
 
 const Survey = () => {
@@ -154,70 +156,77 @@ const Survey = () => {
         <section id="surveys">
           <div className="mb-10">
             <h2 className="text-3xl font-bold font-serif mb-3">설문조사 참가</h2>
-            <p className="text-muted-foreground">현재 진행 중인 리서치 프로젝트입니다.</p>
           </div>
           
           <div className="grid lg:grid-cols-2 gap-8">
-            {surveys.map((survey) => (
-              <div 
-                key={survey.id}
-                onClick={(e) => handleSurveyClick(survey, e as any)}
-                className={`block group cursor-pointer ${survey.url === '#' ? 'cursor-not-allowed opacity-80' : ''}`}
-              >
-                <div className="rounded-2xl bg-card border border-border transition-all duration-300 hover:shadow-xl hover:border-primary/40 overflow-hidden flex flex-col h-full group-hover:-translate-y-1">
-                  {/* Image Cover */}
-                  <div className="h-48 w-full relative overflow-hidden bg-muted">
-                    <img 
-                      src={survey.image} 
-                      alt={survey.title} 
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                    <div className="absolute bottom-4 left-4 flex gap-2">
-                      <span className="text-xs font-bold px-3 py-1.5 rounded-full bg-primary text-primary-foreground backdrop-blur-md">
-                        {survey.category}
-                      </span>
-                      <span className={`text-xs font-bold px-3 py-1.5 rounded-full backdrop-blur-md ${survey.status === '진행중' ? 'bg-accent text-accent-foreground' : 'bg-secondary text-secondary-foreground'}`}>
-                        {survey.status}
-                      </span>
-                    </div>
-                  </div>
-                  
-                  <div className="p-6 flex flex-col flex-1">
-                    <h3 className="text-2xl font-bold font-serif mb-3 group-hover:text-primary transition-colors line-clamp-2">
-                      {survey.title}
-                    </h3>
-                    
-                    <p className="text-muted-foreground mb-6 line-clamp-3">
-                      {survey.description}
-                    </p>
-                    
-                    <div className="mt-auto space-y-4">
-                      <div className="grid grid-cols-2 gap-4 text-sm bg-muted/30 p-4 rounded-xl">
-                        <div className="flex items-center gap-2 text-muted-foreground">
-                          <Clock className="w-4 h-4" />
-                          <span>{survey.estimatedTime}</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-muted-foreground">
-                          <Gift className="w-4 h-4" />
-                          <span>{survey.requirePhone ? '리워드 지급' : '참여 감사'}</span>
-                        </div>
+            {surveys.length > 0 ? (
+              surveys.map((survey) => (
+                <div 
+                  key={survey.id}
+                  onClick={(e) => handleSurveyClick(survey, e as any)}
+                  className={`block group cursor-pointer ${survey.url === '#' ? 'cursor-not-allowed opacity-80' : ''}`}
+                >
+                  <div className="rounded-2xl bg-card border border-border transition-all duration-300 hover:shadow-xl hover:border-primary/40 overflow-hidden flex flex-col h-full group-hover:-translate-y-1">
+                    {/* Image Cover */}
+                    <div className="h-48 w-full relative overflow-hidden bg-muted">
+                      <img 
+                        src={survey.image} 
+                        alt={survey.title} 
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                      <div className="absolute bottom-4 left-4 flex gap-2">
+                        <span className="text-xs font-bold px-3 py-1.5 rounded-full bg-primary text-primary-foreground backdrop-blur-md">
+                          {survey.category}
+                        </span>
+                        <span className={`text-xs font-bold px-3 py-1.5 rounded-full backdrop-blur-md ${survey.status === '진행중' ? 'bg-accent text-accent-foreground' : 'bg-secondary text-secondary-foreground'}`}>
+                          {survey.status}
+                        </span>
                       </div>
+                    </div>
+                    
+                    <div className="p-6 flex flex-col flex-1">
+                      <h3 className="text-2xl font-bold font-serif mb-3 group-hover:text-primary transition-colors line-clamp-2">
+                        {survey.title}
+                      </h3>
+                      
+                      <p className="text-muted-foreground mb-6 line-clamp-3">
+                        {survey.description}
+                      </p>
+                      
+                      <div className="mt-auto space-y-4">
+                        <div className="grid grid-cols-2 gap-4 text-sm bg-muted/30 p-4 rounded-xl">
+                          <div className="flex items-center gap-2 text-muted-foreground">
+                            <Clock className="w-4 h-4" />
+                            <span>{survey.estimatedTime}</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-muted-foreground">
+                            <Gift className="w-4 h-4" />
+                            <span>{survey.requirePhone ? '리워드 지급' : '참여 감사'}</span>
+                          </div>
+                        </div>
 
-                      <div className="flex items-center justify-between pt-2">
-                        <span className="text-sm font-medium text-muted-foreground">기간: {survey.date}</span>
-                        <div className={`flex items-center font-bold ${survey.status === '진행중' ? 'text-primary' : 'text-muted-foreground'}`}>
-                          {survey.status === '진행중' ? '참여하기' : '준비중'}
-                          {survey.status === '진행중' && (
-                            <ExternalLink className="w-5 h-5 ml-1 opacity-0 -translate-x-2 transition-all group-hover:opacity-100 group-hover:translate-x-0" />
-                          )}
+                        <div className="flex items-center justify-between pt-2">
+                          <span className="text-sm font-medium text-muted-foreground">기간: {survey.date}</span>
+                          <div className={`flex items-center font-bold ${survey.status === '진행중' ? 'text-primary' : 'text-muted-foreground'}`}>
+                            {survey.status === '진행중' ? '참여하기' : '준비중'}
+                            {survey.status === '진행중' && (
+                              <ExternalLink className="w-5 h-5 ml-1 opacity-0 -translate-x-2 transition-all group-hover:opacity-100 group-hover:translate-x-0" />
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
+              ))
+            ) : (
+              <div className="col-span-full py-20 bg-muted/30 rounded-[2rem] border-2 border-dashed border-border flex flex-col items-center justify-center text-center">
+                <ClipboardList className="w-16 h-16 text-muted-foreground/30 mb-4" />
+                <h3 className="text-2xl font-bold text-muted-foreground mb-2">설문조사 준비중입니다.</h3>
+                <p className="text-base text-muted-foreground">새로운 설문조사가 오픈되면 당신의 경험을 남겨 주세요.</p>
               </div>
-            ))}
+            )}
           </div>
         </section>
       </main>
