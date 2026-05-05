@@ -706,7 +706,7 @@ const MarineDashboard = () => {
                         </div>
                         <span className="text-[17px] font-black text-slate-800">광역 관광 벨트 확장</span>
                       </div>
-                      <p className="text-[15.5px] text-slate-600 leading-relaxed font-black italic">
+                      <p className="text-[15.5px] text-blue-900 leading-relaxed font-serif font-black italic">
                         "{activeRegion.connection}"
                       </p>
                       <div className="mt-8 flex items-center gap-2 text-[12px] font-black text-slate-300">

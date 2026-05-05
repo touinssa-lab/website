@@ -321,7 +321,7 @@ const FestivalDashboard = () => {
                                 </div>
                                 <div className="p-5 bg-muted/30 rounded-xl border border-border/40 flex items-start gap-4">
                                     <AlertTriangle className="w-6 h-6 shrink-0" style={{ color: currentSSP.color }} />
-                                    <p className="text-sm text-foreground font-medium leading-relaxed italic">
+                                    <p className="text-sm text-indigo-900 font-serif font-bold leading-relaxed italic">
                                         "{currentSSP.description}"
                                     </p>
                                 </div>

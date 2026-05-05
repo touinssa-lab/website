@@ -61,9 +61,9 @@ const NewsDetail = () => {
   const parseStyles = (text: string) => {
     const parts = text.split(/(\*\*\*[\s\S]*?\*\*\*|\*\*[\s\S]*?\*\*|\*[\s\S]*?\*)/g);
     return parts.map((part, i) => {
-      if (part.startsWith('***') && part.endsWith('***')) return <strong key={i} className="text-foreground font-bold italic">{part.slice(3, -3)}</strong>;
+      if (part.startsWith('***') && part.endsWith('***')) return <strong key={i} className="text-foreground font-serif font-bold italic">{part.slice(3, -3)}</strong>;
       if (part.startsWith('**') && part.endsWith('**')) return <strong key={i} className="text-foreground font-bold">{part.slice(2, -2)}</strong>;
-      if (part.startsWith('*') && part.endsWith('*')) return <em key={i} className="text-foreground italic">{part.slice(1, -1)}</em>;
+      if (part.startsWith('*') && part.endsWith('*')) return <em key={i} className="text-foreground font-serif italic">{part.slice(1, -1)}</em>;
       return part;
     });
   };

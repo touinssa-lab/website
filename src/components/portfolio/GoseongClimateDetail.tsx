@@ -13,6 +13,7 @@ import {
 import { Calendar, BookOpen, PenTool, MessageSquare, ArrowRight, Smile, TrendingUp, AlertCircle, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
+import CarbonCalculator from '@/components/CarbonCalculator';
 
 const satisfactionData = [
   { name: '전반 만족도', value: 4.87 },
@@ -251,7 +252,7 @@ const GoseongClimateDetail: React.FC = () => {
         </div>
 
         {/* Voices Card */}
-        <div className="bg-[#F0F9F4] p-8 md:p-10 rounded-2xl mb-6">
+        <div className="bg-[#F0F9F4] p-6 md:p-8 rounded-2xl mb-6">
           <div className="flex items-center gap-3 text-[#0F6E56] font-bold text-2xl mb-8">
             <MessageSquare className="w-6 h-6 text-[#1D9E75]" />
             참여자의 목소리
@@ -263,11 +264,11 @@ const GoseongClimateDetail: React.FC = () => {
               { quote: '노력하신 만큼 좋은 결과가 있는 것 같습니다', author: '2회차 참여자' },
               { quote: '산책 코스가 더 길었으면 좋겠어요', author: '개선 제안' }
             ].map((voice, i) => (
-              <blockquote key={i} className="bg-white py-6 px-8 rounded-xl shadow-sm">
-                <p className="text-[#1a1a1a] text-xl font-medium italic mb-3">
+              <blockquote key={i} className="bg-white py-4 px-6 rounded-xl shadow-sm">
+                <p className="text-[#0a4d3c] text-lg font-serif font-bold italic mb-1">
                   "{voice.quote}"
                 </p>
-                <p className="text-sm text-[#888780] font-medium">
+                <p className="text-xs text-[#888780] font-medium">
                   — {voice.author}
                 </p>
               </blockquote>
@@ -284,6 +285,11 @@ const GoseongClimateDetail: React.FC = () => {
             우리 지역에 적용하기
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </button>
+        </div>
+
+        {/* 여행 탄소 발자국 계산기 */}
+        <div className="mt-10">
+          <CarbonCalculator />
         </div>
       </section>
 

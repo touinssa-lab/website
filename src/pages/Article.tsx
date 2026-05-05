@@ -149,7 +149,7 @@ const Article = () => {
             ))}
 
             <div className="mt-12 p-6 rounded-2xl bg-muted border-l-4 border-accent">
-              <p className="text-lg leading-relaxed italic text-foreground">
+              <p className="text-lg leading-relaxed font-serif italic text-foreground">
                 {article.content.conclusion}
               </p>
             </div>

@@ -41,7 +41,7 @@ const CarbonCalculator = () => {
   const offsetTrees = Math.ceil(emissions / 22); // roughly 22kg CO2 absorbed by a tree in a year
 
   return (
-    <div className="w-full max-w-6xl mx-auto rounded-3xl overflow-hidden glass-panel border border-border/50 bg-card/60 relative">
+    <div className="w-full max-w-6xl mx-auto rounded-3xl overflow-hidden glass-panel border border-border/50 bg-card relative">
       {/* Background decoration */}
       <div className="absolute top-0 right-0 w-64 h-64 bg-accent/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
@@ -49,7 +49,7 @@ const CarbonCalculator = () => {
       <div className="grid lg:grid-cols-5 h-full relative z-10">
         
         {/* Left Side: Input Elements */}
-        <div className="lg:col-span-3 p-5 md:p-8 border-b lg:border-b-0 lg:border-r border-border/50">
+        <div className="lg:col-span-3 p-5 md:p-8 border-b lg:border-b-0 lg:border-r border-border/50 bg-white/30">
           <div className="mb-6">
             <h2 className="text-2xl md:text-3xl font-bold font-serif mb-2 flex items-center gap-2">
               <Leaf className="text-accent w-8 h-8" />
@@ -202,7 +202,7 @@ const CarbonCalculator = () => {
         </div>
 
         {/* Right Side: Results Display */}
-        <div className="lg:col-span-2 bg-muted/20 p-5 md:p-8 flex flex-col justify-center">
+        <div className="lg:col-span-2 bg-muted/40 p-5 md:p-8 flex flex-col justify-center">
           <div className="space-y-6">
             <div className="text-center">
               <p className="text-sm font-semibold text-accent mb-2 uppercase tracking-wide">Estimated Output</p>
