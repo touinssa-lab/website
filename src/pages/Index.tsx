@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowRight, BarChart3, Globe, Lightbulb, TrendingUp, Map, PenTool, Database, FileText, LayoutDashboard, MoreHorizontal, MessageCircle } from "lucide-react";
+import { ArrowRight, BarChart3, Globe, Lightbulb, TrendingUp, Map, PenTool, Database, FileText, LayoutDashboard, MoreHorizontal, MessageCircle, Zap, Sparkles, Bot } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { newsItems as staticNewsItems, NewsArticle } from "@/data/newsData";
 import { useQuery } from "@tanstack/react-query";
@@ -25,7 +25,7 @@ const services = [
 const Index = () => {
   const { panelInfo } = useAuth();
   const [currentNewsIndex, setCurrentNewsIndex] = useState(0);
-  const [currentDashIndex, setCurrentDashIndex] = useState(0);
+  const [currentSignalIndex, setCurrentSignalIndex] = useState(0);
   const [currentPersonaIndex, setCurrentPersonaIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isNoticeModalOpen, setIsNoticeModalOpen] = useState(false);
@@ -56,11 +56,31 @@ const Index = () => {
     }
   });
 
-  const dashboards = [
-    { name: 'UN Tourism 글로벌 리포트', image: '/dash_un_tourism.png' },
-    { name: '국민여행 총량 통계', image: '/dash_travel_volume.png' },
-    { name: '지역축제 기후위기 예측', image: '/dash_festival_climate.png' },
-    { name: '여행 탄소 발자국 계산기', image: '/dash_carbon_footprint.png' }
+  const signalScenes = [
+    { 
+      id: 'keyword',
+      title: 'AI Hot Keyword', 
+      desc: '실시간 검색 트렌드와 데이터 분석 기반 주요 키워드를 추출합니다.',
+      image: '/ai_hot_keyword_thumbnail.png',
+      color: 'text-sky-600',
+      content: ['#지역축제', '#친환경여행', '#인공지능관광']
+    },
+    { 
+      id: 'insight',
+      title: 'AI Selected Insights', 
+      desc: '방대한 데이터 속에서 관광 산업의 핵심 인사이트를 선별합니다.',
+      image: '/ai_selected_insights_thumbnail.png',
+      color: 'text-indigo-600',
+      content: 'AI 에이전트가 급상승 트렌트 키워드를 발굴합니다.'
+    },
+    { 
+      id: 'news',
+      title: 'AI Hot News', 
+      desc: 'AI 에이전트가 선정한 관광 산업계의 주요 뉴스를 요약 제공합니다.',
+      image: '/ai_hot_news_thumbnail.png',
+      color: 'text-emerald-600',
+      content: '2026년 글로벌 관광 시장 회복세 뚜렷...'
+    }
   ];
 
   const personas = [
@@ -115,11 +135,11 @@ const Index = () => {
   }, [newsItems.length]);
 
   useEffect(() => {
-    const dashInterval = setInterval(() => {
-      setCurrentDashIndex((prev) => (prev + 1) % dashboards.length);
-    }, 3800);
-    return () => clearInterval(dashInterval);
-  }, [dashboards.length]);
+    const signalInterval = setInterval(() => {
+      setCurrentSignalIndex((prev) => (prev + 1) % signalScenes.length);
+    }, 4000);
+    return () => clearInterval(signalInterval);
+  }, [signalScenes.length]);
 
   useEffect(() => {
     const personaInterval = setInterval(() => {
@@ -298,7 +318,7 @@ const Index = () => {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Quick Links Section */}
         <section className="relative mt-12 mb-6 z-20">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto">
             {/* Card News Carousel */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -306,8 +326,8 @@ const Index = () => {
               viewport={{ once: true }}
               className="relative group overflow-hidden rounded-2xl bg-sky-50/50 dark:bg-sky-900/10 backdrop-blur-xl border border-sky-200/50 dark:border-sky-500/20 hover:shadow-2xl transition-all duration-300"
             >
-              <div className="p-6">
-                <div className="flex items-center justify-between mb-6">
+              <div className="p-5">
+                <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
                     <div className="p-2 rounded-lg bg-sky-500/10 text-sky-500">
                       <FileText size={18} />
@@ -317,7 +337,7 @@ const Index = () => {
                   <MoreHorizontal size={18} className="text-muted-foreground" />
                 </div>
                 
-                <div className="relative h-32 overflow-hidden">
+                <div className="relative h-28 overflow-hidden">
                   <AnimatePresence mode="wait">
                     {newsItems.length > 0 ? (
                       <motion.div
@@ -342,9 +362,9 @@ const Index = () => {
                             <Link 
                               to={`/news/${news.id}`} 
                               onClick={handleNewsClick}
-                              className="flex gap-4 items-center h-full group/card"
+                              className="flex gap-4 items-center h-full w-full group/card"
                             >
-                              <div className="flex-shrink-0 w-24 h-24 md:w-28 md:h-28 rounded-xl overflow-hidden shadow-md relative">
+                              <div className="flex-shrink-0 w-24 h-24 md:w-28 md:h-28 rounded-xl overflow-hidden shadow-sm relative border border-slate-100 dark:border-slate-800">
                                 <img 
                                   src={displayThumbnail} 
                                   alt="" 
@@ -364,7 +384,7 @@ const Index = () => {
                                 )}
                               </div>
                               <div className="flex-1 min-w-0">
-                                <h4 className="text-lg md:text-xl font-bold font-sans mb-2 line-clamp-1 group-hover/card:text-sky-600 transition-colors">
+                                <h4 className="text-lg md:text-xl font-bold font-sans mb-2 line-clamp-1 text-sky-600 transition-colors">
                                   {news.title}
                                 </h4>
                                 <p className="text-xs md:text-sm text-muted-foreground line-clamp-2 leading-relaxed">
@@ -383,56 +403,65 @@ const Index = () => {
                   </AnimatePresence>
                 </div>
                 
-                <Link to="/news" className="mt-6 pt-4 border-t border-sky-200/30 dark:border-sky-500/10 flex items-center justify-between text-sm font-medium text-sky-600 dark:text-sky-400 group/footer">
+                <Link to="/news" className="mt-4 pt-3 border-t border-sky-200/30 dark:border-sky-500/10 flex items-center justify-between text-sm font-medium text-sky-600 dark:text-sky-400 group/footer">
                   <span>전체 기사 보기</span>
                   <ArrowRight size={14} className="group-hover/footer:translate-x-1 transition-transform" />
                 </Link>
               </div>
             </motion.div>
 
-            {/* Dashboard Carousel */}
+            {/* Signal Promotion Carousel */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="relative group overflow-hidden rounded-2xl bg-amber-50/50 dark:bg-amber-900/10 backdrop-blur-xl border border-amber-200/50 dark:border-amber-500/20 hover:shadow-2xl transition-all duration-300"
+              className="relative group overflow-hidden rounded-2xl bg-indigo-50/50 dark:bg-indigo-900/10 backdrop-blur-xl border border-indigo-200/50 dark:border-indigo-500/20 hover:shadow-2xl transition-all duration-300"
             >
-              <div className="p-6">
-                <div className="flex items-center justify-between mb-6">
+              <div className="p-5">
+                <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
-                    <div className="p-2 rounded-lg bg-amber-500/10 text-amber-500">
-                      <LayoutDashboard size={18} />
+                    <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-500">
+                      <TrendingUp size={18} />
                     </div>
-                    <span className="text-base font-bold font-sans">데이터분석 대시보드</span>
+                    <span className="text-base font-bold font-sans">데이터 & 뉴스</span>
                   </div>
                   <MoreHorizontal size={18} className="text-muted-foreground" />
                 </div>
                 
-                <div className="relative h-32 flex flex-col justify-center overflow-hidden">
+                <div className="relative h-28 overflow-hidden">
                   <AnimatePresence mode="wait">
                     <motion.div
-                      key={currentDashIndex}
+                      key={currentSignalIndex}
                       initial={{ x: 100, opacity: 0 }}
                       animate={{ x: 0, opacity: 1 }}
                       exit={{ x: -100, opacity: 0 }}
                       transition={{ duration: 0.6, ease: "easeInOut" }}
                       className="absolute inset-0"
                     >
-                      <Link to="/news?view=dashboard" className="flex gap-4 items-center h-full group/dash">
-                        <div className="flex-shrink-0 w-24 h-24 md:w-28 md:h-28 rounded-xl overflow-hidden shadow-md">
+                      <Link to="/news?view=trends" className="flex gap-4 items-center h-full w-full group/signal">
+                        <div className="flex-shrink-0 w-24 h-24 md:w-28 md:h-28 rounded-xl overflow-hidden shadow-sm border border-slate-100 dark:border-slate-800 transition-transform duration-500 group-hover/signal:scale-105">
                           <img 
-                            src={dashboards[currentDashIndex].image} 
+                            src={signalScenes[currentSignalIndex].image} 
                             alt="" 
-                            className="w-full h-full object-cover group-hover/dash:scale-110 transition-transform duration-500"
+                            className="w-full h-full object-cover"
                           />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="text-lg md:text-xl font-bold font-sans text-amber-700 dark:text-amber-400 mb-2 group-hover/dash:translate-x-1 transition-transform line-clamp-1">
-                            {dashboards[currentDashIndex].name}
+                          <div className={`text-lg md:text-xl font-bold font-sans ${signalScenes[currentSignalIndex].color} mb-2 group-hover/signal:translate-x-1 transition-transform line-clamp-1`}>
+                            {signalScenes[currentSignalIndex].title}
                           </div>
-                          <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">
-                            관광 산업의 핵심 지표를 실시간 시각화 데이터로 분석합니다.
+                          <div className="text-xs md:text-sm text-slate-900 dark:text-white font-bold mb-1 opacity-90 line-clamp-1">
+                            {signalScenes[currentSignalIndex].id === 'keyword' ? (
+                              <div className="flex gap-1.5">
+                                {(signalScenes[currentSignalIndex].content as string[]).map((tag, i) => (
+                                  <span key={i} className="text-sky-600 dark:text-sky-400">{tag}</span>
+                                ))}
+                              </div>
+                            ) : signalScenes[currentSignalIndex].content}
+                          </div>
+                          <p className="text-xs md:text-sm text-muted-foreground leading-relaxed line-clamp-2">
+                            {signalScenes[currentSignalIndex].desc}
                           </p>
                         </div>
                       </Link>
@@ -440,8 +469,8 @@ const Index = () => {
                   </AnimatePresence>
                 </div>
 
-                <Link to="/news?view=dashboard" className="mt-6 pt-4 border-t border-amber-200/30 dark:border-amber-500/10 flex items-center justify-between text-sm font-medium text-amber-600 dark:text-amber-400 group/footer">
-                  <span>대시보드 바로가기</span>
+                <Link to="/news?view=trends" className="mt-4 pt-3 border-t border-indigo-200/30 dark:border-indigo-500/10 flex items-center justify-between text-sm font-medium text-indigo-600 dark:text-indigo-400 group/footer">
+                  <span>데이터 & 뉴스 바로가기</span>
                   <ArrowRight size={14} className="group-hover/footer:translate-x-1 transition-transform" />
                 </Link>
               </div>
