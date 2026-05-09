@@ -604,7 +604,7 @@ const NewsRoom = () => {
                             </li>
                             <li className="flex gap-2 items-start">
                               <span className="shrink-0">•</span>
-                              <span>검색어 기준 : 여행, 관광, 축제, 행사, 공연, 호텔, 항공, 맛집 섹션의 급상승 키워드</span>
+                              <span>검색어 기준 : 여행, 관광, 축제, 행사, 공연, 호텔, 항공, 맛집, 크루즈 섹션의 급상승 키워드</span>
                             </li>
                             <li className="flex gap-2 items-start">
                               <span className="shrink-0">•</span>
