@@ -9,6 +9,8 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
+  Zap,
+  Cpu,
   BarChart3, 
   Leaf, 
   CloudAlert, 
@@ -114,7 +116,7 @@ const NewsRoom = () => {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
         {/* Main Category Toggle */}
-        <div className="flex justify-center mb-16">
+        <div className="flex justify-center mb-10">
           <div className="flex p-1.5 bg-muted/60 backdrop-blur-md rounded-2xl border border-border/40 shadow-xl">
             <button
               onClick={() => setMainView('articles')}
@@ -150,9 +152,9 @@ const NewsRoom = () => {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.5 }}
             >
-              <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-12 bg-white/50 backdrop-blur-sm p-6 md:p-8 rounded-[2rem] border border-slate-100 shadow-sm">
-                <div className="flex flex-col gap-2 text-center md:text-left">
-                  <h2 className="text-3xl font-bold font-serif underline-accent">최신 기획 기사</h2>
+              <div className="flex flex-col items-center justify-center gap-6 mb-12 bg-white/50 backdrop-blur-sm pt-4 md:pt-6 px-6 md:px-8 pb-6 md:pb-8 rounded-[2rem] border border-slate-100 shadow-sm">
+                <div className="flex flex-col gap-2 text-center">
+                  <h2 className="text-3xl font-bold font-sans underline-accent">최신 기획 기사</h2>
                   <p className="text-muted-foreground text-base">투어리즘인사이트가 분석한 관광 산업의 전문 기획 기사입니다.</p>
                 </div>
 
@@ -249,7 +251,7 @@ const NewsRoom = () => {
                                   </div>
                                 </div>
  
-                                <h2 className="text-xl font-bold mb-3 font-serif line-clamp-2 leading-snug group-hover:text-primary transition-colors">
+                                <h2 className="text-xl font-bold mb-3 font-sans line-clamp-2 leading-snug group-hover:text-primary transition-colors">
                                   {news.title}
                                 </h2>
  
@@ -327,9 +329,9 @@ const NewsRoom = () => {
               transition={{ duration: 0.5 }}
             >
               <section className="relative z-0">
-                <div className="flex flex-col items-center mb-12">
-                  <h2 className="text-3xl font-bold mb-4 text-center underline-accent">트렌드 & 뉴스</h2>
-                  <p className="text-muted-foreground text-center font-medium">Google Trends와 네이버 뉴스를 분석한 오늘의 관광 산업 핵심 지표입니다.</p>
+                <div className="flex flex-col items-center pt-4 md:pt-6 mb-12">
+                  <h2 className="text-3xl font-bold font-sans mb-2 text-center underline-accent">트렌드 & 뉴스</h2>
+                  <p className="text-muted-foreground text-center font-medium">AI 에이전트가 선정한 Google Trends 키워드와 주요 관광 산업계 뉴스입니다.</p>
                 </div>
 
                 {/* AI Hot Keyword Section */}
@@ -337,10 +339,10 @@ const NewsRoom = () => {
                   <div className="flex flex-col md:flex-row items-center justify-between mb-10 gap-6">
                     <div className="flex items-center gap-3">
                       <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center">
-                        <TrendingUp className="w-6 h-6 text-primary" />
+                        <Zap className="w-6 h-6 text-primary" />
                       </div>
                       <div>
-                        <h3 className="text-2xl font-bold text-slate-900">AI Hot Keyword</h3>
+                        <h3 className="text-2xl font-bold text-slate-900 font-sans">AI Hot Keyword</h3>
                         <p className="text-sm text-muted-foreground font-medium">실시간 트렌드 및 데이터 분석 기반 주요 키워드</p>
                       </div>
                     </div>
@@ -353,7 +355,7 @@ const NewsRoom = () => {
                     <div className="w-full lg:w-[50%] flex flex-col gap-4">
                       <div className="flex items-center gap-2 mb-2 px-2">
                         <TrendingUp className="w-5 h-5 text-primary" />
-                        <h4 className="text-lg font-bold text-slate-800">Today Top 50 Rankings (2026-05-08)</h4>
+                        <h4 className="text-lg font-bold text-slate-800 font-sans">Today Top 50 Rankings <span className="font-normal">(2026-05-08)</span></h4>
                       </div>
                       <div className="bg-white/50 backdrop-blur-md border border-slate-100 rounded-[1.5rem] p-8 shadow-sm h-full">
                       <div className="flex items-center text-sm font-semibold text-slate-500 border-b border-slate-300 pb-3 mb-4 px-2">
@@ -430,7 +432,7 @@ const NewsRoom = () => {
                     <div className="hidden lg:flex lg:w-[50%] flex-col gap-4">
                       <div className="flex items-center gap-2 mb-2 px-2">
                         <Sparkles className="w-5 h-5 text-indigo-500" />
-                        <h4 className="text-lg font-bold text-indigo-700">AI Selected Insights</h4>
+                        <h4 className="text-lg font-bold text-indigo-700 font-sans">AI Selected Insights <span className="text-sm font-medium text-indigo-400 ml-2">(Top 50에서 선정한 키워드)</span></h4>
                       </div>
                       
                       {insightCards.map((card, index) => (
@@ -478,13 +480,17 @@ const NewsRoom = () => {
                         <Bot className="w-6 h-6 text-indigo-600" />
                       </div>
                       <div>
-                        <h3 className="text-2xl font-bold text-slate-900 font-serif tracking-tight">AI Hot News</h3>
-                        <p className="text-sm text-muted-foreground font-medium mt-0.5">AI에이전트가 선택한 오늘의 뉴스</p>
+                        <h3 className="text-2xl font-bold text-slate-900 font-sans tracking-tight">AI Hot News</h3>
+                        <p className="text-sm text-muted-foreground font-medium mt-0.5">AI에이전트가 선정하고 요약한 오늘의 핫뉴스</p>
                       </div>
                     </div>
                     
-                    <div className="flex gap-2 p-1.5 bg-muted/60 rounded-2xl border border-border/40">
-                      <button
+                    <div className="flex items-center gap-4 p-1.5 bg-muted/60 rounded-2xl border border-border/40">
+                      <span className="hidden md:block pl-4 pr-2 text-xs font-bold text-muted-foreground whitespace-nowrap">
+                        분야별 뉴스를 확인하세요!
+                      </span>
+                      <div className="flex gap-2">
+                        <button
                         onClick={() => setNewsTab('tourism')}
                         className="px-6 py-2.5 text-sm font-extrabold rounded-xl transition-all hover:bg-white/50 data-[active=true]:bg-white data-[active=true]:shadow-md data-[active=true]:text-primary"
                         data-active={newsTab === 'tourism'}
@@ -498,6 +504,7 @@ const NewsRoom = () => {
                       >
                         AI & Data
                       </button>
+                      </div>
                     </div>
                   </div>
 
@@ -524,7 +531,7 @@ const NewsRoom = () => {
                           <span className="text-xs text-slate-400 font-bold">{item.time}</span>
                         </div>
                         
-                        <h4 className="text-xl font-bold mb-4 group-hover:text-primary transition-colors line-clamp-2 leading-tight font-serif">
+                        <h4 className="text-xl font-bold mb-4 group-hover:text-primary transition-colors line-clamp-2 leading-tight font-sans">
                           {item.title}
                         </h4>
                         
@@ -567,14 +574,21 @@ const NewsRoom = () => {
                 {/* DB Integration Info (Notice) */}
                 <div className="mt-20 p-10 bg-slate-900 text-white rounded-[1.75rem] flex flex-col lg:flex-row items-center gap-10 shadow-2xl relative overflow-hidden group">
                   <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 blur-[100px] -mr-32 -mt-32 rounded-full group-hover:bg-primary/30 transition-all duration-700"></div>
-                  <div className="w-20 h-20 bg-white/10 backdrop-blur-md rounded-3xl flex items-center justify-center border border-white/20 shrink-0">
-                    <BarChart3 className="w-10 h-10 text-sky-400" />
+                  <div className="w-20 h-20 bg-white/10 backdrop-blur-md rounded-3xl flex items-center justify-center border border-white/20 shrink-0 relative overflow-hidden group/icon">
+                    <svg className="absolute inset-0 w-full h-full opacity-30 text-sky-400" viewBox="0 0 80 80">
+                      <path d="M40 0 v15 M40 65 v15 M0 40 h15 M65 40 h15 M15 15 l10 10 M55 55 l10 10 M15 65 l10 -10 M55 25 l10 -10" stroke="currentColor" strokeWidth="1" fill="none" />
+                      <circle cx="40" cy="15" r="1.5" fill="currentColor" />
+                      <circle cx="40" cy="65" r="1.5" fill="currentColor" />
+                      <circle cx="15" cy="40" r="1.5" fill="currentColor" />
+                      <circle cx="65" cy="40" r="1.5" fill="currentColor" />
+                    </svg>
+                    <Cpu className="w-10 h-10 text-sky-400 relative z-10 group-hover/icon:scale-110 transition-transform duration-500" />
                   </div>
                   <div className="flex-1 text-center lg:text-left relative z-10">
-                    <h4 className="text-2xl font-bold mb-2">'트렌드 & 뉴스' AI 포스트 생성</h4>
+                    <h4 className="text-2xl font-bold mb-2">'트렌드 & 뉴스' AI 에이전트 시스템</h4>
                     <p className="text-slate-400 leading-relaxed font-medium">
                       현재 제공되는 트렌드 & 뉴스 콘텐츠는 AI에이전트를 사용하여 일일 배치 시스템을 통해 자동 생성되는 자료입니다.<br />
-                      AI 데이터 수집과 분석, 알고리즘에 의한 핵심 키워드 추출과 내용 요약 생성 사례를 보여 주기 위한 자료이며, 샘플링된 기사의 저작권은 각 언론사에 있습니다.
+                      AI 데이터 수집과 분석, 알고리즘에 의한 핵심 키워드 추출과 내용 요약 생성 사례를 보여 주기 위한 자료이며, 샘플링된 원문 기사의 저작권은 각 언론사에 있습니다.
                     </p>
                   </div>
 
