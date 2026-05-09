@@ -424,7 +424,7 @@ const Index = () => {
                     <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-500">
                       <TrendingUp size={18} />
                     </div>
-                    <span className="text-base font-bold font-sans">데이터 & 뉴스</span>
+                    <span className="text-base font-bold font-sans">AI 트렌드&뉴스</span>
                   </div>
                   <MoreHorizontal size={18} className="text-muted-foreground" />
                 </div>
@@ -470,7 +470,7 @@ const Index = () => {
                 </div>
 
                 <Link to="/news?view=trends" className="mt-4 pt-3 border-t border-indigo-200/30 dark:border-indigo-500/10 flex items-center justify-between text-sm font-medium text-indigo-600 dark:text-indigo-400 group/footer">
-                  <span>데이터 & 뉴스 바로가기</span>
+                  <span>AI 트렌드&뉴스 바로가기</span>
                   <ArrowRight size={14} className="group-hover/footer:translate-x-1 transition-transform" />
                 </Link>
               </div>

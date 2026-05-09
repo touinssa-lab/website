@@ -257,7 +257,7 @@ const NewsRoom = () => {
               }`}
             >
               <TrendingUp className={`w-5 h-5 ${mainView === 'trends' ? 'text-sky-300' : 'text-muted-foreground'}`} />
-              트렌드 & 뉴스
+              AI 트렌드&뉴스
             </button>
           </div>
         </div>
@@ -447,7 +447,7 @@ const NewsRoom = () => {
             >
               <section className="relative z-0">
                 <div className="flex flex-col items-center pt-4 md:pt-6 mb-12">
-                  <h2 className="text-3xl font-bold font-sans mb-2 text-center underline-accent">트렌드 & 뉴스</h2>
+                  <h2 className="text-3xl font-bold font-sans mb-2 text-center underline-accent">AI 트렌드&뉴스</h2>
                   <p className="text-muted-foreground text-center font-medium mb-8">AI 에이전트가 선정한 Google Trends 키워드와 주요 관광 산업계 뉴스입니다.</p>
 
                   {/* Archive Search Bar - Enhanced Dark Theme */}
@@ -798,9 +798,9 @@ const NewsRoom = () => {
                     <Cpu className="w-10 h-10 text-sky-400 relative z-10 group-hover/icon:scale-110 transition-transform duration-500" />
                   </div>
                   <div className="flex-1 text-center lg:text-left relative z-10">
-                    <h4 className="text-2xl font-bold mb-2">'트렌드 & 뉴스' AI 에이전트 시스템</h4>
+                    <h4 className="text-2xl font-bold mb-2">'AI 트렌드&뉴스' 시스템</h4>
                     <p className="text-slate-400 leading-relaxed font-medium">
-                      현재 제공되는 트렌드 & 뉴스 콘텐츠는 AI에이전트를 사용하여 일일 배치 시스템을 통해 자동 생성되는 자료입니다.<br />
+                      현재 제공되는 AI 트렌드&뉴스 콘텐츠는 AI에이전트를 사용하여 일일 배치 시스템을 통해 자동 생성되는 자료입니다.<br />
                       AI 데이터 수집과 분석, 알고리즘에 의한 핵심 키워드 추출과 내용 요약 생성 사례를 보여 주기 위한 자료이며, 샘플링된 원문 기사의 저작권은 각 언론사에 있습니다.
                     </p>
                   </div>
