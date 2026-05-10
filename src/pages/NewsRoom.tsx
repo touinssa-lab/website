@@ -46,7 +46,7 @@ const NewsRoom = () => {
   const [isNoticeModalOpen, setIsNoticeModalOpen] = useState(false);
   const [newsTab, setNewsTab] = useState<'tourism' | 'ai'>('tourism');
   const [startIndex, setStartIndex] = useState(0);
-  const [selectedDate, setSelectedDate] = useState<string>('2026-05-09');
+  const [selectedDate, setSelectedDate] = useState<string>('2026-05-10');
   const dateInputRef = useRef<HTMLInputElement>(null);
   const itemsPerPage = 9;
 
@@ -128,19 +128,7 @@ const NewsRoom = () => {
         .eq('target_date', selectedDate);
       if (error) throw error;
       
-      const allowedKeywords = [
-        '춘천 마임축제',
-        '보성 다향대축제',
-        '친환경 하이브리드 항공편',
-        '연등회 연등행렬',
-        '서울 재즈 페스티벌'
-      ];
-      
-      const filtered = (data || []).filter(item => 
-        allowedKeywords.includes(item.keyword)
-      );
-      
-      const unique = filtered.reduce((acc: any[], current: any) => {
+      const unique = (data || []).reduce((acc: any[], current: any) => {
         const x = acc.find(item => item.keyword === current.keyword);
         if (!x) return acc.concat([current]);
         return acc;
@@ -475,7 +463,7 @@ const NewsRoom = () => {
                           type="date" 
                           value={selectedDate}
                           min="2026-05-09"
-                          max="2026-05-09"
+                          max="2026-05-10"
                           onChange={(e) => setSelectedDate(e.target.value)}
                           className="bg-transparent border-none p-0 text-sm font-bold text-white focus:ring-0 cursor-pointer w-full [color-scheme:dark]"
                         />
@@ -608,7 +596,7 @@ const NewsRoom = () => {
                             </li>
                             <li className="flex gap-2 items-start">
                               <span className="shrink-0">•</span>
-                              <span>AI 키워드 선정 방식 : Tourism을 기준으로 정치, 경제, 사회, 문화, 과학기술, 방송미디어, 인터넷IT, 소셜네트워크, AI, 데이터 총 10개 카테고리에 각 5개 주요 연관키워드 총 50개 매칭키워드와 연관성이 높은 Google 트렌드 급상승 키워드 인공지능의 알고리즘으로 추출</span>
+                              <span>AI 키워드 선정 방식 : Tourism을 기준으로 정책/행정, 경제/지역, 사회/인구, 테크/디지털, 환경/기후, 의료/웰니스, 미디어/콘텐츠, 모빌리티/교통, 유통/식음료, 노동/교육 총 10개 산업군별 연관 키워드(총 50개)와 매칭되는 Google 트렌드 급상승 키워드를 인공지능 알고리즘으로 추출</span>
                             </li>
                           </ul>
                         </div>
