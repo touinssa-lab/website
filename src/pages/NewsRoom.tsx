@@ -554,7 +554,16 @@ const NewsRoom = () => {
                             <span>섹션</span>
                             <span className="min-w-[1.5rem] text-center">순위</span>
                           </div>
-                          <div className="flex-1 text-left px-2">검색어</div>
+                          <div className="flex-1 text-left px-2 flex items-center gap-2">
+                            <span>검색어</span>
+                            <button 
+                              onClick={() => setStartIndex(prev => (prev + 10 >= trendKeywords.length ? 0 : prev + 10))}
+                              className="flex items-center gap-1 px-2 py-0.5 bg-primary/10 text-primary hover:bg-primary/20 rounded-md text-[10px] font-bold transition-all group/btn"
+                            >
+                              <span>다음 순위 보기</span>
+                              <ChevronRight className="w-3 h-3 transition-transform group-hover/btn:translate-x-0.5" />
+                            </button>
+                          </div>
                           <div className="w-32 text-center text-xs">Increase percent</div>
                         </div>
                         
