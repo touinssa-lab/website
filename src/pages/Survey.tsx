@@ -99,14 +99,14 @@ const Survey = () => {
               <div className="flex-1 space-y-6">
                 <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/10 text-accent font-medium text-sm">
                   <UserPlus className="w-4 h-4" />
-                  <span>설문조사 패널 상시 모집</span>
+                  <span>설문조사 회원 상시 모집</span>
                 </div>
                 <h2 className="text-3xl md:text-4xl font-bold font-sans leading-tight">
                   당신의 경험이 <br className="hidden md:block"/> 한국 관광의 미래를 만듭니다.
                 </h2>
                 <p className="text-muted-foreground text-lg max-w-xl">
-                  투어리즘인사이트의 조사 패널이 되어주세요. <br />
-                  소셜 로그인으로 안전하고 빠르게 패널 회원이 되실 수 있습니다.
+                  투어리즘인사이트의 설문조사 회원이 되어주세요. <br />
+                  소셜 로그인으로 안전하고 빠르게 회원이 되실 수 있습니다.
                 </p>
                 <div className="flex items-center gap-6 pt-2">
                   <div className="flex items-center gap-2">
@@ -127,14 +127,14 @@ const Survey = () => {
                       <div className="bg-primary text-primary-foreground p-1 rounded-full">
                         <ShieldCheck className="w-6 h-6" />
                       </div>
-                      패널 가입 완료
+                      회원 가입 완료
                     </div>
                     <button 
                       onClick={() => navigate('/news')}
                       className="w-full md:w-auto px-10 py-4 rounded-2xl bg-rose-600 text-white font-bold text-lg hover:bg-rose-700 transition-all hover:scale-105 hover:shadow-xl hover:shadow-rose-200 flex items-center justify-center gap-2 group"
                     >
                       <ClipboardList className="w-5 h-5" />
-                      패널 전용 기획기사 보기
+                      회원 전용 기획기사 보기
                       <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                     </button>
                   </>
@@ -144,7 +144,7 @@ const Survey = () => {
                     className="w-full md:w-auto px-8 py-5 rounded-2xl bg-primary text-primary-foreground font-bold text-lg hover:bg-primary/90 transition-all hover:scale-105 hover:shadow-xl hover:shadow-primary/20 flex items-center justify-center gap-3"
                   >
                     <UserPlus className="w-6 h-6" />
-                    1분 만에 패널 가입하기
+                    1분 만에 회원 가입하기
                   </button>
                 )}
               </div>
