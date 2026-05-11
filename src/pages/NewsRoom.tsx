@@ -300,14 +300,14 @@ const NewsRoom = () => {
                 {!panelInfo && (
                   <div className="flex flex-col sm:flex-row items-center gap-6 bg-primary/5 px-6 py-4 rounded-2xl border border-primary/10">
                     <div className="text-center sm:text-left">
-                      <p className="text-[15px] font-semibold text-slate-900 leading-snug">패널 전용 기사는 설문패널 가입 회원에게만 제공되는 기획 기사입니다.</p>
-                      <p className="text-xs text-muted-foreground mt-1">설문패널에 간편가입하시면 기사를 보실 수 있습니다.</p>
+                      <p className="text-[15px] font-semibold text-slate-900 leading-snug">회원 전용 기사는 설문조사 가입 회원에게만 제공되는 기획 기사입니다.</p>
+                      <p className="text-xs text-muted-foreground mt-1">설문조사 회원으로 가입하시면 기사를 보실 수 있습니다.</p>
                     </div>
                     <button 
                       onClick={() => setIsModalOpen(true)}
                       className="whitespace-nowrap px-6 py-3 bg-primary text-white text-sm font-bold rounded-xl hover:bg-primary/90 transition-all hover:scale-105 shadow-lg shadow-primary/10"
                     >
-                      설문패널 회원 가입 하기
+                      설문조사 회원 가입 하기
                     </button>
                   </div>
                 )}
@@ -370,7 +370,7 @@ const NewsRoom = () => {
                                   <div className="absolute top-4 left-4 z-20">
                                     <div className="flex items-center gap-1.5 px-3 py-1.5 bg-rose-600/80 backdrop-blur-lg border border-white/20 text-white text-[11px] font-extrabold rounded-full shadow-2xl tracking-wider">
                                       <Lock className="w-3.5 h-3.5 fill-white/20" />
-                                      패널전용기사
+                                      회원전용기사
                                     </div>
                                   </div>
                                 )}
