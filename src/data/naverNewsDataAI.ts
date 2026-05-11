@@ -37,7 +37,7 @@ export const naverNewsDataAI = [
     "category": "AI & 데이터",
     "tag": "데이터 기반 큐레이션",
     "link": "https://n.news.naver.com/mnews/article/015/0005285602?sid=102",
-    "thumbnail": "/images/news/2026-05-11/article_ai_4.jpg"
+    "thumbnail": "/images/news/2026-05-11/article_ai_4b.jpg"
   },
   {
     "title": "“더 진화했다”…‘케이콘 재팬 2026’, 12만 명 동원하며 성료",
