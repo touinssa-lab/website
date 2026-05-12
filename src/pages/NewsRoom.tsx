@@ -49,7 +49,7 @@ const NewsRoom = () => {
   const [isNoticeModalOpen, setIsNoticeModalOpen] = useState(false);
   const [newsTab, setNewsTab] = useState<'tourism' | 'ai'>('tourism');
   const [startIndex, setStartIndex] = useState(0);
-  const [selectedDate, setSelectedDate] = useState<string>('2026-05-11');
+  const [selectedDate, setSelectedDate] = useState<string>('2026-05-12');
   const dateInputRef = useRef<HTMLInputElement>(null);
   const itemsPerPage = 9;
 
@@ -67,7 +67,7 @@ const NewsRoom = () => {
   const { data: trendKeywords = [], isLoading: isKeywordsLoading } = useQuery({
     queryKey: ['trend_keywords', selectedDate],
     queryFn: async () => {
-      if (selectedDate === '2026-05-11') {
+      if (selectedDate === '2026-05-12') {
         let lastSection = '';
         let currentRank = 0;
         return webTrendKeywords.map(item => {
@@ -139,7 +139,7 @@ const NewsRoom = () => {
   const { data: trendInsights = [], isLoading: isInsightsLoading } = useQuery({
     queryKey: ['trend_insights', selectedDate],
     queryFn: async () => {
-      if (selectedDate === '2026-05-11') {
+      if (selectedDate === '2026-05-12') {
         return insightCards.map(item => ({
           ...item,
           description: item.reason // mapping local 'reason' to DB 'description'
@@ -166,7 +166,7 @@ const NewsRoom = () => {
   const { data: trendArticles = [], isLoading: isTrendArticlesLoading } = useQuery({
     queryKey: ['trend_articles', selectedDate, newsTab],
     queryFn: async () => {
-      if (selectedDate === '2026-05-11') {
+      if (selectedDate === '2026-05-12') {
         const localData = newsTab === 'tourism' ? naverNewsData : naverNewsDataAI;
         return localData.map(item => ({
           ...item,
@@ -495,7 +495,7 @@ const NewsRoom = () => {
                           type="date" 
                           value={selectedDate}
                           min="2026-05-09"
-                          max="2026-05-11"
+                          max="2026-05-12"
                           onChange={(e) => setSelectedDate(e.target.value)}
                           className="bg-transparent border-none p-0 text-sm font-bold text-white focus:ring-0 cursor-pointer w-full [color-scheme:dark]"
                         />
