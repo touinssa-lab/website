@@ -63,7 +63,7 @@ const NewsManagement = () => {
         excerpt: item.excerpt,
         contentBlocks: item.content_blocks,
         visibility: item.visibility || "all"
-      })) as NewsArticle[];
+      })).sort((a, b) => Number(b.id) - Number(a.id)) as NewsArticle[];
     }
   });
 
