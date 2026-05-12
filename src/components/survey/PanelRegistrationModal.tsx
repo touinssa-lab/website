@@ -130,7 +130,7 @@ export const PanelRegistrationModal = ({ isOpen, onOpenChange }: PanelRegistrati
 
     setIsSubmitting(true);
     try {
-      const name = user.user_metadata?.full_name || user.email?.split('@')[0] || "패널";
+      const name = user.user_metadata?.full_name || user.email?.split('@')[0] || "회원";
       
       const { error } = await supabase.from('survey_panels').insert({
         id: user.id,
@@ -145,7 +145,7 @@ export const PanelRegistrationModal = ({ isOpen, onOpenChange }: PanelRegistrati
 
       toast({
         title: "가입 완료",
-        description: "설문조사 패널에 가입되었습니다. 새로고침을 통해 상태를 반영합니다.",
+        description: "회원 가입이 완료되었습니다. 새로고침을 통해 상태를 반영합니다.",
       });
       
       onOpenChange(false);
@@ -157,7 +157,7 @@ export const PanelRegistrationModal = ({ isOpen, onOpenChange }: PanelRegistrati
       console.error(error);
       toast({
         title: "저장 실패",
-        description: error.message || "패널 정보 저장 중 오류가 발생했습니다.",
+        description: error.message || "회원 정보 저장 중 오류가 발생했습니다.",
         variant: "destructive"
       });
     } finally {
@@ -176,7 +176,7 @@ export const PanelRegistrationModal = ({ isOpen, onOpenChange }: PanelRegistrati
       <DialogContent className="sm:max-w-[550px] p-0 overflow-hidden bg-card/95 backdrop-blur-xl border-border">
         <div className="bg-muted/30 px-6 py-4 border-b border-border/50">
           <div className="flex items-center justify-between mb-4 relative">
-            <DialogTitle className="text-xl font-bold font-serif">설문조사 패널 가입</DialogTitle>
+            <DialogTitle className="text-xl font-bold font-serif">홈페이지 회원 가입</DialogTitle>
             <div className="flex gap-2 items-center">
               <div className="flex gap-1.5 mr-4">
                 <div className={`w-2 h-2 rounded-full ${step === 1 ? 'bg-primary' : 'bg-muted-foreground/30'}`} />
@@ -222,11 +222,11 @@ export const PanelRegistrationModal = ({ isOpen, onOpenChange }: PanelRegistrati
                   </div>
                   <div>
                     <h4 className="font-medium mb-1">보유 및 이용기간</h4>
-                    <p className="text-muted-foreground">패널 가입 철회 시점까지 또는 법령에 따른 보존기간</p>
+                    <p className="text-muted-foreground">회원 탈퇴 시점까지 또는 법령에 따른 보존기간</p>
                   </div>
                   <div>
                     <h4 className="font-medium mb-1">동의거부 권리</h4>
-                    <p className="text-muted-foreground">동의를 거부할 수 있으며, 거부 시 패널에 가입하실 수 없습니다.</p>
+                    <p className="text-muted-foreground">동의를 거부할 수 있으며, 거부 시 회원 가입을 하실 수 없습니다.</p>
                   </div>
                 </div>
               </ScrollArea>
@@ -410,7 +410,7 @@ export const PanelRegistrationModal = ({ isOpen, onOpenChange }: PanelRegistrati
           
           {step === 3 && (
             <Button onClick={handleComplete} disabled={isSubmitting} className="bg-primary text-primary-foreground min-w-[140px]">
-              {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : "패널 가입 완료하기"}
+              {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : "회원 가입 완료하기"}
             </Button>
           )}
         </div>

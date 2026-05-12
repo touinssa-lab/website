@@ -49,7 +49,7 @@ export function useAuth() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/survey`,
+          redirectTo: window.location.href,
           queryParams: {
             access_type: 'offline',
             prompt: 'consent',
@@ -68,7 +68,7 @@ export function useAuth() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'kakao',
         options: {
-          redirectTo: `${window.location.origin}/survey`,
+          redirectTo: window.location.href,
         },
       });
       if (error) throw error;
@@ -83,7 +83,7 @@ export function useAuth() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'facebook',
         options: {
-          redirectTo: `${window.location.origin}/survey`,
+          redirectTo: window.location.href,
         },
       });
       if (error) throw error;
