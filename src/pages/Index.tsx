@@ -38,7 +38,7 @@ const Index = () => {
       const { data, error } = await supabase
         .from('news_articles')
         .select('*')
-        .order('date', { ascending: false })
+        .order('article_id', { ascending: false })
         .limit(4);
       
       if (error) throw error;
@@ -52,7 +52,7 @@ const Index = () => {
         excerpt: item.excerpt,
         contentBlocks: item.content_blocks,
         visibility: item.visibility || 'all'
-      })) as NewsArticle[];
+      })).sort((a, b) => Number(b.id) - Number(a.id)) as NewsArticle[];
     }
   });
 
