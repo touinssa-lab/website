@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, User, Bot, MapPin, Briefcase, MessageSquare, Info, ChevronLeft, Trash2, Map as MapIcon, Ship, Users, Languages, Sparkles, Database } from "lucide-react";
+import { Send, User, Bot, MapPin, Briefcase, MessageSquare, Info, ChevronLeft, Trash2, Map as MapIcon, Ship, Users, Languages, Sparkles, Database, ArrowRight, CheckCircle2, Loader2, X, HelpCircle, Play } from "lucide-react";
 import personasData from "@/data/personas_sample.json";
 import personaTranslations from "@/data/persona_translations.json";
 import SouthKoreaMap from "@/components/SouthKoreaMap";
@@ -11,7 +11,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
 import { PanelRegistrationModal } from "@/components/survey/PanelRegistrationModal";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { supabase } from "@/lib/supabase";
+import { AIGuideTour } from "./AIGuideTour";
 
 interface Persona {
   uuid: string;
@@ -50,11 +57,11 @@ const provinceTranslations: Record<string, Record<Language, string>> = {
   "강원": { ko: "강원특별자치도", en: "Gangwon", zh: "江原道", ja: "江原道" },
   "충북": { ko: "충청북도", en: "Chungbuk", zh: "忠清北道", ja: "忠清北道" },
   "충남": { ko: "충청남도", en: "Chungnam", zh: "忠清南道", ja: "忠清南道" },
-  "전북": { ko: "전북특별자치도", en: "Jeonbuk", zh: "全羅北道", ja: "全羅北道" },
-  "전남": { ko: "전라남도", en: "Jeonnam", zh: "全羅南道", ja: "全羅南道" },
-  "경북": { ko: "경상북도", en: "Gyeongbuk", zh: "慶尚北道", ja: "慶尚北道" },
-  "경남": { ko: "경상남도", en: "Gyeongnam", zh: "慶尚南道", ja: "慶尚南道" },
-  "제주": { ko: "제주특별자치도", en: "Jeju", zh: "済州道", ja: "済州道" },
+  "전북": { ko: "전북특별자치도", en: "Jeonbuk", zh: "全罗北道", ja: "全罗北道" },
+  "전남": { ko: "전라남도", en: "Jeonnam", zh: "全罗南道", ja: "全罗南道" },
+  "경북": { ko: "경상북도", en: "Gyeongbuk", zh: "庆尚北道", ja: "庆尚北道" },
+  "경남": { ko: "경상남도", en: "Gyeongnam", zh: "庆尚南道", ja: "庆尚南道" },
+  "제주": { ko: "제주특별자치도", en: "Jeju", zh: "济州道", ja: "济州道" },
 };
 
 const translateContent = (text: string, type: 'occupations' | 'districts' | 'hobbies' | 'sex' | 'age', lang: Language) => {
@@ -92,37 +99,54 @@ const getPersonaMedia = (age: number, sex: string) => {
   return { image: `${basePath}.png`, video: `${basePath}.mp4` };
 };
 
-const chatbotTranslations = {
+const chatbotTranslations: Record<string, any> = {
   ko: {
-    selectRegion: "여행하고 싶은 지역을 선택해 주세요.",
+    selectRegion: "여행하고 싶은 지역을 선택해주세요.",
     chatbotTitle: "로컬 스토리 챗봇",
     chatbotSubtitle: "현지인의 시선으로 여행을 설계하세요",
     inputPlaceholder: "질문을 입력하세요...",
-    loadingStatus: "답변 중입니다. 잠시만 기다려 주세요",
+    loadingStatus: "답변 중입니다. 잠시만 기다려주세요",
     occupation: "직업",
     age: "나이",
     hobbies: "취미 및 관심사",
     guideSuffix: "가이드",
     changeLang: "언어 변경하기",
     otherRegion: "다른 지역 여행하기",
-    limitExceeded: "질문 횟수가 초과되었습니다.",
-    authRequired: "로컬 스토리 챗봇은 회원만 이용하실 수 있습니다.",
-    quickSignUp: "1분 간단 회원가입하기",
+    limitExceeded: "질문 횟수를 초과했습니다.",
+    authRequired: "로컬 스토리 챗봇은 회원 전용 서비스입니다.",
+    quickSignUp: "1분 간편 회원가입",
     login: "로그인하기",
     loggedIn: "로그인 중",
     logout: "로그아웃",
+    guideButton: "AI챗봇 이용안내 가이드",
+    tour: {
+      step0_title: "AI 가이드 이용 안내",
+      step0_content: "로컬 스토리 챗봇을 처음 이용하시나요? 1분 만에 주요 기능을 안내해 드릴게요!",
+      step1_title: "로그인 후 이용 가능",
+      step1_content: "로컬 스토리 챗봇은 회원 전용 서비스입니다. 먼저 회원가입 및 로그인을 완료해 주세요.",
+      step2_title: "언어 선택",
+      step2_content: "한국어뿐만 아니라 영어, 중국어, 일본어로도 대화할 수 있습니다. 언어 변경하기 버튼을 클릭하시면 상단에 다른 언어로 변경할 수 있습니다.",
+      step3_title: "선택한 지역 로컬 가이드 등장",
+      step3_content: "선택하신 지역의 실제 거주자를 기반으로 한 AI 페르소나가 등장합니다. 현지인의 생생한 이야기를 들어보세요.",
+      step4_title: "다른 지역 여행하기",
+      step4_content: "다른 지역의 정보가 궁금하다면 언제든지 이 버튼을 눌러 지도로 이동할 수 있습니다.",
+      step5_title: "AI와 대화하기",
+      step5_content: "궁금한 맛집, 명소, 코스 등을 자유롭게 질문해 보세요. AI가 당신을 위한 여행을 설계해 드립니다.",
+      step6_title: "지도 및 길안내",
+      step6_content: "AI가 추천한 장소명을 클릭하면 지도에서 위치를 확인하고, 지도핀을 클릭하면 현재 위치에서의 길안내를 받을 수 있습니다.",
+    },
     infoText: (selectedPersona: any, isUnlimited: boolean, isMember: boolean) => {
       return (
         <div className="space-y-2">
           <p className="font-bold text-sky-700">
-            {isMember ? "● 로그인 중입니다. 로컬 스토리 챗봇 서비스를 이용하실 수 있습니다." : "● 로그인 후 이용하실 수 있습니다."}
+            {isMember ? "● 로그인 상태입니다. 로컬 스토리 챗봇 서비스를 이용하실 수 있습니다." : "● 서비스 이용을 위해 로그인을 해주세요."}
           </p>
           <ul className="space-y-1 list-none">
-            <li>- AI 페르소나의 답변에는 정보의 무결성에 오차(예: 안내 장소 폐업, 당일 임시 휴무 등)가 있을 수 있습니다.</li>
+            <li>- AI 페르소나의 답변은 정보의 무결성에 오차(예: 폐업, 당일 임시 휴무 등)가 있을 수 있습니다.</li>
             <li className="text-red-500 font-bold">- 질문 입력 후 잠시만 기다려 주세요. 네트워크 상황에 따라 시간이 걸릴 수 있습니다.</li>
-            <li>- AI가 안내한 <span className="text-sky-600 font-bold underline underline-offset-2">장소명</span>을 클릭하면 지도로 상세 위치를 보여줍니다.</li>
+            <li>- AI가 안내한 <span className="text-sky-600 font-bold underline underline-offset-2">장소명</span>을 클릭하면 지도에서 상세 위치를 보여줍니다.</li>
             <li>- 장소명 앞에 표시된 <span className="text-red-500 font-bold">'빨간색 지도핀'</span>을 클릭하면 현재 위치에서 해당 장소까지 길안내를 보여줍니다.</li>
-            <li>- <span className="text-sky-600 font-bold italic">"'{selectedPersona?.district || '구로구'}'에서 하루종일 놀 수 있는 코스 짜주세요"</span> 라고 입력해 보세요.</li>
+            <li>- <span className="text-sky-600 font-bold italic">"{selectedPersona?.district || '구로구'}에서 하루종일 놀 수 있는 코스 짜주세요"</span>라고 입력해 보세요.</li>
           </ul>
         </div>
       );
@@ -144,8 +168,25 @@ const chatbotTranslations = {
     authRequired: "Local Story Chatbot is for members only.",
     quickSignUp: "1-min Quick Sign-up",
     login: "Login",
-    loggedIn: "Logged in",
+    loggedIn: "Logged In",
     logout: "Logout",
+    guideButton: "AI Chatbot User Guide",
+    tour: {
+      step0_title: "AI Guide Introduction",
+      step0_content: "New to Local Story Chatbot? Let us guide you through the key features in just 1 minute!",
+      step1_title: "Login Required",
+      step1_content: "Local Story Chatbot is a members-only service. Please complete sign-up and login first.",
+      step2_title: "Language Selection",
+      step2_content: "You can chat in English, Chinese, and Japanese as well as Korean. Click the 'Change Language' button to switch languages at the top.",
+      step3_title: "Local Guide Appearance",
+      step3_content: "An AI persona based on an actual resident of your selected region appears. Hear authentic local stories.",
+      step4_title: "Explore Other Regions",
+      step4_content: "If you're curious about other regions, click this button to return to the map anytime.",
+      step5_title: "Chat with AI",
+      step5_content: "Ask about restaurants, attractions, or travel courses. AI will design the perfect trip for you.",
+      step6_title: "Maps & Directions",
+      step6_content: "Click a place name to see its location on the map, or click the map pin for directions from your current location.",
+    },
     infoText: (selectedPersona: any, isUnlimited: boolean, isMember: boolean) => {
       return (
         <div className="space-y-2">
@@ -181,6 +222,23 @@ const chatbotTranslations = {
     login: "登录",
     loggedIn: "已登录",
     logout: "登出",
+    guideButton: "AI聊天机器人使用指南",
+    tour: {
+      step0_title: "AI指南介绍",
+      step0_content: "第一次使用本地故事聊天机器人吗？让我们在1分钟内为您介绍主要功能！",
+      step1_title: "需要登录",
+      step1_content: "本地故事聊天机器人是会员专用服务。请先完成注册并登录。",
+      step2_title: "语言选择",
+      step2_content: "除了韩语，您还可以用英语、中文和日语聊天。点击“更改语言”按钮即可在上方切换语言。",
+      step3_title: "当地导游登场",
+      step3_content: "基于您选择区域的实际居民的AI角色将会出现。听听真实的当地故事。",
+      step4_title: "探索其他地区",
+      step4_content: "如果您对其他地区感兴趣，可以随时点击此按钮返回地图。",
+      step5_title: "与AI交流",
+      step5_content: "自由提问美食、景点或旅行路线。AI将为您规划完美的旅行。",
+      step6_title: "地图与路线",
+      step6_content: "点击地点名称可在地图上查看位置，点击地图图标可获取从当前位置出发的路线导航。",
+    },
     infoText: (selectedPersona: any, isUnlimited: boolean, isMember: boolean) => {
       return (
         <div className="space-y-2">
@@ -212,27 +270,44 @@ const chatbotTranslations = {
     otherRegion: "他の地域へ行く",
     limitExceeded: "質問回数が制限を超えました.",
     authRequired: "ローカルストーリーチャットボットは会員のみ利用可能です。",
-    quickSignUp: "1分で簡単会員登録",
+    quickSignUp: "1분 간편 회원가입",
     login: "ログイン",
     loggedIn: "ログイン中",
     logout: "ログアウト",
+    guideButton: "AIチャットボット利用ガイド",
+    tour: {
+      step0_title: "AIガイド利用案内",
+      step0_content: "ローカルストーリーチャットボットは初めてですか？1分で主な機能をご案内します！",
+      step1_title: "ログインが必要です",
+      step1_content: "ローカルストーリーチャットボットは会員専用サービスです。まず会員登録とログインを完了してください。",
+      step2_title: "言語選択",
+      step2_content: "韓国語だけでなく、英語、中国語、日本語でも会話できます。「言語を変更」ボタンをクリックすると、上部で他の言語に切り替えることができます。",
+      step3_title: "現地ガイドの登場",
+      step3_content: "選択した地域の実際の居住者に基づいたAIペルソナが登場します。現地人のリアルな話を聞いてみてください。",
+      step4_title: "他の地域を旅する",
+      step4_content: "他の地域の情報が気になる場合は、いつでもこのボタンを押して地図に戻ることができます。",
+      step5_title: "AIと対話する",
+      step5_content: "おすすめのグルメ, 名所, コースなどを自由に質問してみてください。AIがあなたのために旅行を設計します。",
+      step6_title: "地図とルート案内",
+      step6_content: "場所名をクリックすると地図で位置を確認でき、ピンをクリックすると現在地からのルート案内を受けられます。",
+    },
     infoText: (selectedPersona: any, isUnlimited: boolean, isMember: boolean) => {
       return (
         <div className="space-y-2">
           <p className="font-bold text-sky-700">
-            {isMember ? "● ログイン中です。ローカルストーリーチャットボットサービスをご利用いただけます。" : "● ログイン後にご利用いただけます。"}
+            {isMember ? "● ログイン中です。ローカルストーリーチャットボットサービスを利用できます。" : "● サービス利用のためにログインしてください。"}
           </p>
           <ul className="space-y-1 list-none">
-            <li>- AIペルソナ의回答에는情報の完全性に誤差（例：案内場所の廃業、当日臨時休業など）がある場合があります.</li>
-            <li className="text-red-500 font-bold">- 質問入力後、少々お待ちください. ネットワーク状況により時間がかかる場合があります.</li>
-            <li>- AIが案内した <span className="text-sky-600 font-bold underline underline-offset-2">場所名</span> をクリックすると, 地図で詳細な位置を表示します.</li>
-            <li>- 場所名の前に表示されている <span className="text-red-500 font-bold">'赤い地図ピン'</span> をクリックすると, 現在地からその場所までのルート案内を表示します.</li>
-            <li>- <span className="text-sky-600 font-bold italic">「『{selectedPersona?.district || '九老区'}』で一日中遊べるコースを立ててください」</span>と入力してみてください.</li>
+            <li>- AIペルソナの回答は情報の無謬性に誤差（例：廃業、当日臨時休業など）がある場合があります。</li>
+            <li className="text-red-500 font-bold">- 質問入力後, しばらくお待ちください. ネットワーク状況により時間がかかる場合があります.</li>
+            <li>- AIが案内した<span className="text-sky-600 font-bold underline underline-offset-2">場所名</span>をクリックすると地図で詳細な位置を表示します。</li>
+            <li>- 場所名の前に表示された<span className="text-red-500 font-bold">「赤い地図ピン」</span>をクリックすると現在地からその場所までのルート案内を表示します。</li>
+            <li>- <span className="text-sky-600 font-bold italic">「{selectedPersona?.district || '九老区'}で一日中遊べるコースを立ててください」</span>と入力してみてください。</li>
           </ul>
         </div>
       );
     },
-  }
+  },
 };
 
 interface AIGuideChatProps {
@@ -248,6 +323,7 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [chatCount, setChatCount] = useState<number>(0);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isTourOpen, setIsTourOpen] = useState(false);
   const scrollEndRef = useRef<HTMLDivElement>(null);
 
   const { user } = useAuth();
@@ -330,8 +406,8 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
     const introText = {
       ko: `저는 ${translateContent(randomPersona.district, 'districts', 'ko').replace('-', ' ')}에 살고 있는 ${translateContent(randomPersona.occupation, 'occupations', 'ko')}입니다. 우리 동네에 대해 궁금한 거 있으면 뭐든 물어보세요!`,
       en: `I am a ${translateContent(randomPersona.occupation, 'occupations', 'en')} living in ${translateContent(randomPersona.district, 'districts', 'en').replace('-', ' ')}. Ask me anything about our neighborhood!`,
-      zh: `我是住在 ${translateContent(randomPersona.district, 'districts', 'zh').replace('-', ' ')} 的一名 ${translateContent(randomPersona.occupation, 'occupations', 'zh')}。如果您对我们这里有什么好奇的，尽管问我！`,
-      ja: `私は ${translateContent(randomPersona.district, 'districts', 'ja').replace('-', ' ')} に住んでいる ${translateContent(randomPersona.occupation, 'occupations', 'ja')} です. 私たちの街について気になることがあれば, 何でも聞いてください！`
+      zh: `我是居住在 ${translateContent(randomPersona.district, 'districts', 'zh').replace('-', ' ')} 的 ${translateContent(randomPersona.occupation, 'occupations', 'zh')}。关于我们这里，您有什么想了解的尽管问我吧！`,
+      ja: `私は ${translateContent(randomPersona.district, 'districts', 'ja').replace('-', ' ')} に住んでいる ${translateContent(randomPersona.occupation, 'occupations', 'ja')} です。私たちの街について気になることがあれば何でも聞いてくださいね！`,
     };
 
     setMessages([{ role: "bot", content: `${greetings[selectedLang]} ${introText[selectedLang]}` }]);
@@ -348,7 +424,6 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
   const handleSend = async () => {
     if (!input.trim() || !selectedPersona) return;
 
-    // Member check
     if (!isMember) {
       const loginStatusMsg = {
         ko: "로그인 후 이용하실 수 있습니다.",
@@ -386,14 +461,14 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
         Instructions:
         1. **Tone**: Speak naturally and warmly like a friendly neighbor.
         2. **Language**: Always reply in ${selectedLang}.
-        3. **Formatting**: Use 📍[LocationName] for map links. Example: 📍[Namsan Tower].
+        3. **Formatting**: Use [LocationName] for map links. Example: [Namsan Tower].
         4. **Persona**: You are a real person, not an AI.
       `;
 
       const API_KEY = import.meta.env.VITE_GOOGLE_GEMINI_API_KEY;
       if (!API_KEY) throw new Error("API Key is missing in environment variables.");
 
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${API_KEY}`, {
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -442,35 +517,34 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
 
   return (
     <div className="space-y-12">
-      <div className="flex flex-col lg:flex-row items-center lg:items-start mb-8 gap-12 relative z-50 w-full max-w-6xl mx-auto">
-        {/* Auth Info Section - Aligned with Map (max-w-[550px]) */}
-        <div className="flex-1 w-full lg:max-w-[550px]">
-          <div className="flex items-center justify-between bg-white/90 backdrop-blur-md rounded-full px-6 py-2 shadow-lg border border-sky-100 h-[56px]">
-            <p className="text-xs md:text-sm font-bold text-slate-600 truncate mr-2">{t.authRequired}</p>
+      <div className="flex flex-col xl:flex-row items-center justify-between mb-8 gap-4 xl:gap-8 relative z-50 w-full max-w-6xl mx-auto transition-all duration-500">
+        <div className="w-full xl:w-[550px] shrink-0">
+          <div className="flex items-center justify-between bg-white/90 backdrop-blur-md rounded-full px-4 md:px-6 py-2 shadow-lg border border-sky-100 h-[56px]">
+            <p className="text-[11px] md:text-sm font-bold text-slate-600 truncate mr-2">{t.authRequired}</p>
             {isMember ? (
               <div className="flex items-center gap-2 shrink-0">
-                <div className="flex items-center gap-2 text-sky-600 font-extrabold text-xs md:text-sm bg-sky-50 px-4 py-1.5 rounded-full border border-sky-100 whitespace-nowrap">
+                <div className="flex items-center gap-1.5 md:gap-2 text-sky-600 font-extrabold text-[10px] md:text-sm bg-sky-50 px-4 py-1.5 rounded-full border border-sky-100 whitespace-nowrap">
                   <div className="w-2 h-2 rounded-full bg-sky-500 animate-pulse" />
                   {t.loggedIn}
                 </div>
                 <button
                   onClick={() => supabase.auth.signOut()}
-                  className="text-[10px] md:text-xs font-bold text-red-500 hover:text-red-600 bg-red-50 px-3 py-1.5 rounded-full border border-red-100 transition-colors whitespace-nowrap cursor-pointer active:scale-95"
+                  className="text-[9px] md:text-xs font-bold text-red-500 hover:text-red-600 bg-red-50 px-3 py-1.5 rounded-full border border-red-100 transition-colors whitespace-nowrap cursor-pointer active:scale-95"
                 >
                   {t.logout}
                 </button>
               </div>
             ) : (
-              <div className="flex items-center gap-2 shrink-0">
+              <div id="tour-login-section" className="flex items-center gap-2 shrink-0">
                 <button 
                   onClick={() => setIsAuthModalOpen(true)}
-                  className="text-[10px] md:text-xs font-bold text-sky-600 hover:text-sky-700 bg-sky-50 px-3 py-1.5 rounded-full border border-sky-100 transition-colors whitespace-nowrap cursor-pointer active:scale-95"
+                  className="text-[9px] md:text-xs font-bold text-sky-600 hover:text-sky-700 bg-sky-50 px-3 py-1.5 rounded-full border border-sky-100 transition-colors whitespace-nowrap cursor-pointer active:scale-95"
                 >
                   {t.quickSignUp}
                 </button>
                 <button 
                   onClick={() => setIsAuthModalOpen(true)}
-                  className="text-[10px] md:text-xs font-bold text-slate-500 hover:text-slate-700 bg-slate-50 px-3 py-1.5 rounded-full border border-slate-200 transition-colors whitespace-nowrap cursor-pointer active:scale-95"
+                  className="text-[9px] md:text-xs font-bold text-slate-500 hover:text-slate-700 bg-slate-50 px-3 py-1.5 rounded-full border border-slate-200 transition-colors whitespace-nowrap cursor-pointer active:scale-95"
                 >
                   {t.login}
                 </button>
@@ -479,46 +553,64 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
           </div>
         </div>
 
-        {/* Language Selection Section - Aligned with Region Selection (lg:w-[550px]) */}
-        <div className="w-full lg:w-[550px]">
-          <div className="flex bg-white/80 backdrop-blur-md rounded-full p-1 shadow-xl border border-sky-100 items-center h-[56px]">
-            <div className="px-3 md:px-5 py-2 flex items-center gap-2 text-sky-600 border-r border-sky-100 mr-1 shrink-0">
-              <Languages className="w-4 h-4" />
-              <span className="text-[10px] md:text-xs font-bold uppercase tracking-wider hidden sm:inline">Language</span>
-            </div>
-            <div className="flex flex-1 justify-around">
-              {Object.entries(langConfig).map(([key, config]) => {
-                const isSelected = selectedLang === key;
-                const isDisabled = !!selectedPersona;
-                
-                return (
-                  <button
-                    key={key}
-                    onClick={() => !isDisabled && setSelectedLang(key as Language)}
-                    disabled={isDisabled}
-                    className={`flex-1 mx-0.5 px-2 md:px-4 py-2 rounded-xl text-xs md:text-sm font-bold transition-all duration-300 whitespace-nowrap text-center
-                      ${isDisabled 
-                        ? 'cursor-not-allowed opacity-30 grayscale' 
-                        : 'cursor-pointer active:scale-95 hover:bg-sky-50'
-                      }
-                      ${isSelected 
-                        ? (isDisabled ? 'bg-slate-400 text-white shadow-none' : 'bg-sky-500 text-white shadow-md')
-                        : (isDisabled ? 'text-slate-400' : 'text-slate-500 hover:text-sky-600')
-                      }
-                    `}
-                  >
-                    {config.label}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+        <div className="w-full xl:w-[550px] flex justify-end shrink-0">
+          <AnimatePresence mode="wait">
+            {!selectedPersona ? (
+              <motion.div 
+                key="lang-selector"
+                id="tour-language-selector" 
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                className="w-full"
+              >
+                <div className="flex bg-white/80 backdrop-blur-md rounded-full p-1 shadow-xl border border-sky-100 items-center h-[56px]">
+                  <div className="px-5 py-2 flex items-center gap-2 text-sky-600 border-r border-sky-100 mr-1 shrink-0">
+                    <Languages className="w-4 h-4" />
+                    <span className="text-[10px] md:text-xs font-bold uppercase tracking-wider hidden sm:inline">Language</span>
+                  </div>
+                  <div className="flex flex-1 justify-around gap-1 px-1">
+                    {Object.entries(langConfig).map(([key, config]) => (
+                      <button
+                        key={key}
+                        onClick={() => setSelectedLang(key as Language)}
+                        className={`flex-1 px-2 py-2 rounded-xl text-[11px] md:text-sm font-bold transition-all duration-300 whitespace-nowrap text-center cursor-pointer active:scale-95 hover:bg-sky-50
+                          ${selectedLang === key ? 'bg-sky-500 text-white shadow-md' : 'text-slate-500 hover:text-sky-600'}
+                        `}
+                      >
+                        {config.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="guide-button"
+                id="tour-guide-button"
+                initial={{ opacity: 0, scale: 0.9, x: 20 }}
+                animate={{ opacity: 1, scale: 1, x: 0 }}
+                exit={{ opacity: 0, scale: 0.9, x: 20 }}
+                className="shrink-0"
+              >
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setIsTourOpen(true)}
+                  className="relative group overflow-hidden bg-gradient-to-r from-amber-500 via-orange-600 to-amber-500 bg-[length:200%_auto] hover:bg-[100%_auto] text-white px-6 py-3 rounded-full shadow-lg shadow-amber-500/30 flex items-center gap-3 transition-all duration-300 border-2 border-white/20 h-[56px]"
+                >
+                  <Sparkles className="w-5 h-5" />
+                  <span className="font-bold text-sm md:text-base whitespace-nowrap">{t.guideButton}</span>
+                </motion.button>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
 
       {!selectedPersona ? (
         <div className="flex flex-col lg:flex-row gap-12 items-center lg:items-start max-w-6xl mx-auto">
-          <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex-1 w-full max-w-[550px]">
+          <motion.div id="tour-map-section" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex-1 w-full max-w-[550px]">
             <div className="bg-card/50 backdrop-blur-xl rounded-3xl p-4 md:p-6 shadow-2xl border border-border/50 relative overflow-hidden group">
               <SouthKoreaMap
                 data={provinces.map(prov => ({ region: prov, count: 30 }))}
@@ -530,7 +622,7 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
               />
             </div>
           </motion.div>
-          <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="w-full lg:w-[550px]">
+          <motion.div id="tour-region-buttons" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="w-full lg:w-[550px]">
             <h4 className="text-xl font-bold mb-6 text-center lg:text-left text-primary/80 font-serif">{t.selectRegion}</h4>
             <div className="grid grid-cols-3 gap-3">
               {provinces.map((prov) => (
@@ -543,7 +635,7 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
         </div>
       ) : (
         <div className="grid lg:grid-cols-[300px_1fr] gap-8">
-          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
+          <motion.div id="tour-persona-card" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
             <Card className="overflow-hidden border-none shadow-2xl bg-gradient-to-br from-card to-muted/50 rounded-3xl">
               <div className="aspect-[3/4] relative">
                 <video key={selectedPersona.video} src={selectedPersona.video} autoPlay loop muted playsInline poster={selectedPersona.image} className="w-full h-full object-cover" />
@@ -577,10 +669,12 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
 
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="flex flex-col h-[830px] bg-card rounded-3xl border shadow-xl overflow-hidden">
             <div className="p-4 md:p-6 border-b bg-muted/30 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-              <div className="flex items-center gap-3">
+              <div id="tour-chatbot-header" className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0"><MessageSquare className="h-5 w-5" /></div>
                 <div>
-                  <h3 className="font-bold text-base md:text-lg whitespace-nowrap">{t.chatbotTitle}</h3>
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-bold text-base md:text-lg whitespace-nowrap">{t.chatbotTitle}</h3>
+                  </div>
                   <p className="text-[11px] md:text-xs text-muted-foreground">{t.chatbotSubtitle}</p>
                 </div>
               </div>
@@ -591,44 +685,41 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
                   </motion.div>
                 )}
                 <div className="flex gap-2 w-full md:w-auto">
-                  <Button variant="outline" onClick={() => setSelectedPersona(null)} className="flex-1 md:flex-none border-primary text-primary hover:bg-primary/10 gap-1.5 md:gap-2 font-extrabold h-10 md:h-11 px-3 md:px-6 text-xs md:text-sm"><Languages className="h-4 w-4 md:h-5 md:w-5" /> {t.changeLang}</Button>
-                  <Button variant="default" onClick={() => setSelectedPersona(null)} className="flex-1 md:flex-none bg-primary hover:bg-primary/90 text-primary-foreground gap-1.5 md:gap-2 font-extrabold h-10 md:h-11 px-3 md:px-6 text-xs md:text-sm"><MapIcon className="h-4 w-4 md:h-5 md:w-5" /> {t.otherRegion}</Button>
+                  <Button variant="outline" id="tour-change-lang-button" onClick={() => setSelectedPersona(null)} className="flex-1 md:flex-none border-primary text-primary hover:bg-primary/10 gap-1.5 md:gap-2 font-extrabold h-10 md:h-11 px-3 md:px-6 text-xs md:text-sm"><Languages className="h-4 w-4 md:h-5 md:w-5" /> {t.changeLang}</Button>
+                  <Button variant="default" id="tour-explore-other" onClick={() => setSelectedPersona(null)} className="flex-1 md:flex-none bg-primary hover:bg-primary/90 text-primary-foreground gap-1.5 md:gap-2 font-extrabold h-10 md:h-11 px-3 md:px-6 text-xs md:text-sm"><MapIcon className="h-4 w-4 md:h-5 md:w-5" /> {t.otherRegion}</Button>
                 </div>
               </div>
             </div>
 
-            <ScrollArea className="flex-1 p-6 bg-[#abc1d1]">
+            <ScrollArea id="tour-chat-area" className="flex-1 p-6 bg-[#abc1d1]">
               <div className="space-y-6">
                 {messages.map((msg, index) => (
                   <div key={index} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                     <div className="max-w-[85%] space-y-3">
                       <div className={`p-5 rounded-2xl text-[15px] leading-relaxed whitespace-pre-wrap ${msg.role === "user" ? "bg-[#FEE500] text-black rounded-tr-none shadow-sm" : "bg-white text-black rounded-tl-none shadow-sm"}`}>
-                        {msg.content.split(/(📍\s?\[[^\]]+\]|\*\*[\s\S]*?\*\*)/g).map((part, i) => {
-                          if (part.match(/📍\s?\[(.*?)\]/)) {
-                            const match = part.match(/📍\s?\[(.*?)\]/);
-                            if (match) {
-                              const locationName = match[1].trim();
-                              const provinceName = selectedPersona?.province || "";
-                              const fullLocationQuery = `${provinceName} ${locationName}`;
-                              return (
-                                <span key={i} className="inline-flex items-center gap-1 mx-1.5 bg-sky-50 px-2 py-0.5 rounded-md border border-sky-100 shadow-sm relative top-[-1px] align-middle">
-                                  <button 
-                                    onClick={(e) => { e.stopPropagation(); openMapPopup(`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(fullLocationQuery)}`); }} 
-                                    className="p-0.5 rounded text-red-500 hover:bg-red-50 transition-colors cursor-pointer"
-                                    title="길찾기"
-                                  >
-                                    <MapPin className="w-3.5 h-3.5 fill-red-500" />
-                                  </button>
-                                  <button 
-                                    onClick={() => openMapPopup(`https://maps.google.com/?q=${encodeURIComponent(fullLocationQuery)}`)} 
-                                    className="text-sky-600 font-bold hover:underline cursor-pointer text-[14px]"
-                                    title="지도 보기"
-                                  >
-                                    {locationName}
-                                  </button>
-                                </span>
-                              );
-                            }
+                        {msg.content.split(/(\[[^\]]+\]|\*\*[\s\S]*?\*\*)/g).map((part, i) => {
+                          if (part.startsWith('[') && part.endsWith(']')) {
+                            const locationName = part.slice(1, -1);
+                            const provinceName = selectedPersona?.province || "";
+                            const fullLocationQuery = `${provinceName} ${locationName}`;
+                            return (
+                              <span key={i} className="inline-flex items-center gap-1 mx-1.5 bg-sky-50 px-2 py-0.5 rounded-md border border-sky-100 shadow-sm relative top-[-1px] align-middle">
+                                <button 
+                                  onClick={(e) => { e.stopPropagation(); openMapPopup(`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(fullLocationQuery)}`); }} 
+                                  className="p-0.5 rounded text-red-500 hover:bg-red-50 transition-colors cursor-pointer"
+                                  title="길찾기"
+                                >
+                                  <MapPin className="w-3.5 h-3.5 fill-red-500" />
+                                </button>
+                                <button 
+                                  onClick={() => openMapPopup(`https://maps.google.com/?q=${encodeURIComponent(fullLocationQuery)}`)} 
+                                  className="text-sky-600 font-bold hover:underline cursor-pointer text-[14px]"
+                                  title="지도 보기"
+                                >
+                                  {locationName}
+                                </button>
+                              </span>
+                            );
                           }
                           if (part.startsWith('**') && part.endsWith('**')) return <strong key={i} className="font-bold text-sky-800">{part.slice(2, -2)}</strong>;
                           return part;
@@ -641,7 +732,7 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
               </div>
             </ScrollArea>
 
-            <div className="p-6 border-t bg-muted/10 space-y-4">
+            <div id="tour-chat-input" className="p-6 border-t bg-muted/10 space-y-4">
               <form onSubmit={(e) => { e.preventDefault(); handleSend(); }} className="flex gap-2">
                 <Input placeholder={t.inputPlaceholder} value={input} onChange={(e) => setInput(e.target.value)} className="flex-1 h-12 rounded-xl bg-background border-primary/20 text-base font-semibold" />
                 <Button type="submit" disabled={isLoading} className="h-12 w-12 rounded-xl bg-primary shadow-md"><Send className="h-5 w-5" /></Button>
@@ -655,6 +746,15 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
         </div>
       )}
       <PanelRegistrationModal isOpen={isAuthModalOpen} onOpenChange={setIsAuthModalOpen} />
+      
+      {isTourOpen && (
+        <AIGuideTour 
+          isOpen={isTourOpen} 
+          onClose={() => setIsTourOpen(false)} 
+          isMember={isMember}
+          translations={t.tour}
+        />
+      )}
     </div>
   );
 };
