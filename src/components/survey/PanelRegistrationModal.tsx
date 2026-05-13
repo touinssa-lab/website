@@ -60,7 +60,8 @@ export const PanelRegistrationModal = ({ isOpen, onOpenChange, initialStep = 1 }
     if (isOpen) {
       if (!authLoading && user) {
         if (!panelInfo) {
-          setStep(3);
+          // If logged in but not a member, go to Terms (Step 1) to get agreement
+          setStep(1);
         } else {
           // User already has panel info, shouldn't be here really, but just in case
           onOpenChange(false);
@@ -81,7 +82,12 @@ export const PanelRegistrationModal = ({ isOpen, onOpenChange, initialStep = 1 }
       });
       return;
     }
-    setStep((prev) => prev + 1);
+    if (step === 1 && user) {
+      // If already logged in (came from login -> terms), skip step 2 and go to step 3
+      setStep(3);
+    } else {
+      setStep((prev) => prev + 1);
+    }
   };
 
   const handleGoogleLogin = async () => {
@@ -180,7 +186,7 @@ export const PanelRegistrationModal = ({ isOpen, onOpenChange, initialStep = 1 }
         <div className="bg-muted/30 px-6 py-4 border-b border-border/50">
           <div className="flex items-center justify-between mb-4 relative">
             <DialogTitle className="text-xl font-bold font-serif">
-              {initialStep === 2 ? "소셜 로그인" : "홈페이지 회원 가입"}
+              {(initialStep === 2 && step === 2) ? "소셜 로그인" : "홈페이지 회원 가입"}
             </DialogTitle>
             <div className="flex gap-2 items-center">
               <div className="flex gap-1.5 mr-4">
