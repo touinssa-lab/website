@@ -19,6 +19,7 @@ const NewsDetail = () => {
   const { panelInfo } = useAuth();
   const { toast } = useToast();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalInitialStep, setModalInitialStep] = useState(1);
   const [isNoticeModalOpen, setIsNoticeModalOpen] = useState(false);
   
   // Like states
@@ -257,6 +258,7 @@ const NewsDetail = () => {
       <PanelRegistrationModal 
         isOpen={isModalOpen} 
         onOpenChange={setIsModalOpen} 
+        initialStep={modalInitialStep}
       />
 
       <PanelAccessNoticeModal
@@ -264,6 +266,7 @@ const NewsDetail = () => {
         onClose={() => setIsNoticeModalOpen(false)}
         onConfirm={() => {
           setIsNoticeModalOpen(false);
+          setModalInitialStep(1);
           setIsModalOpen(true);
         }}
       />

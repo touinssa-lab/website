@@ -46,6 +46,7 @@ const NewsRoom = () => {
   const [mainView, setMainView] = useState<'articles' | 'trends'>('articles');
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalInitialStep, setModalInitialStep] = useState(1);
   const [isNoticeModalOpen, setIsNoticeModalOpen] = useState(false);
   const [newsTab, setNewsTab] = useState<'tourism' | 'ai'>('tourism');
   const [startIndex, setStartIndex] = useState(0);
@@ -305,13 +306,13 @@ const NewsRoom = () => {
                     </div>
                     <div className="flex flex-wrap items-center gap-3">
                       <button 
-                        onClick={() => setIsModalOpen(true)}
+                        onClick={() => { setModalInitialStep(1); setIsModalOpen(true); }}
                         className="whitespace-nowrap px-6 py-3 bg-primary text-white text-sm font-bold rounded-xl hover:bg-primary/90 transition-all hover:scale-105 shadow-lg shadow-primary/10"
                       >
                         1분 간편 회원가입
                       </button>
                       <button 
-                        onClick={() => setIsModalOpen(true)}
+                        onClick={() => { setModalInitialStep(2); setIsModalOpen(true); }}
                         className="whitespace-nowrap px-6 py-3 bg-white text-slate-900 text-sm font-bold rounded-xl hover:bg-slate-50 transition-all hover:scale-105 border border-slate-200 shadow-sm"
                       >
                         로그인하기
@@ -853,6 +854,7 @@ const NewsRoom = () => {
       <PanelRegistrationModal 
         isOpen={isModalOpen} 
         onOpenChange={setIsModalOpen} 
+        initialStep={modalInitialStep}
       />
 
       <PanelAccessNoticeModal
@@ -860,6 +862,7 @@ const NewsRoom = () => {
         onClose={() => setIsNoticeModalOpen(false)}
         onConfirm={() => {
           setIsNoticeModalOpen(false);
+          setModalInitialStep(1);
           setIsModalOpen(true);
         }}
       />

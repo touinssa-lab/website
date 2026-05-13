@@ -26,6 +26,7 @@ import { supabase } from "@/lib/supabase";
 interface PanelRegistrationModalProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
+  initialStep?: number;
 }
 
 const REGIONS = [
@@ -41,9 +42,9 @@ const OCCUPATIONS = [
   "IT·개발·데이터", "기타"
 ];
 
-export const PanelRegistrationModal = ({ isOpen, onOpenChange }: PanelRegistrationModalProps) => {
+export const PanelRegistrationModal = ({ isOpen, onOpenChange, initialStep = 1 }: PanelRegistrationModalProps) => {
   const { user, panelInfo, loading: authLoading, signInWithGoogle, signInWithKakao, signInWithFacebook } = useAuth();
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(initialStep);
   const [agree, setAgree] = useState<boolean | "indeterminate">(false);
   const { toast } = useToast();
 
@@ -56,18 +57,20 @@ export const PanelRegistrationModal = ({ isOpen, onOpenChange }: PanelRegistrati
 
   // Auto-forward to step 3 if user is logged in but has no panel info
   useEffect(() => {
-    if (isOpen && !authLoading && user) {
-      if (!panelInfo) {
-        setStep(3);
+    if (isOpen) {
+      if (!authLoading && user) {
+        if (!panelInfo) {
+          setStep(3);
+        } else {
+          // User already has panel info, shouldn't be here really, but just in case
+          onOpenChange(false);
+        }
       } else {
-        // User already has panel info, shouldn't be here really, but just in case
-        onOpenChange(false);
+        // Not logged in or loading, set to provided initial step
+        setStep(initialStep);
       }
-    } else if (isOpen && step === 3 && !user) {
-      // If modal opened but no user, reset to step 1
-      setStep(1);
     }
-  }, [isOpen, user, panelInfo, authLoading, onOpenChange]);
+  }, [isOpen, initialStep, user, panelInfo, authLoading, onOpenChange]);
 
   const handleNextStep = () => {
     if (step === 1 && !agree) {
@@ -176,7 +179,9 @@ export const PanelRegistrationModal = ({ isOpen, onOpenChange }: PanelRegistrati
       <DialogContent className="sm:max-w-[550px] p-0 overflow-hidden bg-card/95 backdrop-blur-xl border-border">
         <div className="bg-muted/30 px-6 py-4 border-b border-border/50">
           <div className="flex items-center justify-between mb-4 relative">
-            <DialogTitle className="text-xl font-bold font-serif">홈페이지 회원 가입</DialogTitle>
+            <DialogTitle className="text-xl font-bold font-serif">
+              {initialStep === 2 ? "소셜 로그인" : "홈페이지 회원 가입"}
+            </DialogTitle>
             <div className="flex gap-2 items-center">
               <div className="flex gap-1.5 mr-4">
                 <div className={`w-2 h-2 rounded-full ${step === 1 ? 'bg-primary' : 'bg-muted-foreground/30'}`} />
@@ -187,7 +192,7 @@ export const PanelRegistrationModal = ({ isOpen, onOpenChange }: PanelRegistrati
           </div>
           <p className="text-sm text-muted-foreground">
             {step === 1 && "1단계: 약관 동의"}
-            {step === 2 && "2단계: 소셜 로그인"}
+            {step === 2 && initialStep !== 2 && "2단계: 소셜 로그인"}
             {step === 3 && "3단계: 추가 정보 입력"}
           </p>
         </div>
@@ -247,9 +252,14 @@ export const PanelRegistrationModal = ({ isOpen, onOpenChange }: PanelRegistrati
           {step === 2 && (
             <div className="space-y-6 animate-fade-in py-4">
               <div className="text-center space-y-2 mb-8">
-                <h3 className="font-semibold text-lg">1초 만에 간편 가입하기</h3>
+                <h3 className="font-semibold text-lg">
+                  {initialStep === 2 ? "간편 소셜 로그인" : "1초 만에 간편 가입하기"}
+                </h3>
                 <p className="text-sm text-muted-foreground">
-                  SNS 계정으로 안전하게 로그인하고 복잡한 이메일 인증을 생략하세요.
+                  {initialStep === 2 
+                    ? "SNS 계정으로 안전하게 로그인하세요" 
+                    : "SNS 계정으로 안전하게 로그인하고 복잡한 이메일 인증을 생략하세요."
+                  }
                 </p>
               </div>
 
@@ -293,11 +303,13 @@ export const PanelRegistrationModal = ({ isOpen, onOpenChange }: PanelRegistrati
                 </Button>
               </div>
               
-              <div className="text-center mt-6">
-                <button className="text-xs text-muted-foreground underline underline-offset-4 hover:text-foreground transition-colors" onClick={() => setStep(1)}>
-                  이전 단계로 돌아가기
-                </button>
-              </div>
+              {initialStep !== 2 && (
+                <div className="text-center mt-6">
+                  <button className="text-xs text-muted-foreground underline underline-offset-4 hover:text-foreground transition-colors" onClick={() => setStep(1)}>
+                    이전 단계로 돌아가기
+                  </button>
+                </div>
+              )}
             </div>
           )}
 

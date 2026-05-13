@@ -28,6 +28,7 @@ const Index = () => {
   const [currentSignalIndex, setCurrentSignalIndex] = useState(0);
   const [currentPersonaIndex, setCurrentPersonaIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalInitialStep, setModalInitialStep] = useState(1);
   const [isNoticeModalOpen, setIsNoticeModalOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -558,13 +559,14 @@ const Index = () => {
 
       <Footer />
       
-      <PanelRegistrationModal isOpen={isModalOpen} onOpenChange={setIsModalOpen} />
+      <PanelRegistrationModal isOpen={isModalOpen} onOpenChange={setIsModalOpen} initialStep={modalInitialStep} />
       
       <PanelAccessNoticeModal
         isOpen={isNoticeModalOpen}
         onClose={() => setIsNoticeModalOpen(false)}
         onConfirm={() => {
           setIsNoticeModalOpen(false);
+          setModalInitialStep(1);
           setIsModalOpen(true);
         }}
       />

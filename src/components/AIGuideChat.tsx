@@ -115,7 +115,7 @@ const chatbotTranslations: Record<string, any> = {
     limitExceeded: "질문 횟수를 초과했습니다.",
     authRequired: "로컬 스토리 챗봇은 회원 전용 서비스입니다.",
     quickSignUp: "1분 간편 회원가입",
-    login: "로그인",
+    login: "로그인하기",
     loggedIn: "로그인 중",
     logout: "로그아웃",
     guideButton: "AI챗봇 이용안내 가이드",
@@ -323,6 +323,7 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [chatCount, setChatCount] = useState<number>(0);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [modalInitialStep, setModalInitialStep] = useState(1);
   const [isTourOpen, setIsTourOpen] = useState(false);
   const scrollEndRef = useRef<HTMLDivElement>(null);
 
@@ -537,13 +538,13 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
             ) : (
               <div id="tour-login-section" className="flex items-center gap-2 shrink-0">
                 <button 
-                  onClick={() => setIsAuthModalOpen(true)}
+                  onClick={() => { setModalInitialStep(1); setIsAuthModalOpen(true); }}
                   className="text-[9px] md:text-xs font-bold text-sky-600 hover:text-sky-700 bg-sky-50 px-3 py-1.5 rounded-full border border-sky-100 transition-colors whitespace-nowrap cursor-pointer active:scale-95"
                 >
                   {t.quickSignUp}
                 </button>
                 <button 
-                  onClick={() => setIsAuthModalOpen(true)}
+                  onClick={() => { setModalInitialStep(2); setIsAuthModalOpen(true); }}
                   className="text-[9px] md:text-xs font-bold text-slate-500 hover:text-slate-700 bg-slate-50 px-3 py-1.5 rounded-full border border-slate-200 transition-colors whitespace-nowrap cursor-pointer active:scale-95"
                 >
                   {t.login}
@@ -745,7 +746,7 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
           </motion.div>
         </div>
       )}
-      <PanelRegistrationModal isOpen={isAuthModalOpen} onOpenChange={setIsAuthModalOpen} />
+      <PanelRegistrationModal isOpen={isAuthModalOpen} onOpenChange={setIsAuthModalOpen} initialStep={modalInitialStep} />
       
       {isTourOpen && (
         <AIGuideTour 
