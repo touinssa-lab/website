@@ -220,7 +220,7 @@ export const AIGuideTour: React.FC<AIGuideTourProps> = ({ isOpen, onClose, isMem
                       onClick={() => setCurrentStep(prev => prev - 1)}
                       className="rounded-xl px-4 py-2 font-bold text-slate-600 border-slate-200"
                     >
-                      <ChevronLeft className="w-4 h-4 mr-1" /> 이전
+                      <ChevronLeft className="w-4 h-4 mr-1" /> PREV
                     </Button>
                   )}
                   
@@ -235,9 +235,9 @@ export const AIGuideTour: React.FC<AIGuideTourProps> = ({ isOpen, onClose, isMem
                     className="bg-primary hover:bg-primary/90 text-white rounded-xl px-6 py-2 font-bold shadow-lg shadow-primary/20"
                   >
                     {currentStep === steps.length - 1 ? (
-                      <>시작하기 <Check className="w-4 h-4 ml-2" /></>
+                      <>START <Check className="w-4 h-4 ml-2" /></>
                     ) : (
-                      <>다음 <ChevronRight className="w-4 h-4 ml-2" /></>
+                      <>NEXT <ChevronRight className="w-4 h-4 ml-2" /></>
                     )}
                   </Button>
                 </div>

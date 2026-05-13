@@ -300,15 +300,23 @@ const NewsRoom = () => {
                 {!panelInfo && (
                   <div className="flex flex-col sm:flex-row items-center gap-6 bg-primary/5 px-6 py-4 rounded-2xl border border-primary/10">
                     <div className="text-center sm:text-left">
-                      <p className="text-[15px] font-semibold text-slate-900 leading-snug">회원 전용 기사는 설문조사 가입 회원에게만 제공되는 기획 기사입니다.</p>
-                      <p className="text-xs text-muted-foreground mt-1">설문조사 회원으로 가입하시면 기사를 보실 수 있습니다.</p>
+                      <p className="text-[15px] font-semibold text-slate-900 leading-snug">최신 기획 기사는 회원에게만 제공되는 기획 리포트입니다</p>
+                      <p className="text-xs text-muted-foreground mt-1">로그인하시거나 1분 간편 회원가입해 주세요</p>
                     </div>
-                    <button 
-                      onClick={() => setIsModalOpen(true)}
-                      className="whitespace-nowrap px-6 py-3 bg-primary text-white text-sm font-bold rounded-xl hover:bg-primary/90 transition-all hover:scale-105 shadow-lg shadow-primary/10"
-                    >
-                      설문조사 회원 가입 하기
-                    </button>
+                    <div className="flex flex-wrap items-center gap-3">
+                      <button 
+                        onClick={() => setIsModalOpen(true)}
+                        className="whitespace-nowrap px-6 py-3 bg-primary text-white text-sm font-bold rounded-xl hover:bg-primary/90 transition-all hover:scale-105 shadow-lg shadow-primary/10"
+                      >
+                        1분 간편 회원가입
+                      </button>
+                      <button 
+                        onClick={() => setIsModalOpen(true)}
+                        className="whitespace-nowrap px-6 py-3 bg-white text-slate-900 text-sm font-bold rounded-xl hover:bg-slate-50 transition-all hover:scale-105 border border-slate-200 shadow-sm"
+                      >
+                        로그인하기
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>
