@@ -101,6 +101,7 @@ const NewsManagement = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['news_articles'] });
+      queryClient.invalidateQueries({ queryKey: ['news_articles_main'] });
       toast.success("기사가 저장되었습니다.");
       setIsEditing(false);
     },
@@ -120,6 +121,7 @@ const NewsManagement = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['news_articles'] });
+      queryClient.invalidateQueries({ queryKey: ['news_articles_main'] });
       toast.success("기사가 삭제되었습니다.");
     },
     onError: (error: any) => {

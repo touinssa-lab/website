@@ -40,10 +40,11 @@ const Index = () => {
         .from('news_articles')
         .select('*')
         .order('article_id', { ascending: false })
-        .limit(4);
+        .limit(20); // Fetch a buffer to overcome lexicographical sort issues
       
       if (error) throw error;
       
+      // Perform strict numeric sorting by ID and take top 4
       return (data || []).map(item => ({
         id: item.article_id,
         category: item.category,
@@ -53,7 +54,7 @@ const Index = () => {
         excerpt: item.excerpt,
         contentBlocks: item.content_blocks,
         visibility: item.visibility || 'all'
-      })).sort((a, b) => Number(b.id) - Number(a.id)) as NewsArticle[];
+      })).sort((a, b) => Number(b.id) - Number(a.id)).slice(0, 4) as NewsArticle[];
     }
   });
 
