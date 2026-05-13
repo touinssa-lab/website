@@ -259,7 +259,7 @@ export const PanelRegistrationModal = ({ isOpen, onOpenChange, initialStep = 1 }
             <div className="space-y-6 animate-fade-in py-4">
               <div className="text-center space-y-2 mb-8">
                 <h3 className="font-semibold text-lg">
-                  {initialStep === 2 ? "간편 소셜 로그인" : "1초 만에 간편 가입하기"}
+                  {initialStep === 2 ? "간편 소셜 로그인" : "1분 만에 간편 가입하기"}
                 </h3>
                 <p className="text-sm text-muted-foreground">
                   {initialStep === 2 
