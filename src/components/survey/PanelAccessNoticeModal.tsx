@@ -14,9 +14,10 @@ interface PanelAccessNoticeModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
+  onLogin: () => void;
 }
 
-const PanelAccessNoticeModal = ({ isOpen, onClose, onConfirm }: PanelAccessNoticeModalProps) => {
+const PanelAccessNoticeModal = ({ isOpen, onClose, onConfirm, onLogin }: PanelAccessNoticeModalProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[440px] p-0 overflow-hidden border-none shadow-2xl bg-white/95 backdrop-blur-xl">
@@ -32,17 +33,17 @@ const PanelAccessNoticeModal = ({ isOpen, onClose, onConfirm }: PanelAccessNotic
           </div>
 
           <div className="text-center space-y-4">
-            <h3 className="text-xl font-bold text-slate-900 tracking-tight">패널 가입 회원 전용 기사입니다</h3>
+            <h3 className="text-xl font-bold text-slate-900 tracking-tight">회원 전용 기획 기사입니다</h3>
             <p className="text-[15px] text-slate-600 leading-relaxed font-medium px-2">
               해당 콘텐츠를 이용하시려면 <br/>
-              설문조사 패널로 등록해 주세요. <br/><br/>
+              로그인 후 이용해 주세요. <br/><br/>
               소셜 로그인 방식으로 안전하고 <br/>
               빠르게 가입하실 수 있습니다.
             </p>
           </div>
         </div>
 
-        <DialogFooter className="p-6 bg-slate-50/50 border-t border-slate-100 flex-col sm:flex-row gap-3">
+        <DialogFooter className="p-6 bg-slate-50/50 border-t border-slate-100 flex flex-col sm:flex-row gap-2">
           <Button 
             variant="outline" 
             onClick={onClose} 
@@ -52,9 +53,16 @@ const PanelAccessNoticeModal = ({ isOpen, onClose, onConfirm }: PanelAccessNotic
           </Button>
           <Button 
             onClick={onConfirm} 
-            className="flex-1 h-12 rounded-xl font-bold bg-rose-600 hover:bg-rose-700 text-white shadow-lg shadow-rose-200 transition-all transform hover:scale-[1.02] active:scale-95"
+            variant="outline"
+            className="flex-1 h-12 rounded-xl font-bold border-rose-200 text-rose-600 hover:bg-rose-50 transition-all"
           >
-            설문조사 패널 가입 하기
+            회원 가입 하기
+          </Button>
+          <Button 
+            onClick={onLogin} 
+            className="flex-[1.2] h-12 rounded-xl font-bold bg-rose-600 hover:bg-rose-700 text-white shadow-lg shadow-rose-200 transition-all transform hover:scale-[1.02] active:scale-95"
+          >
+            로그인 하기
           </Button>
         </DialogFooter>
       </DialogContent>

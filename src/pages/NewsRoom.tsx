@@ -865,6 +865,11 @@ const NewsRoom = () => {
           setModalInitialStep(1);
           setIsModalOpen(true);
         }}
+        onLogin={() => {
+          setIsNoticeModalOpen(false);
+          setModalInitialStep(2);
+          setIsModalOpen(true);
+        }}
       />
     </div>
   );

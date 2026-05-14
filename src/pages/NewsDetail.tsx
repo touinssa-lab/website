@@ -171,25 +171,37 @@ const NewsDetail = () => {
             <div className="w-20 h-20 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-8">
               <Lock className="w-10 h-10 text-amber-600" />
             </div>
-            <h2 className="text-2xl md:text-3xl font-bold font-serif mb-6">패널 가입 회원 전용 기사입니다.</h2>
+            <h2 className="text-2xl md:text-3xl font-bold font-serif mb-6">회원 전용 기획 기사입니다.</h2>
             <p className="text-muted-foreground max-w-lg mx-auto leading-relaxed mb-10">
-              해당 콘텐츠를 이용하시려면 설문조사 패널로 등록해 주세요.<br />
+              해당 콘텐츠를 이용하시려면 로그인 후 이용해 주세요.<br />
               소셜 로그인 방식으로 안전하고 빠르게 가입하실 수 있습니다.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 pt-4 justify-center">
-              <Button 
-                onClick={() => setIsNoticeModalOpen(true)}
-                className="h-14 px-8 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-lg shadow-xl shadow-rose-200 transition-all transform hover:scale-[1.02]"
-              >
-                <Lock className="w-5 h-5 mr-2" />
-                지금 바로 패널 등록하고 읽기
-              </Button>
+            <div className="flex flex-col sm:flex-row gap-3 pt-4 justify-center">
               <Button 
                 variant="outline"
                 onClick={() => navigate('/news')}
-                className="h-14 px-8 rounded-2xl border-slate-200 text-slate-600 font-bold text-lg hover:bg-slate-50 transition-all"
+                className="h-14 px-8 rounded-2xl border-slate-200 text-slate-500 font-bold text-lg hover:bg-slate-50 transition-all flex-1"
               >
-                다른 기사 보기
+                취소
+              </Button>
+              <Button 
+                variant="outline"
+                onClick={() => {
+                  setModalInitialStep(1);
+                  setIsModalOpen(true);
+                }}
+                className="h-14 px-8 rounded-2xl border-rose-200 text-rose-600 font-bold text-lg hover:bg-rose-50 transition-all flex-1"
+              >
+                회원 가입 하기
+              </Button>
+              <Button 
+                onClick={() => {
+                  setModalInitialStep(2);
+                  setIsModalOpen(true);
+                }}
+                className="h-14 px-8 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-lg shadow-xl shadow-rose-200 transition-all transform hover:scale-[1.02] flex-[1.2]"
+              >
+                로그인 하기
               </Button>
             </div>
           </motion.div>
@@ -267,6 +279,11 @@ const NewsDetail = () => {
         onConfirm={() => {
           setIsNoticeModalOpen(false);
           setModalInitialStep(1);
+          setIsModalOpen(true);
+        }}
+        onLogin={() => {
+          setIsNoticeModalOpen(false);
+          setModalInitialStep(2);
           setIsModalOpen(true);
         }}
       />
