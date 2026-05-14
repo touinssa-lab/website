@@ -298,28 +298,50 @@ const NewsRoom = () => {
                   <p className="text-muted-foreground text-base">투어리즘인사이트가 분석한 관광 산업의 전문 기획 기사입니다.</p>
                 </div>
 
-                {!panelInfo && (
-                  <div className="flex flex-col sm:flex-row items-center gap-6 bg-primary/5 px-6 py-4 rounded-2xl border border-primary/10">
-                    <div className="text-center sm:text-left">
-                      <p className="text-[15px] font-semibold text-slate-900 leading-snug">최신 기획 기사는 회원에게만 제공되는 기획 리포트입니다</p>
-                      <p className="text-xs text-muted-foreground mt-1">로그인하시거나 1분 간편 회원가입해 주세요</p>
-                    </div>
-                    <div className="flex flex-wrap items-center gap-3">
-                      <button 
-                        onClick={() => { setModalInitialStep(1); setIsModalOpen(true); }}
-                        className="whitespace-nowrap px-6 py-3 bg-primary text-white text-sm font-bold rounded-xl hover:bg-primary/90 transition-all hover:scale-105 shadow-lg shadow-primary/10"
-                      >
-                        1분 간편 회원가입
-                      </button>
-                      <button 
-                        onClick={() => { setModalInitialStep(2); setIsModalOpen(true); }}
-                        className="whitespace-nowrap px-6 py-3 bg-white text-slate-900 text-sm font-bold rounded-xl hover:bg-slate-50 transition-all hover:scale-105 border border-slate-200 shadow-sm"
-                      >
-                        로그인하기
-                      </button>
-                    </div>
+                <div className="flex flex-col sm:flex-row items-center gap-6 bg-primary/5 px-6 py-4 rounded-2xl border border-primary/10">
+                  <div className="text-center sm:text-left">
+                    <p className="text-[15px] font-semibold text-slate-900 leading-snug">
+                      {panelInfo ? "최신 기획 기사 인텔리전스 리포트를 이용 중입니다" : "최신 기획 기사는 회원에게만 제공되는 기획 리포트입니다"}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {panelInfo ? "회원님을 위한 맞춤형 기획 기사를 확인해 보세요" : "로그인하시거나 1분 간편 회원가입해 주세요"}
+                    </p>
                   </div>
-                )}
+                  <div className="flex flex-wrap items-center gap-3">
+                    {panelInfo ? (
+                      <>
+                        <div className="flex items-center gap-2 px-5 py-2.5 bg-sky-50 text-sky-600 text-sm font-bold rounded-full border border-sky-100 shadow-sm">
+                          <div className="w-2 h-2 rounded-full bg-sky-500 animate-pulse" />
+                          로그인 중
+                        </div>
+                        <button 
+                          onClick={async () => { 
+                            await supabase.auth.signOut(); 
+                            window.location.reload(); 
+                          }}
+                          className="whitespace-nowrap px-5 py-2.5 bg-rose-50 text-rose-600 text-sm font-bold rounded-full hover:bg-rose-100 transition-all border border-rose-100 shadow-sm"
+                        >
+                          로그아웃
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button 
+                          onClick={() => { setModalInitialStep(1); setIsModalOpen(true); }}
+                          className="whitespace-nowrap px-6 py-3 bg-primary text-white text-sm font-bold rounded-xl hover:bg-primary/90 transition-all hover:scale-105 shadow-lg shadow-primary/10"
+                        >
+                          1분 간편 회원가입
+                        </button>
+                        <button 
+                          onClick={() => { setModalInitialStep(2); setIsModalOpen(true); }}
+                          className="whitespace-nowrap px-6 py-3 bg-white text-slate-900 text-sm font-bold rounded-xl hover:bg-slate-50 transition-all hover:scale-105 border border-slate-200 shadow-sm"
+                        >
+                          로그인하기
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </div>
               </div>
 
               {isLoading ? (

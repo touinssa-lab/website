@@ -21,11 +21,7 @@ const PanelAccessNoticeModal = ({ isOpen, onClose, onConfirm, onLogin }: PanelAc
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[440px] p-0 overflow-hidden border-none shadow-2xl bg-white/95 backdrop-blur-xl">
-        <div className="absolute top-4 right-4 z-10">
-          <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full hover:bg-slate-100 h-8 w-8">
-            <X className="h-4 w-4 text-slate-400" />
-          </Button>
-        </div>
+
 
         <div className="p-8 pt-10">
           <div className="w-16 h-16 bg-rose-50 rounded-2xl flex items-center justify-center mb-6 mx-auto animate-bounce-subtle">
