@@ -50,7 +50,7 @@ const NewsRoom = () => {
   const [isNoticeModalOpen, setIsNoticeModalOpen] = useState(false);
   const [newsTab, setNewsTab] = useState<'tourism' | 'ai'>('tourism');
   const [startIndex, setStartIndex] = useState(0);
-  const [selectedDate, setSelectedDate] = useState<string>('2026-05-13');
+  const [selectedDate, setSelectedDate] = useState<string>('2026-05-14');
   const dateInputRef = useRef<HTMLInputElement>(null);
   const itemsPerPage = 9;
 
@@ -504,7 +504,7 @@ const NewsRoom = () => {
                           type="date" 
                           value={selectedDate}
                           min="2026-05-09"
-                          max="2026-05-13"
+                          max="2026-05-14"
                           onChange={(e) => setSelectedDate(e.target.value)}
                           className="bg-transparent border-none p-0 text-sm font-bold text-white focus:ring-0 cursor-pointer w-full [color-scheme:dark]"
                         />
