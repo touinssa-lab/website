@@ -11,7 +11,7 @@ import AIGuideChat from "@/components/AIGuideChat";
 
 const translations = {
   ko: {
-    heroTitle: <>로컬 친구가 들려주는,<br /><span className="text-sky-600">우리 동네 이야기</span></>,
+    heroTitle: <>로컬 친구가 들려주는,<br /><span className="text-sky-600">우리 동네 이야기</span> <span className="text-[0.5em] font-serif ml-1.5 opacity-80 inline-block align-baseline"><span className="italic mr-0.5">β</span> 베타서비스</span></>,
     heroSubtitle: "한국형 AI 페르소나가 지역의 숨은 매력을 전해 드립니다.",
     analysisData: "분석 데이터: Nemotron-Personas-Korea 700만 건",
     curationTitle: "700만 명의 한국형 AI 페르소나로 설계한 지역 맞춤형 여행 큐레이션",
