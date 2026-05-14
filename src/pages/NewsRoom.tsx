@@ -68,19 +68,7 @@ const NewsRoom = () => {
   const { data: trendKeywords = [], isLoading: isKeywordsLoading } = useQuery({
     queryKey: ['trend_keywords', selectedDate],
     queryFn: async () => {
-      if (selectedDate === '2026-05-13') {
-        let lastSection = '';
-        let currentRank = 0;
-        return webTrendKeywords.map(item => {
-          if (item.section !== lastSection) {
-            lastSection = item.section;
-            currentRank = 1;
-          } else {
-            currentRank++;
-          }
-          return { ...item, displayRank: currentRank };
-        });
-      }
+
 
       const { data, error } = await supabase
         .from('news_trends_keywords')
@@ -140,12 +128,7 @@ const NewsRoom = () => {
   const { data: trendInsights = [], isLoading: isInsightsLoading } = useQuery({
     queryKey: ['trend_insights', selectedDate],
     queryFn: async () => {
-      if (selectedDate === '2026-05-13') {
-        return insightCards.map(item => ({
-          ...item,
-          description: item.reason // mapping local 'reason' to DB 'description'
-        }));
-      }
+
 
       const { data, error } = await supabase
         .from('news_trends_insights')
@@ -167,13 +150,7 @@ const NewsRoom = () => {
   const { data: trendArticles = [], isLoading: isTrendArticlesLoading } = useQuery({
     queryKey: ['trend_articles', selectedDate, newsTab],
     queryFn: async () => {
-      if (selectedDate === '2026-05-13') {
-        const localData = newsTab === 'tourism' ? naverNewsData : naverNewsDataAI;
-        return localData.map(item => ({
-          ...item,
-          target_date: item.time // mapping local 'time' to DB 'target_date'
-        }));
-      }
+
 
       const category = newsTab === 'tourism' ? 'Tourism News' : 'AI & Data';
       const { data, error } = await supabase
