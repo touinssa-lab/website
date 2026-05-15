@@ -389,7 +389,7 @@ const Index = () => {
                                 <h4 className="text-lg md:text-xl font-bold font-sans mb-2 line-clamp-1 text-sky-600 transition-colors">
                                   {news.title}
                                 </h4>
-                                <p className="text-xs md:text-sm text-muted-foreground line-clamp-2 leading-relaxed">
+                                <p className="text-xs md:text-sm text-muted-foreground line-clamp-3 leading-relaxed">
                                   {news.excerpt}
                                 </p>
                               </div>
