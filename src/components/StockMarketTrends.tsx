@@ -91,7 +91,7 @@ const SingleQuoteWidget = ({ symbol, name, isSelected, onClick }: { symbol: stri
     script.innerHTML = JSON.stringify({
       "symbol": symbol,
       "width": "100%",
-      "colorTheme": "light",
+      "colorTheme": "dark",
       "isTransparent": true,
       "locale": "ko"
     });
@@ -100,7 +100,7 @@ const SingleQuoteWidget = ({ symbol, name, isSelected, onClick }: { symbol: stri
 
   return (
     <div 
-      className={`relative rounded-xl overflow-hidden cursor-pointer transition-all duration-300 border-2 ${isSelected ? 'border-blue-500 bg-blue-50/50 shadow-md' : 'border-transparent hover:border-blue-200 hover:bg-slate-50'}`}
+      className={`relative rounded-xl overflow-hidden cursor-pointer transition-all duration-300 border-2 ${isSelected ? 'border-blue-500 bg-blue-900/30 shadow-md' : 'border-transparent hover:border-slate-700 hover:bg-slate-800/50'}`}
       onClick={onClick}
     >
       {/* 클릭을 가로채기 위한 투명 오버레이 */}
@@ -130,7 +130,7 @@ const MainChartWidget = ({ symbol, name }: { symbol: string, name: string }) => 
       "width": "100%",
       "height": "100%",
       "locale": "ko",
-      "colorTheme": "light",
+      "colorTheme": "dark",
       "autosize": true,
       "showVolume": false,
       "showMA": false,
@@ -189,10 +189,7 @@ const StockMarketTrends = () => {
       transition={{ duration: 0.5 }}
       className="w-full space-y-8"
     >
-      <div className="flex flex-col items-center justify-center gap-4 mb-10 text-center">
-        <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center shadow-inner border border-blue-100">
-          <TrendingUp className="w-8 h-8 text-blue-600" />
-        </div>
+      <div className="flex flex-col items-center justify-center pt-4 md:pt-6 mb-12 text-center">
         <div className="space-y-2">
           <h2 className="text-3xl font-bold font-sans underline-accent">Global Tourism Market</h2>
           <p className="text-muted-foreground text-base max-w-2xl">
@@ -255,7 +252,7 @@ const StockMarketTrends = () => {
         {/* 2-Column Split Layout */}
         <div className="flex flex-col lg:flex-row gap-6 relative z-10 h-[550px]">
           {/* Left: Custom Symbol List */}
-          <div className="w-full lg:w-1/3 flex flex-col gap-2 overflow-y-auto pr-2 custom-scrollbar bg-white/50 p-3 rounded-2xl border border-slate-100 shadow-inner">
+          <div className="w-full lg:w-1/3 flex flex-col gap-2 overflow-y-auto pr-2 custom-scrollbar bg-slate-900/80 p-3 rounded-2xl border border-slate-800 shadow-inner">
             <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 px-2">
               {activeTabData.title} 종목
             </h3>
@@ -271,7 +268,7 @@ const StockMarketTrends = () => {
           </div>
 
           {/* Right: Main Chart */}
-          <div className="w-full lg:w-2/3 h-full rounded-2xl overflow-hidden shadow-md border border-slate-100 bg-white">
+          <div className="w-full lg:w-2/3 h-full rounded-2xl overflow-hidden shadow-md border border-slate-800 bg-slate-900">
             <MainChartWidget symbol={selectedSymbol.s} name={selectedSymbol.d} />
           </div>
         </div>
