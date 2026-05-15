@@ -320,13 +320,13 @@ const Index = () => {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Quick Links Section */}
         <section className="relative mt-12 mb-6 z-20">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-10 gap-6 max-w-6xl mx-auto">
             {/* Card News Carousel */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="relative group overflow-hidden rounded-2xl bg-sky-50/50 dark:bg-sky-900/10 backdrop-blur-xl border border-sky-200/50 dark:border-sky-500/20 hover:shadow-2xl transition-all duration-300"
+              className="md:col-span-4 relative group overflow-hidden rounded-2xl bg-sky-50/50 dark:bg-sky-900/10 backdrop-blur-xl border border-sky-200/50 dark:border-sky-500/20 hover:shadow-2xl transition-all duration-300"
             >
               <div className="p-5">
                 <div className="flex items-center justify-between mb-4">
@@ -418,7 +418,7 @@ const Index = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="relative group overflow-hidden rounded-2xl bg-indigo-50/50 dark:bg-indigo-900/10 backdrop-blur-xl border border-indigo-200/50 dark:border-indigo-500/20 hover:shadow-2xl transition-all duration-300"
+              className="md:col-span-3 relative group overflow-hidden rounded-2xl bg-indigo-50/50 dark:bg-indigo-900/10 backdrop-blur-xl border border-indigo-200/50 dark:border-indigo-500/20 hover:shadow-2xl transition-all duration-300"
             >
               <div className="p-5">
                 <div className="flex items-center justify-between mb-4">
@@ -473,6 +473,52 @@ const Index = () => {
 
                 <Link to="/news?view=trends" className="mt-4 pt-3 border-t border-indigo-200/30 dark:border-indigo-500/10 flex items-center justify-between text-sm font-medium text-indigo-600 dark:text-indigo-400 group/footer">
                   <span>AI 트렌드&뉴스 바로가기</span>
+                  <ArrowRight size={14} className="group-hover/footer:translate-x-1 transition-transform" />
+                </Link>
+              </div>
+            </motion.div>
+
+            {/* Stock Market Trends Banner */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="md:col-span-3 relative group overflow-hidden rounded-2xl bg-emerald-50/50 dark:bg-emerald-900/10 backdrop-blur-xl border border-emerald-200/50 dark:border-emerald-500/20 hover:shadow-2xl transition-all duration-300"
+            >
+              <div className="p-5">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-500">
+                      <BarChart3 size={18} />
+                    </div>
+                    <span className="text-base font-bold font-sans">Stock Market Trends</span>
+                  </div>
+                  <MoreHorizontal size={18} className="text-muted-foreground" />
+                </div>
+                
+                <div className="relative h-28 overflow-hidden">
+                  <Link to="/news?view=stocks" className="flex gap-4 items-center h-full w-full group/stock">
+                    <div className="flex-shrink-0 w-24 h-24 md:w-28 md:h-28 rounded-xl overflow-hidden shadow-sm border border-slate-100 dark:border-slate-800 transition-transform duration-500 group-hover/stock:scale-105">
+                      <img 
+                        src="/stock_market_trends_v2.png" 
+                        alt="" 
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-lg md:text-xl font-bold font-sans text-emerald-600 mb-2 group-hover/stock:translate-x-1 transition-transform line-clamp-1">
+                        Global Market Live
+                      </div>
+                      <p className="text-xs md:text-sm text-muted-foreground leading-relaxed line-clamp-2">
+                        글로벌 관광 산업의 실시간 증시 동향과 주요 종목 분석 데이터를 확인하세요.
+                      </p>
+                    </div>
+                  </Link>
+                </div>
+
+                <Link to="/news?view=stocks" className="mt-4 pt-3 border-t border-emerald-200/30 dark:border-emerald-500/10 flex items-center justify-between text-sm font-medium text-emerald-600 dark:text-emerald-400 group/footer">
+                  <span>글로벌 관광증시 현황 보기</span>
                   <ArrowRight size={14} className="group-hover/footer:translate-x-1 transition-transform" />
                 </Link>
               </div>
