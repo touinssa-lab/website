@@ -65,7 +65,7 @@ const Index = () => {
       desc: '실시간 검색 트렌드와 데이터 분석 기반 주요 키워드를 추출합니다.',
       image: '/ai_hot_keyword_v2.png',
       color: 'text-sky-600',
-      content: ['#지역축제', '#친환경여행', '#인공지능관광']
+      content: ['#여행', '#관광', '#축제']
     },
     { 
       id: 'insight',
@@ -510,7 +510,7 @@ const Index = () => {
                       <div className="text-lg md:text-xl font-bold font-sans text-emerald-600 mb-2 group-hover/stock:translate-x-1 transition-transform line-clamp-1">
                         Global Market Live
                       </div>
-                      <p className="text-xs md:text-sm text-muted-foreground leading-relaxed line-clamp-2">
+                      <p className="text-xs md:text-sm text-muted-foreground leading-relaxed line-clamp-3">
                         글로벌 관광 산업의 실시간 증시 동향과 주요 종목 분석 데이터를 확인하세요.
                       </p>
                     </div>
