@@ -8,7 +8,7 @@ interface RegionData {
   labelPos: { x: number; y: number };
 }
 
-const REGIONS: RegionData[] = [
+export const REGIONS: RegionData[] = [
   {
     "id": "제주",
     "name": "제주",

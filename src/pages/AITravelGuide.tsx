@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Database, Sparkles, Bot, BarChart as BarChartIcon, Ship, LayoutGrid, CloudAlert } from "lucide-react";
 import MarineDashboard from "@/components/MarineDashboard";
 import FestivalDashboard from "@/components/FestivalDashboard";
+import SidoDashboard from "@/components/SidoDashboard";
 import AntigravityBackground from "@/components/AntigravityBackground";
 import AIGuideChat from "@/components/AIGuideChat";
 
@@ -27,7 +28,7 @@ const AITravelGuide = () => {
   const initialView = searchParams.get('view') === 'analysis' ? 'analysis' : (searchParams.get('view') === 'dashboard' ? 'dashboard' : 'guide');
   const [mainView, setMainView] = useState<'guide' | 'analysis' | 'dashboard'>(initialView);
   const [activeAnalysis, setActiveAnalysis] = useState<'marine'>('marine');
-  const [activeDashboard, setActiveDashboard] = useState<'festival'>('festival');
+  const [activeDashboard, setActiveDashboard] = useState<'sido' | 'festival'>('sido');
 
   useEffect(() => {
     const view = searchParams.get('view');
@@ -151,6 +152,13 @@ const AITravelGuide = () => {
             <motion.div key="dashboard-view" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-8">
               <div className="flex flex-wrap justify-center gap-3 mb-10">
                 <button
+                  onClick={() => setActiveDashboard('sido')}
+                  className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold border transition-all ${activeDashboard === 'sido' ? 'bg-[#255282] text-white border-[#255282] shadow-lg' : 'bg-card text-muted-foreground border-border hover:border-primary/50'}`}
+                >
+                  <BarChartIcon className="w-4 h-4" />
+                  관광자원 시도별 속성비율 분석
+                </button>
+                <button
                   onClick={() => setActiveDashboard('festival')}
                   className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold border transition-all ${activeDashboard === 'festival' ? 'bg-[#255282] text-white border-[#255282] shadow-lg' : 'bg-card text-muted-foreground border-border hover:border-primary/50'}`}
                 >
@@ -162,6 +170,7 @@ const AITravelGuide = () => {
                   Coming Soon
                 </button>
               </div>
+              {activeDashboard === 'sido' && <SidoDashboard />}
               {activeDashboard === 'festival' && <FestivalDashboard />}
             </motion.div>
           )}
