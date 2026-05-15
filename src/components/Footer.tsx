@@ -49,7 +49,7 @@ const Footer = () => {
           </div>
         </div>
         <div className="pt-8 border-t border-border text-center text-sm text-muted-foreground">
-          <p>© 2022 Tourism Insight. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Tourism Insight. All rights reserved.</p>
         </div>
       </div>
     </footer>
