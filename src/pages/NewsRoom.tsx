@@ -38,19 +38,42 @@ import { useAuth } from "@/hooks/useAuth";
 import { webTrendKeywords, insightCards } from "@/data/aiHotKeywords";
 import { naverNewsData } from "@/data/naverNewsData";
 import { naverNewsDataAI } from "@/data/naverNewsDataAI";
+import StockMarketTrends from "@/components/StockMarketTrends";
 
 const NewsRoom = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, panelInfo } = useAuth();
-  const [mainView, setMainView] = useState<'articles' | 'trends'>('articles');
+  const [mainView, setMainView] = useState<'articles' | 'trends' | 'stocks'>('articles');
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalInitialStep, setModalInitialStep] = useState(1);
   const [isNoticeModalOpen, setIsNoticeModalOpen] = useState(false);
   const [newsTab, setNewsTab] = useState<'tourism' | 'ai'>('tourism');
   const [startIndex, setStartIndex] = useState(0);
-  const [selectedDate, setSelectedDate] = useState<string>('2026-05-14');
+  const [selectedDate, setSelectedDate] = useState<string>("2026-05-14");
+  
+  // DB에서 데이터가 있는 가장 최신 날짜 가져오기
+  const { data: latestDate } = useQuery({
+    queryKey: ['latest_trend_date'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('news_trends_keywords')
+        .select('target_date')
+        .order('target_date', { ascending: false })
+        .limit(1);
+      if (error) throw error;
+      return data?.[0]?.target_date || "2026-05-14";
+    }
+  });
+
+  // 최신 날짜가 로드되면 초기값으로 설정
+  useEffect(() => {
+    if (latestDate) {
+      setSelectedDate(latestDate);
+    }
+  }, [latestDate]);
+
   const dateInputRef = useRef<HTMLInputElement>(null);
   const itemsPerPage = 9;
 
@@ -186,6 +209,8 @@ const NewsRoom = () => {
       setMainView('trends');
     } else if (view === 'articles') {
       setMainView('articles');
+    } else if (view === 'stocks') {
+      setMainView('stocks');
     }
   }, [location]);
 
@@ -256,6 +281,17 @@ const NewsRoom = () => {
             >
               <TrendingUp className={`w-5 h-5 ${mainView === 'trends' ? 'text-sky-300' : 'text-muted-foreground'}`} />
               AI 트렌드&뉴스
+            </button>
+            <button
+              onClick={() => setMainView('stocks')}
+              className={`flex items-center gap-2.5 px-8 py-4 rounded-xl text-base font-bold transition-all duration-300 ${
+                mainView === 'stocks'
+                  ? 'bg-primary text-white shadow-lg shadow-primary/25 scale-[1.05]'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+              }`}
+            >
+              <BarChart3 className={`w-5 h-5 ${mainView === 'stocks' ? 'text-sky-300' : 'text-muted-foreground'}`} />
+              Stock Market Trends
             </button>
           </div>
         </div>
@@ -465,7 +501,7 @@ const NewsRoom = () => {
                 </>
               )}
             </motion.div>
-          ) : (
+          ) : mainView === 'trends' ? (
             <motion.div
               key="trends-view"
               initial={{ opacity: 0, y: 20 }}
@@ -503,7 +539,7 @@ const NewsRoom = () => {
                           type="date" 
                           value={selectedDate}
                           min="2026-05-09"
-                          max="2026-05-14"
+                          max={latestDate || "2026-05-14"}
                           onChange={(e) => setSelectedDate(e.target.value)}
                           className="bg-transparent border-none p-0 text-sm font-bold text-white focus:ring-0 cursor-pointer w-full [color-scheme:dark]"
                         />
@@ -843,6 +879,16 @@ const NewsRoom = () => {
                   </div>
                 </div>
               </section>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="stocks-view"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.5 }}
+            >
+              <StockMarketTrends />
             </motion.div>
           )}
         </AnimatePresence>
