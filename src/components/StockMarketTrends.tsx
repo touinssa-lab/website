@@ -222,12 +222,12 @@ const StockMarketTrends = () => {
         </div>
 
         {/* Custom React Tabs (Buttons) */}
-        <div className="flex flex-wrap items-center gap-2 mb-6 px-2 relative z-10 border-b border-slate-100 pb-4">
+        <div className="flex items-center gap-2 mb-6 px-2 relative z-10 border-b border-slate-100 pb-4 overflow-x-auto scrollbar-hide flex-nowrap">
           {MARKET_TABS.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTabId(tab.id)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm transition-all duration-300 ${
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm transition-all duration-300 whitespace-nowrap ${
                 activeTabId === tab.id 
                   ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/30 ring-2 ring-blue-600/20' 
                   : 'bg-white text-slate-600 hover:bg-slate-50 border border-slate-200 hover:border-slate-300 shadow-sm'
@@ -239,6 +239,17 @@ const StockMarketTrends = () => {
               {tab.title}
             </button>
           ))}
+
+          {/* External Link to Naver Finance */}
+          <a
+            href="https://finance.naver.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="ml-auto flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200 transition-all duration-300 shadow-sm group/naver whitespace-nowrap"
+          >
+            <TrendingUp className="w-4 h-4 text-emerald-600 group-hover/naver:scale-110 transition-transform" />
+            <span>네이버 국내증시</span>
+          </a>
         </div>
 
         {/* 2-Column Split Layout */}
