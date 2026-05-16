@@ -51,7 +51,7 @@ const NewsRoom = () => {
   const [isNoticeModalOpen, setIsNoticeModalOpen] = useState(false);
   const [newsTab, setNewsTab] = useState<'tourism' | 'ai'>('tourism');
   const [startIndex, setStartIndex] = useState(0);
-  const [selectedDate, setSelectedDate] = useState<string>("2026-05-15");
+  const [selectedDate, setSelectedDate] = useState<string>("2026-05-16");
   
   // DB에서 데이터가 있는 가장 최신 날짜 가져오기
   const { data: latestDate } = useQuery({
@@ -63,7 +63,7 @@ const NewsRoom = () => {
         .order('target_date', { ascending: false })
         .limit(1);
       if (error) throw error;
-      return data?.[0]?.target_date || "2026-05-15";
+      return data?.[0]?.target_date || "2026-05-16";
     }
   });
 
@@ -539,7 +539,7 @@ const NewsRoom = () => {
                           type="date" 
                           value={selectedDate}
                           min="2026-05-09"
-                          max={latestDate || "2026-05-15"}
+                          max={latestDate || "2026-05-16"}
                           onChange={(e) => setSelectedDate(e.target.value)}
                           className="bg-transparent border-none p-0 text-sm font-bold text-white focus:ring-0 cursor-pointer w-full [color-scheme:dark]"
                         />
