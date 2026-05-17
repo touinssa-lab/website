@@ -194,6 +194,9 @@ const NewsRoom = () => {
     enabled: mainView === 'trends'
   });
 
+  const hasNoData = !isKeywordsLoading && !isInsightsLoading && !isTrendArticlesLoading && 
+    trendKeywords.length === 0 && trendInsights.length === 0 && trendArticles.length === 0;
+
   useEffect(() => {
     if (mainView !== 'trends' || trendKeywords.length === 0) return;
     const interval = setInterval(() => {
@@ -571,6 +574,32 @@ const NewsRoom = () => {
                 </div>
               </div>
 
+              {hasNoData ? (
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="w-full py-24 px-8 bg-white/40 backdrop-blur-xl border border-slate-200/80 rounded-[2rem] flex flex-col items-center justify-center text-center shadow-lg relative overflow-hidden group mb-12"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-indigo-500/5 pointer-events-none" />
+                  <div className="relative z-10 flex flex-col items-center max-w-md">
+                    <div className="w-20 h-20 bg-rose-500/10 border border-rose-500/20 rounded-3xl flex items-center justify-center mb-8 relative shadow-inner">
+                      <Calendar className="w-10 h-10 text-rose-500 opacity-80" />
+                      <span className="absolute -top-1.5 -right-1.5 w-6 h-6 bg-rose-500 text-white rounded-full flex items-center justify-center text-xs font-black border-2 border-white shadow-md">X</span>
+                    </div>
+                    <h3 className="text-2xl font-black text-slate-800 mb-3 font-sans tracking-tight">수집된 데이터가 없습니다</h3>
+                    <p className="text-slate-500 text-sm leading-relaxed mb-8 font-medium">
+                      선택하신 날짜({selectedDate})는 자동 업데이트가 실행되지 않았거나 데이터 수집 대상이 존재하지 않는 날짜입니다.
+                    </p>
+                    <button
+                      onClick={() => setSelectedDate(latestDate || "2026-05-17")}
+                      className="px-6 py-3.5 bg-primary text-white hover:bg-primary/90 font-extrabold text-xs rounded-xl shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98]"
+                    >
+                      최신 데이터 날짜로 이동
+                    </button>
+                  </div>
+                </motion.div>
+              ) : (
+                <>
               <div className="mb-20">
                   <div className="flex flex-col md:flex-row items-center justify-between mb-10 gap-6">
                     <div className="flex items-center gap-3">
@@ -857,6 +886,8 @@ const NewsRoom = () => {
                     )}
                   </div>
                 </div>
+                </>
+              )}
 
                 <div className="mt-20 p-10 bg-slate-900 text-white rounded-[1.75rem] flex flex-col lg:flex-row items-center gap-10 shadow-2xl relative overflow-hidden group">
                   <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 blur-[100px] -mr-32 -mt-32 rounded-full group-hover:bg-primary/30 transition-all duration-700"></div>

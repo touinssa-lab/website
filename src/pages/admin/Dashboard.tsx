@@ -74,6 +74,21 @@ const Dashboard = () => {
     refetchInterval: 30000, // Refresh every 30 seconds for real-time feel
   });
 
+  // Fetch Agent Status
+  const { data: agentStatus } = useQuery({
+    queryKey: ['agent_status'],
+    queryFn: async () => {
+      try {
+        const response = await fetch('/agent_status.json');
+        if (!response.ok) return null;
+        return response.json();
+      } catch (error) {
+        return null;
+      }
+    },
+    refetchInterval: 3000, // Poll every 3 seconds to ensure real-time terminal sync
+  });
+
 
   // Format GA4 chart data
   const visitorChartData = analytics?.chartData?.slice(-14).map((item: any) => ({
@@ -214,6 +229,78 @@ const Dashboard = () => {
             </CardContent>
           </Card>
         </div>
+
+        {/* AutoAgent Console Section */}
+        <Card className="border-none shadow-sm overflow-hidden bg-slate-950 text-slate-100 rounded-2xl">
+          <CardHeader className="flex flex-row items-center justify-between border-b border-slate-900 pb-4 bg-slate-900 text-white">
+            <CardTitle className="text-lg font-bold flex items-center gap-2">
+              <div className={`w-2.5 h-2.5 rounded-full ${
+                agentStatus?.status === 'running' || agentStatus?.status === 'starting'
+                  ? 'bg-amber-400 animate-ping'
+                  : agentStatus?.status === 'completed'
+                  ? 'bg-emerald-400'
+                  : 'bg-slate-400'
+              }`} />
+              관광 AI 뉴스룸 에이전트 실시간 모니터링 (AutoAgent Console)
+            </CardTitle>
+            <span className={`text-[10px] px-2.5 py-1 rounded-full font-bold uppercase tracking-wider ${
+              agentStatus?.status === 'running' || agentStatus?.status === 'starting'
+                ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                : agentStatus?.status === 'completed'
+                ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                : 'bg-slate-850 text-slate-450 border border-slate-750'
+            }`}>
+              {agentStatus?.status || 'OFFLINE'}
+            </span>
+          </CardHeader>
+          <CardContent className="pt-6 font-mono text-xs text-slate-300">
+            {agentStatus ? (
+              <div className="space-y-4">
+                {/* Progress bar and details */}
+                <div className="bg-slate-900 p-4 rounded-xl border border-slate-850 flex flex-col md:flex-row md:items-center justify-between gap-4 font-sans">
+                  <div>
+                    <p className="text-slate-500 text-[10px] uppercase font-bold tracking-wider">Current Execution Step</p>
+                    <h4 className="text-white font-bold text-sm mt-0.5">
+                      {agentStatus.message || '대기 중...'}
+                    </h4>
+                    <p className="text-[10px] text-slate-500 mt-1">마지막 동기화: {agentStatus.last_updated}</p>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <span className="text-xs font-bold text-white bg-slate-800 px-3 py-1 rounded border border-slate-700">
+                      Step {agentStatus.step} / {agentStatus.total_steps}
+                    </span>
+                    <div className="w-32 bg-slate-800 rounded-full h-2.5 overflow-hidden border border-slate-750">
+                      <div 
+                        className="bg-indigo-500 h-full transition-all duration-500 ease-out" 
+                        style={{ width: `${(agentStatus.step / agentStatus.total_steps) * 100}%` }}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Console Logs */}
+                <div>
+                  <p className="text-slate-500 text-[10px] uppercase font-bold tracking-wider mb-2">Live Execution Logs</p>
+                  <div className="bg-slate-900 rounded-xl p-4 border border-slate-850 h-[180px] overflow-y-auto space-y-1.5 scrollbar-thin scrollbar-thumb-slate-800">
+                    {agentStatus.logs?.map((log: string, idx: number) => (
+                      <div key={idx} className="flex items-start gap-2">
+                        <span className="text-indigo-400 font-bold shrink-0">&gt;</span>
+                        <span className="leading-relaxed break-all text-slate-200">{log}</span>
+                      </div>
+                    ))}
+                    {!agentStatus.logs?.length && (
+                      <div className="text-slate-600 italic text-center pt-16">로그가 준비되지 않았습니다.</div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="p-8 text-center text-slate-500 italic">
+                에이전트 구동 기록이 존재하지 않거나 오프라인 상태입니다. (bat 파일 가동 시 자동으로 실시간 로그가 수집됩니다)
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </div>
     </AdminLayout>
   );

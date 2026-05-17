@@ -1,0 +1,19 @@
+{
+  "last_updated": "2026-05-17 23:25:00",
+  "status": "completed",
+  "step": 5,
+  "total_steps": 5,
+  "message": "Daily newsroom update complete!",
+  "logs": [
+    "[23:23:10] Step 1/5: Collecting Google Trends Daily Hot Keywords...",
+    "[23:23:12] Step 1 Complete: Collected 10 hot trending keywords.",
+    "[23:23:12] Step 2/5: Scrapes 12 Naver News Articles...",
+    "[23:23:25] Step 2 Complete: Scraped raw articles - Tourism: 6, AI/Data: 6",
+    "[23:23:25] Step 3/5: Processing articles with Gemini/fallback to generate custom summaries...",
+    "[23:24:50] Step 3 Complete: Processed 6 tourism and 6 AI articles.",
+    "[23:24:50] Step 4/5: Generating daily keyword insight cards...",
+    "[23:24:58] Step 4 Complete: Synthesized 5 daily insight cards.",
+    "[23:24:58] Step 5/5: Publishing all compiled datasets to Supabase dashboard...",
+    "[23:25:00] Step 5/5: Daily newsroom update complete! Sync status - Keywords: OK, Insights: OK, Articles: OK"
+  ]
+}
