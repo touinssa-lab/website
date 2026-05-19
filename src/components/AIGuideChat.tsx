@@ -469,7 +469,7 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
       const API_KEY = import.meta.env.VITE_GOOGLE_GEMINI_API_KEY;
       if (!API_KEY) throw new Error("API Key is missing in environment variables.");
 
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${API_KEY}`, {
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

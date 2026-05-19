@@ -7,7 +7,7 @@
 ## 1. 모델 명칭 설정 규정 (Critical)
 
 ### 현재 표준 모델명
-> **`gemini-3-flash-preview`**
+> **`gemini-2.5-flash`**
 
 ### 규정 배경
 *   **세대 교체**: 2026년 이후 제미나이 1.5 시리즈는 레거시로 분류되며, 3.0 엔진이 표준입니다.
@@ -24,7 +24,7 @@
 *   **수정 코드 예시**:
     ```typescript
     // ✅ 올바른 호출 방식
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${API_KEY}`, { ... });
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`, { ... });
     ```
 
 ---
@@ -34,7 +34,7 @@
 챗봇 모델을 업데이트하거나 수정할 때 다음 3가지를 반드시 확인하십시오.
 
 1.  **API Key 유효성**: `VITE_GOOGLE_GEMINI_API_KEY`가 환경 변수에 올바르게 설정되어 있는지 확인.
-2.  **모델명 오타 확인**: `gemini-3-flash-preview` 문자열에 오타가 없는지 확인 (특히 대시`-` 위치 주의).
+2.  **모델명 오타 확인**: `gemini-2.5-flash` 문자열에 오타가 없는지 확인 (특히 대시`-` 위치 주의).
 3.  **Endpoint 버전**: 현재 `/v1beta/` 버전의 엔드포인트를 사용 중인지 확인.
 
 ---
