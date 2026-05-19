@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>관광자원 유형 및 분류체계 연구·기사 조사 보고서 | TINS Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* Reset & CSS Variable Design Tokens */
+    :root {
+      --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+      --card-bg: rgba(30, 41, 59, 0.7);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent-cyan: #38bdf8;
+      --accent-teal: #2dd4bf;
+      --accent-emerald: #34d399;
+      --accent-purple: #c084fc;
+      --accent-gold: #fbbf24;
+      --glow-cyan: rgba(56, 189, 248, 0.15);
+      --glow-teal: rgba(45, 212, 191, 0.15);
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Noto Sans KR', 'Outfit', sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      min-height: 100vh;
+      line-height: 1.6;
+      overflow-x: hidden;
+      padding-bottom: 80px;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* Header Styling */
+    header {
+      text-align: center;
+      padding: 60px 20px 40px 20px;
+      position: relative;
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .tins-badge {
+      display: inline-block;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      color: var(--accent-cyan);
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      padding: 6px 16px;
+      border-radius: 50px;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      box-shadow: 0 0 15px var(--glow-cyan);
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      background: linear-gradient(to right, #ffffff, #93c5fd, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 16px;
+      line-height: 1.25;
+    }
+
+    .header-desc {
+      color: var(--text-muted);
+      font-size: 1.15rem;
+      max-width: 760px;
+      margin: 0 auto 24px auto;
+      font-weight: 300;
+    }
+
+    .meta-bar {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 12px 0;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .meta-item strong {
+      color: #cbd5e1;
+    }
+
+    /* Stat Cards Dashboard */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+      margin-bottom: 50px;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      backdrop-filter: blur(10px);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+    }
+
+    .stat-card.c1::before { background: var(--accent-cyan); }
+    .stat-card.c2::before { background: var(--accent-teal); }
+    .stat-card.c3::before { background: var(--accent-purple); }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+    }
+
+    .stat-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .stat-value {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+
+    .stat-desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      font-weight: 300;
+    }
+
+    /* Tabs Component */
+    .tabs-container {
+      margin-bottom: 30px;
+    }
+
+    .tabs-nav {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 16px;
+      margin-bottom: 32px;
+    }
+
+    .tab-btn {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--text-muted);
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tab-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+    }
+
+    .tab-btn.active {
+      background: var(--accent-cyan);
+      border-color: var(--accent-cyan);
+      color: #0f172a;
+      font-weight: 700;
+      box-shadow: 0 4px 20px var(--glow-cyan);
+    }
+
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.4s ease-in-out;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Resource Cards Styling */
+    .resources-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .resource-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 20px;
+      backdrop-filter: blur(10px);
+      transition: var(--transition);
+    }
+
+    @media (min-width: 768px) {
+      .resource-card {
+        flex-direction: row;
+        align-items: center;
+      }
+    }
+
+    .resource-card:hover {
+      border-color: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+      transform: scale(1.005);
+    }
+
+    .resource-info {
+      flex: 1;
+    }
+
+    .resource-badge-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      text-transform: uppercase;
+    }
+
+    .badge-scholar { background: rgba(192, 132, 252, 0.15); color: var(--accent-purple); border: 1px solid rgba(192, 132, 252, 0.3); }
+    .badge-news { background: rgba(45, 212, 191, 0.15); color: var(--accent-teal); border: 1px solid rgba(45, 212, 191, 0.3); }
+    .badge-search { background: rgba(56, 189, 248, 0.15); color: var(--accent-cyan); border: 1px solid rgba(56, 189, 248, 0.3); }
+    .badge-gray { background: rgba(255, 255, 255, 0.05); color: #cbd5e1; border: 1px solid rgba(255, 255, 255, 0.1); }
+
+    .resource-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 8px;
+      line-height: 1.35;
+    }
+
+    .resource-meta {
+      font-size: 0.88rem;
+      color: var(--accent-cyan);
+      margin-bottom: 12px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .resource-desc {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      font-weight: 300;
+      line-height: 1.6;
+    }
+
+    .resource-action {
+      display: flex;
+      align-items: center;
+    }
+
+    .btn-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.04);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: var(--transition);
+      white-space: nowrap;
+      width: 100%;
+    }
+
+    @media (min-width: 768px) {
+      .btn-link {
+        width: auto;
+      }
+    }
+
+    .btn-link:hover {
+      background: #ffffff;
+      color: #0f172a;
+      box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+    }
+
+    /* Classification Guide Highlights Section */
+    .taxonomy-section {
+      background: rgba(30, 41, 59, 0.4);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 40px;
+      margin-top: 60px;
+      backdrop-filter: blur(10px);
+    }
+
+    .taxonomy-header {
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .taxonomy-header h2 {
+      font-size: 1.8rem;
+      font-weight: 800;
+      background: linear-gradient(to right, #38bdf8, #2dd4bf);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 10px;
+    }
+
+    .taxonomy-header p {
+      color: var(--text-muted);
+      font-size: 1rem;
+      max-width: 700px;
+      margin: 0 auto;
+      font-weight: 300;
+    }
+
+    .taxonomy-table-wrapper {
+      overflow-x: auto;
+    }
+
+    .taxonomy-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.95rem;
+    }
+
+    .taxonomy-table th, .taxonomy-table td {
+      padding: 16px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .taxonomy-table th {
+      background: rgba(255, 255, 255, 0.03);
+      color: #cbd5e1;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+    }
+
+    .taxonomy-table td strong {
+      color: #ffffff;
+    }
+
+    .taxonomy-table tr:hover {
+      background: rgba(255, 255, 255, 0.01);
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      margin-top: 80px;
+      padding-top: 40px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--text-muted);
+      font-size: 0.88rem;
+    }
+
+    footer p {
+      margin-bottom: 8px;
+    }
+
+    footer strong {
+      color: #cbd5e1;
+    }
+
+    /* Icons via CSS SVG Backgrounds */
+    .icon {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    
+    <!-- Header Section -->
+    <header>
+      <div class="tins-badge">TINS Intelligence Report</div>
+      <h1>관광자원 유형 및 분류체계 리서치</h1>
+      <p class="header-desc">
+        관광자원을 체계적으로 유형화(문화시설, 역사관광지, 체험관광지, 자연휴양 등)하기 위해 구글 포털, 뉴스, 학술검색(Scholar)에서 관련성 높은 학술 논문 및 실무 보도 자료들을 정밀 수집한 맞춤형 브리핑입니다.
+      </p>
+      
+      <div class="meta-bar">
+        <div class="meta-item">
+          <strong>수집 일시:</strong> <span>2026년 05월 19일</span>
+        </div>
+        <div class="meta-item">
+          <strong>제공 에이전트:</strong> <span>Tourism Insight AI Agent (Antigravity)</span>
+        </div>
+        <div class="meta-item">
+          <strong>수집 채널:</strong> <span>Google Search, Google News, Google Scholar</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Dashboard Quick Highlights -->
+    <div class="dashboard-grid">
+      <div class="stat-card c1">
+        <div class="stat-title">Academic Trend</div>
+        <div class="stat-value">온톨로지 & 스마트관광 연계</div>
+        <div class="stat-desc">과거의 자연/인문 고정식 분류에서 최근에는 이용자 브랜드 개성, 만족도, 온톨로지 등 스마트관광 프레임워크를 적용한 유연한 분류가 학계의 주류 트렌드입니다.</div>
+      </div>
+      <div class="stat-card c2">
+        <div class="stat-title">News & Policy</div>
+        <div class="stat-value">빅데이터 및 디지털 아카이브</div>
+        <div class="stat-desc">한국관광공사의 빅데이터 기반 지역 관광유형 분석과 각 지자체(부산, 경기 등)의 고유 관광자원 분류체계 디지털 아카이브화 구축 소식이 잇따르고 있습니다.</div>
+      </div>
+      <div class="stat-card c3">
+        <div class="stat-title">Practical Taxonomy</div>
+        <div class="stat-value">체험 및 체류형 자원 중심</div>
+        <div class="stat-desc">정치/행정적 기준 분류와 달리 실무에서는 관광객의 '행동 반응성(Actionable Response)'에 근거해 체험형, 자연휴양형, 역사문화형으로 복합 구성하는 추세입니다.</div>
+      </div>
+    </div>
+
+    <!-- Interactive Navigation Tabs -->
+    <div class="tabs-container">
+      <div class="tabs-nav">
+        <button class="tab-btn active" onclick="showTab('scholar')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/></svg>
+          학술 논문 & 연구 자료 (6)
+        </button>
+        <button class="tab-btn" onclick="showTab('news')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M18 18h-8M16 6H10v4h6V6z"/></svg>
+          뉴스 및 언론 보도 (5)
+        </button>
+        <button class="tab-btn" onclick="showTab('web')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          일반 검색 & 공공 자료 (5)
+        </button>
+      </div>
+
+      <!-- Tab 1: Scholar Results -->
+      <div id="scholar" class="tab-content active">
+        <div class="resources-grid">
+          
+          <div class="resource-card">
+            <div class="resource-info">
+              <div class="resource-badge-row">
+                <span class="badge badge-scholar">학술 논문</span>
+                <span class="badge badge-gray">KCI 등재</span>
+              </div>
+              <h3 class="resource-title">관광분야의 새로운 분류체계 설계에 관한 연구</h3>
+              <div class="resource-meta">
+                <span><strong>저자/연도:</strong> 이지연, 김정현 (2012)</span>
+                <span>•</span>
+                <span><strong>학술지:</strong> 한국도서관·정보학회지</span>
+              </div>
+              <p class="resource-desc">
+                빅데이터 및 스마트 관광 환경에 부합하도록 관광 자원과 영역을 구조화하는 새로운 분류 패러다임을 제안합니다. 전통적 자원 분류의 한계를 넘어 지식 관리 및 온톨로지적 관점의 정보 계층 구조를 설계하는 기틀을 제공하여 고도화된 관광 플랫폼 구축에 필수적인 참고가 됩니다.
+              </p>
+            </div>
+            <div class="resource-action">
+              <a href="https://oak.go.kr/central/journallist/articlepdf.do?article_seq=11337" target="_blank" class="btn-link">
+                논문 PDF 다운로드
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <div class="resource-card">
+            <div class="resource-info">
+              <div class="resource-badge-row">
+                <span class="badge badge-scholar">학술 논문</span>
+                <span class="badge badge-gray">KCI 등재</span>
+              </div>
+              <h3 class="resource-title">관광지 유형에 따른 관광동기가 관광지 매력성 및 내국인관광객 만족도에 미치는 영향</h3>
+              <div class="resource-meta">
+                <span><strong>저자/연도:</strong> 배준호, 최경민, 문주현 (2016)</span>
+                <span>•</span>
+                <span><strong>학술지:</strong> 관광경영연구</span>
+              </div>
+              <p class="resource-desc">
+                관광지를 문화, 역사, 체험, 자연 등 구체적인 세부 유형으로 선제 분류한 뒤, 유형별로 방문하는 관광객들의 심리적 동기와 자원 매력성 인지도, 그리고 최종 만족도 간의 인과관계를 통계적으로 실증 분석한 귀중한 연구입니다.
+              </p>
+            </div>
+            <div class="resource-action">
+              <a href="https://www.dbpia.co.kr/Journal/articleDetail?nodeId=NODE07440605" target="_blank" class="btn-link">
+                DBpia 학술자료 보기
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <div class="resource-card">
+            <div class="resource-info">
+              <div class="resource-badge-row">
+                <span class="badge badge-scholar">학술 논문</span>
+                <span class="badge badge-gray">KCI 등재</span>
+              </div>
+              <h3 class="resource-title">관광자원 유형에 따른 관광목적지 브랜드 개성과 관광객 만족도의 관계</h3>
+              <div class="resource-meta">
+                <span><strong>저자/연도:</strong> 김지선, 홍성화 (2017)</span>
+                <span>•</span>
+                <span><strong>학술지:</strong> 관광학연구</span>
+              </div>
+              <p class="resource-desc">
+                관광자원의 유형(예: 역사문화 관광지, 자연휴양 관광지, 인공형 테마시설 등)에 맞춰 관광지의 브랜드 퍼스널리티가 어떻게 달라지고, 이것이 관광 만족도에 어떤 영향을 끼치는지를 다룬 논문입니다. 실무에서 관광 상품 기획 시 브랜드 속성을 연결시키는 핵심 레퍼런스가 됩니다.
+              </p>
+            </div>
+            <div class="resource-action">
+              <a href="https://www.dbpia.co.kr/Journal/articleDetail?nodeId=NODE08871643" target="_blank" class="btn-link">
+                DBpia 학술자료 보기
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <div class="resource-card">
+            <div class="resource-info">
+              <div class="resource-badge-row">
+                <span class="badge badge-scholar">학술 논문</span>
+                <span class="badge badge-gray">연구 논문</span>
+              </div>
+              <h3 class="resource-title">녹색관광 자원유형분석 및 국내 적용가능성 연구</h3>
+              <div class="resource-meta">
+                <span><strong>저자/연도:</strong> 윤희정, 임승빈 (2004)</span>
+                <span>•</span>
+                <span><strong>학술지:</strong> 한국농촌계획학회지</span>
+              </div>
+              <p class="resource-desc">
+                농촌 어메니티와 농촌 환경 등 '체험형/휴양형 관광'의 근간이 되는 녹색관광자원을 체계적으로 식별하고 유형을 구조화하는 방안을 규명한 논문입니다. 농촌/산촌 체험 관광지나 자연 생태 자원의 세부 매핑 기준을 설정하는 데 가이드라인을 제공합니다.
+              </p>
+            </div>
+            <div class="resource-action">
+              <a href="https://www.dbpia.co.kr/Journal/articleDetail?nodeId=NODE10433043" target="_blank" class="btn-link">
+                DBpia 학술자료 보기
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <div class="resource-card">
+            <div class="resource-info">
+              <div class="resource-badge-row">
+                <span class="badge badge-scholar">학술 논문</span>
+                <span class="badge badge-gray">KCI 등재</span>
+              </div>
+              <h3 class="resource-title">생태관광 정보 표준화를 위한 생태관광 스토리텔링 유형분류</h3>
+              <div class="resource-meta">
+                <span><strong>저자/연도:</strong> 이승주, 이현숙, 서종철 (2012)</span>
+                <span>•</span>
+                <span><strong>학술지:</strong> 한국도시지리학회지</span>
+              </div>
+              <p class="resource-desc">
+                전통적인 유형 분류에서 나아가, 관광 자원이 내포한 스토리텔링 요소를 기준으로 데이터 정보 교환 표준화를 이루기 위한 분류 연구입니다. 자연/생태 관광지 및 문화관광지가 담고 있는 서사적 속성을 코딩하고 유형화한 특수 모델입니다.
+              </p>
+            </div>
+            <div class="resource-action">
+              <a href="https://www.dbpia.co.kr/Journal/articleDetail?nodeId=NODE02494965" target="_blank" class="btn-link">
+                DBpia 학술자료 보기
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <div class="resource-card">
+            <div class="resource-info">
+              <div class="resource-badge-row">
+                <span class="badge badge-scholar">이론 기틀 논문</span>
+                <span class="badge badge-gray">역사적 의의</span>
+              </div>
+              <h3 class="resource-title">관광자원의 분류체계에 관한 연구</h3>
+              <div class="resource-meta">
+                <span><strong>저자/연도:</strong> 김계섭 (1988)</span>
+                <span>•</span>
+                <span><strong>학술지:</strong> 관광학연구</span>
+              </div>
+              <p class="resource-desc">
+                대한민국 초기 관광 자원 연구의 선구적 논문으로서, 관광학적인 차원의 자원 가치를 판별하고 이를 입지론적, 형태론적, 기능론적으로 구획하는 종합적인 분류 매트릭스 체계를 설계하여 후속 모든 학술 연구의 디딤돌이 된 학술 자료입니다.
+              </p>
+            </div>
+            <div class="resource-action">
+              <a href="https://www.dbpia.co.kr/Journal/articleDetail?nodeId=NODE07585874" target="_blank" class="btn-link">
+                DBpia 학술자료 보기
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Tab 2: News Results -->
+      <div id="news" class="tab-content">
+        <div class="resources-grid">
+          
+          <div class="resource-card">
+            <div class="resource-info">
+              <div class="resource-badge-row">
+                <span class="badge badge-news">뉴스 보도</span>
+                <span class="badge badge-gray">빅데이터 분류</span>
+              </div>
+              <h3 class="resource-title">관광공사, 빅데이터 기반 지역별 관광 유형 발표</h3>
+              <div class="resource-meta">
+                <span><strong>언론사:</strong> 뉴스저널리즘</span>
+                <span>•</span>
+                <span><strong>보도일자:</strong> 2023. 04. 04</span>
+              </div>
+              <p class="resource-desc">
+                한국관광공사(KTO)가 통신, 소비 카드 결제, SNS 빅데이터 데이터를 수집·결합하여 외래/내국인 관광객이 특정 지역에서 주로 이용하는 유형을 규명한 보고서에 관한 내용입니다. 실무적으로 가장 현대적이고 객관적인 '이용 패턴별 분류'를 확인할 수 있습니다.
+              </p>
+            </div>
+            <div class="resource-action">
+              <a href="https://news.google.com/read/CBMia0FVX3lxTE5TcGUzeUxjUEFOUG1QQlRURVFjbTFBWUcyTjdLNF9rUVlIUW83ZE1HNjFCV245QXA1bnhYM0MxcWlxZVFjTkNEVEcwSHp2dUhqdklLby1DeDlLa3pHWjFsOVhENTZ0ZnZCWllz?hl=ko&gl=KR&ceid=KR%3Ako" target="_blank" class="btn-link">
+                기사 원문 읽기
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <div class="resource-card">
+            <div class="resource-info">
+              <div class="resource-badge-row">
+                <span class="badge badge-news">의회 정책</span>
+                <span class="badge badge-gray">지역 분류체계</span>
+              </div>
+              <h3 class="resource-title">오석규 경기도의원, 경기북부 관광의 분류 체계 필요성 강조</h3>
+              <div class="resource-meta">
+                <span><strong>언론사:</strong> 전국매일신문</span>
+                <span>•</span>
+                <span><strong>보도일자:</strong> 2024. 09. 30</span>
+              </div>
+              <p class="resource-desc">
+                경기 남부 중심의 획일화된 정책 분류에서 벗어나, 때 묻지 않은 생태계와 안보유적지, 역사유산을 가진 '경기북부 권역 전용' 관광자원 분류체계의 수립을 촉구하는 정책 기사입니다. 관광자원 유형 분류가 정책 예산 집행과 인프라 설정에 얼마나 직결되는지 보여줍니다.
+              </p>
+            </div>
+            <div class="resource-action">
+              <a href="https://news.google.com/read/CBMibkFVX3lxTE9RYTVDUzdvYV84eFhIVHM2SHh4N0pxTUtPSExkTGNROTdlYUlJZzJtY1ZpU25lVm1uM3dlU2d6TXgxd0dXV0g1clVEcXRvbUFUZmtqSS1kai1ZWGpNMHRXVjJHeXJid1IxMEEtRWlB?hl=ko&gl=KR&ceid=KR%3Ako" target="_blank" class="btn-link">
+                기사 원문 읽기
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <div class="resource-card">
+            <div class="resource-info">
+              <div class="resource-badge-row">
+                <span class="badge badge-news">패러다임 혁신</span>
+                <span class="badge badge-gray">통합형 관광</span>
+              </div>
+              <h3 class="resource-title">“‘OOO 있는 제주 오세요~’ 벗어나 ‘제주’ 자체가 관광자원 돼야”</h3>
+              <div class="resource-meta">
+                <span><strong>언론사:</strong> 제주의소리</span>
+                <span>•</span>
+                <span><strong>보도일자:</strong> 2025. 09. 09</span>
+              </div>
+              <p class="resource-desc">
+                기존에 특정 문화재, 박물관, 해수욕장 등으로 시설 위주로 잘게 쪼개어 분류하던 자원 명소화 경향을 극복하고, '제주 고유의 라이프스타일'과 섬 생태 공간 전체를 하나의 유기적 유형으로 접근하는 혁신적인 관광자원 패러다임 논의를 상세 보도했습니다.
+              </p>
+            </div>
+            <div class="resource-action">
+              <a href="https://news.google.com/read/CBMia0FVX3lxTE9QdUlTamRvY0xFTEZUaEhuOVZPcWVkckIxNjR3V3FkSXlYYmtRZ2FDTzVuY0lHWGdXbnNrMXNkcElmOUd4LVpSZlVlQnVQLWkzTDJERkg5WnNiMkY0NmgwcDFLdHotSjhuZ1FN?hl=ko&gl=KR&ceid=KR%3Ako" target="_blank" class="btn-link">
+                기사 원문 읽기
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <div class="resource-card">
+            <div class="resource-info">
+              <div class="resource-badge-row">
+                <span class="badge badge-news">디지털 전환</span>
+                <span class="badge badge-gray">아카이브 구축</span>
+              </div>
+              <h3 class="resource-title">외국인 관광객 300만 시대… '부산관광 디지털 아카이브' 구축 완료</h3>
+              <div class="resource-meta">
+                <span><strong>언론사:</strong> 부산일보</span>
+                <span>•</span>
+                <span><strong>보도일자:</strong> 2026. 01. 14</span>
+              </div>
+              <p class="resource-desc">
+                부산광역시와 부산관광공사가 흩어져 있던 산해진미, 해양 레저, 역사 문화 스팟 등 수천 개의 로컬 관광 콘텐츠를 다면적으로 재분류하고 체계화하여 완공한 '부산관광 디지털 아카이브 시스템' 가동 소식입니다. 실증 데이터를 분류·조직하는 벤치마킹 사례로 훌륭합니다.
+              </p>
+            </div>
+            <div class="resource-action">
+              <a href="https://news.google.com/read/CBMibwFVX3lxTE5YN1UzSFUxeDVwY2xsRXlPUjc5RU5Iay1GWVZTNVE1eXp1Wmd5ZjJsSnBnd0lNd2E1Yi00eGdvd2xNd0hHOEU1bkJaTHd5UFlncnEwdDN0NTVOWFVKcEJnSVFQcEtwNjlXZXJYRFdFZw?hl=ko&gl=KR&ceid=KR%3Ako" target="_blank" class="btn-link">
+                기사 원문 읽기
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <div class="resource-card">
+            <div class="resource-info">
+              <div class="resource-badge-row">
+                <span class="badge badge-news">산업 불균형</span>
+                <span class="badge badge-gray">체류형 자원</span>
+              </div>
+              <h3 class="resource-title">해양관광도시 포항 “잠깐 머물다 가는 관광지”…체류형 관광자원 절실</h3>
+              <div class="resource-meta">
+                <span><strong>언론사:</strong> 영남경제</span>
+                <span>•</span>
+                <span><strong>보도일자:</strong> 2022. 07. 05</span>
+              </div>
+              <p class="resource-desc">
+                포항이 가진 우수한 해양 환경 및 스틸 산업단지 자원에 비해 턱없이 부족한 체험형 시설과 휴양 스테이 등의 자원 연계 불균형을 비판하는 실무 기사입니다. 자원의 유형 포트폴리오를 균형감 있게 조율하는 것이 도시 관광 체크인의 기본임을 시사합니다.
+              </p>
+            </div>
+            <div class="resource-action">
+              <a href="https://news.google.com/read/CBMiZ0FVX3lxTE00UFJTUlZFcEhfOTRhSnUtY3FNZVVMZDRLWjRWdkJFV0c0QzZpSlBfajVQWFVwODBidzRqZTZXUXN3dVVPWGtMZVN6SGFhR2JXeDh6aTh6Umd0SVJUOHU5dWFjWDNBakk?hl=ko&gl=KR&ceid=KR%3Ako" target="_blank" class="btn-link">
+                기사 원문 읽기
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Tab 3: Web Results -->
+      <div id="web" class="tab-content">
+        <div class="resources-grid">
+          
+          <div class="resource-card">
+            <div class="resource-info">
+              <div class="resource-badge-row">
+                <span class="badge badge-search">국가 데이터</span>
+                <span class="badge badge-gray">한국관광공사 기준</span>
+              </div>
+              <h3 class="resource-title">관광자원 요약 정보 (행정안전부 국가기록포털)</h3>
+              <div class="resource-meta">
+                <span><strong>제공처:</strong> 국가기록원 (Archives.go.kr)</span>
+              </div>
+              <p class="resource-desc">
+                한국 행정 표준의 기준을 제시하는 백서형 정보입니다. 한국관광공사가 공식 정의하는 방식에 근거하여 관광자원을 크게 '유형자원'과 '무형자원'으로 대분류한 뒤, 유형자원은 다시 자연적, 문화적, 사회적, 산업적, 레크리에이션 자원으로 5대 세분화하는 국가 표준 틀을 명시합니다.
+              </p>
+            </div>
+            <div class="resource-action">
+              <a href="https://www.archives.go.kr/next/newsearch/listSubjectDescription.do?id=003645&pageFlag=&sitePage=" target="_blank" class="btn-link">
+                국가기록포털 바로가기
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <div class="resource-card">
+            <div class="resource-info">
+              <div class="resource-badge-row">
+                <span class="badge badge-search">대학 강의자료</span>
+                <span class="badge badge-gray">PDF 교안</span>
+              </div>
+              <h3 class="resource-title">관광자원의 분류 및 유형론 (상지대학교 학술자료실)</h3>
+              <div class="resource-meta">
+                <span><strong>제공처:</strong> 상지대학교 (Sangji.ac.kr)</span>
+              </div>
+              <p class="resource-desc">
+                실제 대학교 관광학부 학부생 교육을 위한 '관광자원의 분류' 강의용 원천 PDF 문서입니다. 자연자원 의존형, 문화자원 의존형, 인공시설 자원 의존형 분류를 기반으로 각 카테고리의 구성요소, 활용 모델, 해외와 한국 분류의 대조 체계를 일러줍니다.
+              </p>
+            </div>
+            <div class="resource-action">
+              <a href="https://www.sangji.ac.kr/cmm/fms/FileDown.do?atchFileId=FILE_000000025562Dz9&fileSn=0" target="_blank" class="btn-link">
+                강의 교안 PDF 받기
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <div class="resource-card">
+            <div class="resource-info">
+              <div class="resource-badge-row">
+                <span class="badge badge-search">전문 요약</span>
+                <span class="badge badge-gray">관광해설론</span>
+              </div>
+              <h3 class="resource-title">[관광자원해설] 관광자원의 이해 및 구조론</h3>
+              <div class="resource-meta">
+                <span><strong>제공처:</strong> 네이버 전문 지식 블로그 (grioom00)</span>
+              </div>
+              <p class="resource-desc">
+                관광 가이드 및 해설사를 양성하기 위한 관광자원해설 시험용 단권화 정리 요약본입니다. 유형 관광자원(자연관광자원, 인문문화관광자원, 인문산업관광자원)과 역사, 축제 등의 무형 관광자원에 속하는 상세 기둥을 시험 출제 기준에 맞게 간결히 해체하여 정리했습니다.
+              </p>
+            </div>
+            <div class="resource-action">
+              <a href="https://blog.naver.com/grioom00/221585921513" target="_blank" class="btn-link">
+                요약 자료실 이동
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <div class="resource-card">
+            <div class="resource-info">
+              <div class="resource-badge-row">
+                <span class="badge badge-search">이론 가이드</span>
+                <span class="badge badge-gray">입지 및 기능</span>
+              </div>
+              <h3 class="resource-title">[관광학개론] 관광자원의 다차원적 분류 기준</h3>
+              <div class="resource-meta">
+                <span><strong>제공처:</strong> 학술 티스토리 & 네이버 블로그 (coolchacha)</span>
+              </div>
+              <p class="resource-desc">
+                관광지를 입지(이용자 중심성, 자원 중심성, 중간 휴양성)에 따라 분류하고, 자원이 소재하는 물리적 성격과 토지 단위(점, 선, 면적 단위)에 따라 매핑하는 체계화 기법을 다룹니다. 관광지 마케팅 범주를 짤 때 입지적 한계를 사전에 가늠할 수 있게 해줍니다.
+              </p>
+            </div>
+            <div class="resource-action">
+              <a href="http://blog.naver.com/PostView.nhn?blogId=coolchacha&logNo=20042466142&redirect=Dlog&widgetTypeCall=true" target="_blank" class="btn-link">
+                상세 해설 보기
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <div class="resource-card">
+            <div class="resource-info">
+              <div class="resource-badge-row">
+                <span class="badge badge-search">기초 데이터</span>
+                <span class="badge badge-gray">성격별 분할</span>
+              </div>
+              <h3 class="resource-title">관광자원의 형태별·성격별 전통적 분류체계</h3>
+              <div class="resource-meta">
+                <span><strong>제공처:</strong> 관광실무 블로그 (betear)</span>
+              </div>
+              <p class="resource-desc">
+                자원의 전통적 성격(자연 경관, 문화 예술, 지역 사회상, 생산 공업, 레포츠 위락)을 기반으로 관광 시설과 요소를 그룹화하는 실질적인 매트릭스를 다룬 기초 문서입니다. 누구나 이해하기 쉬운 전통적 도식을 제공합니다.
+              </p>
+            </div>
+            <div class="resource-action">
+              <a href="https://blog.naver.com/betear/100015730254" target="_blank" class="btn-link">
+                이론 블로그 보기
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Educational Spotlight Section -->
+    <section class="taxonomy-section">
+      <div class="taxonomy-header">
+        <h2>관광자원 유형 분류 가이드라인 제안 (AI Synthesis)</h2>
+        <p>수집된 학술 연구(이지연 2012, 배준호 2016) 및 한국관광공사 표준 체계를 결합하여 도출한 직관적이고 효과적인 실무 분류 가이드라인입니다.</p>
+      </div>
+      
+      <div class="taxonomy-table-wrapper">
+        <table class="taxonomy-table">
+          <thead>
+            <tr>
+              <th style="width: 20%;">대분류 유형</th>
+              <th style="width: 30%;">핵심 정의</th>
+              <th style="width: 50%;">실무 세부 예시 (관광지 유형 매핑)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>🏛️ 문화/예술 시설</strong></td>
+              <td>인간의 미적, 지적 욕구를 충족시키기 위해 인공적으로 설계·보존된 공간</td>
+              <td>미술관, 종합박물관, 예술전시관, 콘서트홀 및 공연장, 기념관, 대규모 지역 문화 축제 공간 등</td>
+            </tr>
+            <tr>
+              <td><strong>🏯 역사/유산 관광</strong></td>
+              <td>과거 조상들의 유적이나 역사적 흔적으로 문화재적 보존 가치가 뛰어난 장소</td>
+              <td>전통 궁궐 및 사찰, 왕릉, 국가지정 사적지, 전적 기념비 및 비석, 무형 역사 전수관 등</td>
+            </tr>
+            <tr>
+              <td><strong>🎯 체험/레저/레포츠</strong></td>
+              <td>단순 관람을 넘어 관광객이 직접 신체적·감각적 행위를 수행하며 주도적으로 소비하는 공간</td>
+              <td>농촌 어메니티 체험 마을, 도예 공방, 서핑 스팟, 스카이워크, 루지 체험장, 대형 테마파크/위락 단지 등</td>
+            </tr>
+            <tr>
+              <td><strong>🌲 자연/웰니스 휴양</strong></td>
+              <td>자연 고유의 아름다운 경관과 힐링 요소를 통해 심신의 온전한 휴식을 유도하는 자연권</td>
+              <td>국립공원, 산림욕장 및 치유의 숲, 천연 동굴, 온천 스파 리조트, 해수욕장, 생태보호습지 등</td>
+            </tr>
+            <tr>
+              <td><strong>🏭 산업/스마트 테크</strong></td>
+              <td>지역의 근대 산업 생산 현장이나 최첨단 ICT 기술이 접목되어 교육과 호기심을 유발하는 자원</td>
+              <td>전통 양조장/양조시설 견학, 근대 철강/조선 산업 단지, 스마트 관광도시 가상현실 융합센터 등</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer>
+      <p>본 자료는 <strong>투어리즘인사이트(Tourism Insight)</strong> 홈페이지 리뉴얼을 위해 특별 조작된 뉴스룸 브리핑입니다.</p>
+      <p>Designed and Compiled with ❤️ by <strong>Antigravity AI Agent</strong> &copy; 2026</p>
+    </footer>
+
+  </div>
+
+  <!-- Interactive JavaScript for Tabs Switching -->
+  <script>
+    function showTab(tabId) {
+      // 1. Hide all tab contents
+      const contents = document.querySelectorAll('.tab-content');
+      contents.forEach(content => {
+        content.classList.remove('active');
+      });
+
+      // 2. Deactivate all tab buttons
+      const buttons = document.querySelectorAll('.tab-btn');
+      buttons.forEach(btn => {
+        btn.classList.remove('active');
+      });
+
+      // 3. Show selected tab content
+      const activeContent = document.getElementById(tabId);
+      if (activeContent) {
+        activeContent.classList.add('active');
+      }
+
+      // 4. Activate current clicked button
+      event.currentTarget.classList.add('active');
+    }
+  </script>
+
+</body>
+</html>
