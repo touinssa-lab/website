@@ -679,7 +679,7 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
     setMessages((prev) => [...prev, { role: "user", content: userMessage }]);
     setInput("");
 
-    if (!isUnlimited && chatCount >= 5) {
+    if (!isUnlimited && chatCount >= 5 && !import.meta.env.DEV) {
       setTimeout(() => {
         setMessages((prev) => [...prev, { role: "bot", content: t.limitExceeded }]);
       }, 500);
@@ -1033,17 +1033,20 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
             top: '-9999px',
             width: '800px',
             height: '1130px',
-            backgroundColor: '#fdfbf7', // warm beige background
+            backgroundImage: 'url(/images/watercolor_paper_texture.png)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
             fontFamily: '"Outfit", "Inter", "Noto Sans KR", sans-serif',
             boxSizing: 'border-box',
             display: 'flex',
             flexDirection: 'column',
             overflow: 'hidden',
-            borderRadius: '24px',
-            border: '3px solid #8ba88f', // Sage-green rounded border
-            outline: '1px dashed rgba(139, 168, 143, 0.4)',
-            outlineOffset: '-12px',
+            borderRadius: '16px',
+            border: '3px solid #5d4037', // Sketchy dark brown outer border
+            outline: '1px dashed #8d6e63', // Inner sketchy dashed outline
+            outlineOffset: '-10px',
             padding: '48px',
+            color: '#3e2723',
           }}
           className="relative"
         >
@@ -1052,7 +1055,7 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            borderBottom: '2px solid #eae1d4',
+            borderBottom: '2px solid #8d6e63',
             paddingBottom: '16px',
             marginBottom: '20px'
           }}>
@@ -1062,6 +1065,7 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
                 fontWeight: '900',
                 color: '#8ba88f',
                 letterSpacing: '0.15em',
+                fontFamily: '"Outfit", sans-serif'
               }}>
                 TOURISM INSIGHT AI GUIDE
               </span>
@@ -1069,14 +1073,16 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
                 <span style={{
                   fontSize: '32px',
                   fontWeight: '950',
-                  color: '#1e293b',
+                  color: '#3e2723',
+                  fontFamily: '"Noto Serif KR", "Batang", "Georgia", serif'
                 }}>
                   {downloadData.regionName}
                 </span>
                 <span style={{
                   fontSize: '16px',
-                  color: '#8ba88f',
+                  color: '#8d6e63',
                   fontWeight: 'extrabold',
+                  fontFamily: '"Noto Serif KR", "Batang", serif'
                 }}>
                   하루 추천 코스
                 </span>
@@ -1085,35 +1091,45 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
             
             {/* Sage Stamp Label instead of A4 indicators */}
             <div style={{
-              border: '2px solid #8ba88f',
+              border: '1.5px solid #8ba88f',
               borderRadius: '8px',
               padding: '6px 12px',
-              color: '#8ba88f',
+              color: '#4b6b52',
               fontSize: '11px',
               fontWeight: '900',
               letterSpacing: '0.05em',
-              backgroundColor: 'rgba(139, 168, 143, 0.05)'
+              backgroundColor: 'rgba(253, 251, 247, 0.8)',
+              fontFamily: '"Outfit", sans-serif'
             }}>
-              🌱 로컬 가이드북 / LOCAL STORIES
+              🌿 로컬 가이드북 / LOCAL STORIES
             </div>
           </div>
 
           {/* Subtitle / Intro phrase */}
           <div style={{
-            backgroundColor: '#ffffff',
+            backgroundColor: 'rgba(255, 255, 255, 0.65)',
             padding: '16px 20px',
             borderRadius: '16px',
-            border: '1px solid #eae1d4',
+            border: '1.5px solid #8d6e63',
             fontSize: '13px',
             lineHeight: '1.6',
-            color: '#475569',
+            color: '#3e2723',
             fontWeight: '600',
             wordBreak: 'keep-all',
             marginBottom: '20px',
             boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.01)'
           }}>
-            “ {downloadData.title} ”
-            <p style={{ margin: '4px 0 0 0', fontSize: '12px', color: '#64748b', fontWeight: 'normal' }}>
+            <span style={{ 
+              fontFamily: '"Noto Serif KR", "Batang", serif', 
+              fontSize: '14.5px', 
+              fontWeight: '900', 
+              color: '#3e2723',
+              display: 'block',
+              marginBottom: '4px'
+            }}>
+              “ {downloadData.title.replace(/["'“”]/g, '')} ”
+            </span>
+            <p style={{ margin: '4px 0 0 0', fontSize: '12px', color: '#5d4037', fontWeight: 'normal', fontFamily: '"Noto Sans KR", sans-serif' }}>
               {downloadData.intro}
             </p>
           </div>
@@ -1125,23 +1141,24 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
               {/* Timeline Route Map */}
               <div style={{
                 padding: '16px',
-                backgroundColor: '#ffffff',
+                backgroundColor: 'rgba(255, 255, 255, 0.65)',
                 borderRadius: '20px',
-                border: '1px solid #eae1d4',
+                border: '1.5px solid #8d6e63',
                 display: 'flex',
                 flexDirection: 'column',
               }}>
                 <div style={{
                   fontSize: '13px',
                   fontWeight: '900',
-                  color: '#475569',
-                  borderBottom: '1px solid #f3efe7',
+                  color: '#3e2723',
+                  borderBottom: '1px dotted #8d6e63',
                   paddingBottom: '8px',
                   marginBottom: '12px',
                   letterSpacing: '0.05em',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '6px'
+                  gap: '6px',
+                  fontFamily: '"Noto Serif KR", serif'
                 }}>
                   📍 코스 요약 경로
                 </div>
@@ -1171,7 +1188,7 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
                         justifyContent: 'center',
                         fontWeight: '900',
                         fontSize: '14px',
-                        border: '3px solid #ffffff',
+                        border: '2px solid #5d4037',
                         boxShadow: '0 4px 6px -1px rgba(139, 168, 143, 0.2)',
                         flexShrink: 0
                       }}>
@@ -1185,15 +1202,16 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
                         display: 'flex',
                         flexDirection: 'column'
                       }}>
-                        <div style={{ fontSize: '9px', fontWeight: 'bold', color: '#8ba88f' }}>{period.time}</div>
+                        <div style={{ fontSize: '9px', fontWeight: 'bold', color: '#8d6e63', fontFamily: '"Outfit", sans-serif' }}>{period.time}</div>
                         <div style={{ 
                           fontSize: '11.5px', 
                           fontWeight: 'bold', 
-                          color: '#1e293b', 
+                          color: '#3e2723', 
                           marginTop: '1px',
                           whiteSpace: 'normal',
                           wordBreak: 'keep-all',
-                          lineHeight: '1.2'
+                          lineHeight: '1.2',
+                          fontFamily: '"Noto Sans KR", sans-serif'
                         }}>
                           {period.place || '추천 코스'}
                         </div>
@@ -1206,23 +1224,24 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
               {/* Local Delicacies section covering major provinces */}
               <div style={{
                 padding: '16px',
-                backgroundColor: '#ffffff',
+                backgroundColor: 'rgba(255, 255, 255, 0.65)',
                 borderRadius: '20px',
-                border: '1px solid #eae1d4',
+                border: '1.5px solid #8d6e63',
                 display: 'flex',
                 flexDirection: 'column',
               }}>
                 <div style={{
                   fontSize: '13px',
                   fontWeight: '900',
-                  color: '#475569',
-                  borderBottom: '1px solid #f3efe7',
+                  color: '#3e2723',
+                  borderBottom: '1px dotted #8d6e63',
                   paddingBottom: '8px',
                   marginBottom: '10px',
                   letterSpacing: '0.05em',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '6px'
+                  gap: '6px',
+                  fontFamily: '"Noto Serif KR", serif'
                 }}>
                   🍽️ Must Try 로컬 추천
                 </div>
@@ -1230,10 +1249,10 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   {downloadData.delicacies.map((item: any, idx: number) => (
                     <div key={idx} style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                      <span style={{ fontSize: '11.5px', fontWeight: 'bold', color: '#15803d' }}>
+                      <span style={{ fontSize: '11.5px', fontWeight: 'bold', color: '#6b8e23', fontFamily: '"Noto Sans KR", sans-serif' }}>
                         • {item.name}
                       </span>
-                      <span style={{ fontSize: '9.5px', color: '#64748b', lineHeight: '1.3', paddingLeft: '8px', wordBreak: 'keep-all' }}>
+                      <span style={{ fontSize: '9.5px', color: '#5d4037', lineHeight: '1.3', paddingLeft: '8px', wordBreak: 'keep-all', fontFamily: '"Noto Sans KR", sans-serif' }}>
                         {item.desc}
                       </span>
                     </div>
@@ -1245,9 +1264,9 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
               <div style={{
                 marginTop: 'auto',
                 padding: '12px 16px',
-                backgroundColor: '#ffffff',
+                backgroundColor: 'rgba(255, 255, 255, 0.7)',
                 borderRadius: '20px',
-                border: '1px solid #eae1d4',
+                border: '1.5px solid #8d6e63',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '12px'
@@ -1256,21 +1275,22 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
                   width: '38px',
                   height: '38px',
                   borderRadius: '50%',
-                  backgroundColor: 'rgba(139, 168, 143, 0.1)',
+                  backgroundColor: 'rgba(139, 168, 143, 0.15)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   fontSize: '18px',
-                  flexShrink: 0
+                  flexShrink: 0,
+                  border: '1px solid #8d6e63'
                 }}>
-                  👩‍✈️
+                  🌿
                 </div>
-                <div>
-                  <div style={{ fontSize: '9px', color: '#8ba88f', fontWeight: '900', letterSpacing: '0.05em' }}>LOCAL GUIDE</div>
-                  <div style={{ fontSize: '13px', fontWeight: '900', color: '#1e293b', marginTop: '1px' }}>
+                <div style={{ overflow: 'hidden' }}>
+                  <div style={{ fontSize: '9px', color: '#8ba88f', fontWeight: '900', letterSpacing: '0.05em', fontFamily: '"Outfit", sans-serif' }}>LOCAL GUIDE</div>
+                  <div style={{ fontSize: '13px', fontWeight: '900', color: '#3e2723', marginTop: '1px', fontFamily: '"Noto Serif KR", serif', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                     {downloadData.personaName}
                   </div>
-                  <div style={{ fontSize: '10px', color: '#64748b', fontWeight: '500' }}>
+                  <div style={{ fontSize: '10px', color: '#5d4037', fontWeight: '500', fontFamily: '"Noto Sans KR", sans-serif' }}>
                     {downloadData.personaRole}
                   </div>
                 </div>
@@ -1282,9 +1302,9 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
               {downloadData.periods.map((period: any, idx: number) => (
                 <div key={idx} style={{
                   padding: '16px',
-                  backgroundColor: '#ffffff',
+                  backgroundColor: 'rgba(255, 255, 255, 0.65)',
                   borderRadius: '20px',
-                  border: '1px solid #eae1d4',
+                  border: '1.5px solid #8d6e63',
                   boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.01)',
                   display: 'flex',
                   flexDirection: 'column',
@@ -1292,7 +1312,7 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
                 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
                     <span style={{
-                      backgroundColor: 'rgba(139, 168, 143, 0.1)',
+                      backgroundColor: 'rgba(139, 168, 143, 0.15)',
                       color: '#4b6b52',
                       fontSize: '10.5px',
                       fontWeight: '900',
@@ -1300,24 +1320,26 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
                       borderRadius: '6px',
                       display: 'inline-flex',
                       alignItems: 'center',
+                      fontFamily: '"Noto Sans KR", sans-serif'
                     }}>
                       {period.label}
                     </span>
-                    <span style={{ fontSize: '10.5px', fontWeight: 'bold', color: '#8ba88f' }}>
+                    <span style={{ fontSize: '10.5px', fontWeight: 'bold', color: '#8ba88f', fontFamily: '"Outfit", sans-serif' }}>
                       ⏱️ {period.time}
                     </span>
                   </div>
-                  <h4 style={{ fontSize: '14.5px', fontWeight: '900', color: '#1e293b', marginBottom: '4px' }}>
+                  <h4 style={{ fontSize: '14.5px', fontWeight: '900', color: '#3e2723', marginBottom: '4px', fontFamily: '"Noto Serif KR", "Batang", serif' }}>
                     {period.place ? `[${period.place}]` : '코스 안내'}
                   </h4>
                   <p style={{
                     fontSize: '12px',
                     lineHeight: '1.55',
-                    color: '#475569',
+                    color: '#5d4037',
                     fontWeight: '500',
                     margin: 0,
                     wordBreak: 'keep-all',
-                    textAlign: 'justify'
+                    textAlign: 'justify',
+                    fontFamily: '"Noto Sans KR", sans-serif'
                   }}>
                     {period.desc}
                   </p>
@@ -1328,17 +1350,17 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
 
           {/* Footer Branding */}
           <div style={{
-            borderTop: '1px solid #eae1d4',
+            borderTop: '1px solid #8d6e63',
             paddingTop: '12px',
             marginTop: '16px',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center'
           }}>
-            <span style={{ fontSize: '10px', color: '#94a3b8', fontWeight: 'bold' }}>
+            <span style={{ fontSize: '10px', color: '#8d6e63', fontWeight: 'bold', fontFamily: '"Outfit", sans-serif', opacity: 0.8 }}>
               Tourism Insight Web Service
             </span>
-            <span style={{ fontSize: '10px', color: '#8ba88f', fontWeight: 'extrabold' }}>
+            <span style={{ fontSize: '10px', color: '#8ba88f', fontWeight: 'extrabold', fontFamily: '"Outfit", sans-serif' }}>
               LAB.TOURISM-INSIGHT.CO.KR
             </span>
           </div>
