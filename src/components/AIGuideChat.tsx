@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, User, Bot, MapPin, Briefcase, MessageSquare, Info, ChevronLeft, Trash2, Map as MapIcon, Ship, Users, Languages, Sparkles, Database, ArrowRight, CheckCircle2, Loader2, X, HelpCircle, Play } from "lucide-react";
+import { Send, User, Bot, MapPin, Briefcase, MessageSquare, Info, ChevronLeft, Trash2, Map as MapIcon, Ship, Users, Languages, Sparkles, Database, ArrowRight, CheckCircle2, Loader2, X, HelpCircle, Play, Download } from "lucide-react";
+import html2canvas from "html2canvas";
 import personasData from "@/data/personas_sample.json";
 import personaTranslations from "@/data/persona_translations.json";
 import SouthKoreaMap from "@/components/SouthKoreaMap";
@@ -97,6 +98,202 @@ const getPersonaMedia = (age: number, sex: string) => {
   else ageGroup = '20';
   const basePath = `/ai-guides/persona_${ageGroup}${genderKey}`;
   return { image: `${basePath}.png`, video: `${basePath}.mp4` };
+};
+
+// Delicacies database mapping region/district to local delicacies
+const delicaciesDatabase: Record<string, { name: string; desc: string }[]> = {
+  "제주": [
+    { name: "흑돼지구이", desc: "쫄깃한 식감과 깊은 고소함이 일품인 제주의 대표 먹거리" },
+    { name: "갈치조림", desc: "매콤한 양념에 졸여낸 싱싱한 은갈치 조림" },
+    { name: "몸국", desc: "돼지고기 육수에 모자반을 넣어 끓인 제주의 향토 국" }
+  ],
+  "세종": [
+    { name: "세종 조치원 복숭아", desc: "향긋하고 달콤함이 가득한 조치원의 명품 특산물" },
+    { name: "파닭", desc: "바삭한 치킨 위에 신선한 파채를 듬뿍 올린 조치원 신흥 파닭" },
+    { name: "민물매운탕", desc: "금강에서 갓 잡아 올린 싱싱한 쏘가리와 빠가사리 매운탕" }
+  ],
+  "부산": [
+    { name: "돼지국밥", desc: "진한 사골 육수에 야들야들한 돼지고기를 듬뿍 넣은 뚝배기 국밥" },
+    { name: "밀면", desc: "살얼음 동동 뜬 시원하고 매콤달콤한 부산식 냉밀면" },
+    { name: "씨앗호떡", desc: "견과류가 가득 들어가 고소하고 달달한 남포동 명물 호떡" }
+  ],
+  "서울": [
+    { name: "마포 갈비", desc: "달콤짭조름한 양념에 구워내 남녀노소 사랑받는 대표 갈비" },
+    { name: "종로 빈대떡", desc: "맷돌로 직접 간 녹두에 숙주와 고기를 넣어 바삭하게 부친 전" },
+    { name: "신당동 떡볶이", desc: "즉석에서 보글보글 끓여먹는 매콤달콤한 추억의 즉석 떡볶이" }
+  ],
+  "전남": [
+    { name: "여수 삼합", desc: "돌문어, 대패삼겹살, 갓김치가 어우러진 여수 밤바다의 명물" },
+    { name: "벌교 꼬막", desc: "쫄깃쫄깃한 식감과 짭조름한 바다 내음이 일품인 꼬막 숙회/무침" },
+    { name: "구례 전통차", desc: "새콤달콤하고 은은한 향이 머리를 맑게 해주는 산수유차" }
+  ],
+  "강원": [
+    { name: "강릉 초당순두부", desc: "동해 바닷물로 간을 맞춰 부드럽고 고소함이 깊은 순두부" },
+    { name: "춘천 닭갈비", desc: "매콤한 양념에 닭고기와 양배추, 고구마를 볶아먹는 철판 요리" },
+    { name: "오징어순대", desc: "통통한 오징어 속에 찹쌀과 채소를 채워 노릇하게 구워낸 순대" }
+  ],
+  "경북": [
+    { name: "경주 황남빵", desc: "얇은 피 속에 달지 않은 팥소가 가득 찬 80년 전통의 명물 빵" },
+    { name: "안동 찜닭", desc: "간장 양념에 닭고기와 당면, 채소를 졸여낸 매콤짭조름한 요리" },
+    { name: "포항 물회", desc: "싱싱한 활어회에 매콤달콤한 고추장 양념과 살얼음 육수를 비벼먹는 회" }
+  ]
+};
+
+const isTravelCourse = (content: string) => {
+  return content.includes('[') && content.includes(']') && (
+    content.includes('아침') || content.includes('오전') || content.includes('점심') || 
+    content.includes('오후') || content.includes('저녁') || content.includes('코스') ||
+    content.includes('Morning') || content.includes('Lunch') || content.includes('Evening')
+  );
+};
+
+const parseCourseContent = (content: string, selectedPersona: any) => {
+  const lines = content.split('\n');
+  
+  // 1. Extract Title
+  let title = `${selectedPersona?.district || '로컬'} 추천 여행 코스`;
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (trimmed.includes('코스') && trimmed.length > 5 && trimmed.length < 80) {
+      title = trimmed.replace(/[\*#]/g, '').trim();
+      break;
+    }
+  }
+  if (!title && lines.length > 0) {
+    title = lines[0].replace(/[\*#]/g, '').trim();
+  }
+
+  // 2. Extract Subtitle / Intro
+  let intro = '';
+  let introLines: string[] = [];
+  let foundItineraryStart = false;
+  
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (trimmed.startsWith('🌄') || trimmed.startsWith('🍚') || trimmed.startsWith('🌲') || trimmed.startsWith('🌃') || 
+        trimmed.includes('아침') || trimmed.includes('점심') || trimmed.includes('오후') || trimmed.includes('저녁') ||
+        (trimmed.startsWith('*') && (trimmed.includes('AM') || trimmed.includes('PM') || trimmed.includes(':')))) {
+      foundItineraryStart = true;
+    }
+    if (!foundItineraryStart && trimmed.length > 0 && trimmed !== title && !trimmed.startsWith('#')) {
+      introLines.push(trimmed);
+    }
+  }
+  intro = introLines.join(' ').substring(0, 120);
+  if (!intro) {
+    intro = `현지 가이드 ${selectedPersona?.persona || '가이드'}가 직접 안내해 주는 추천 투어 동선입니다.`;
+  }
+
+  // 3. Extract periods
+  // We'll divide into 4 periods: Morning, Lunch, Afternoon, Evening
+  const periods = [
+    { key: 'morning', label: '🌄 아침', title: '상쾌한 시작', time: '09:00 - 12:00', place: '', desc: '' },
+    { key: 'lunch', label: '🍚 점심', title: '맛있는 식사', time: '12:00 - 13:30', place: '', desc: '' },
+    { key: 'afternoon', label: '🌲 오후', title: '특별한 힐링', time: '13:30 - 17:00', place: '', desc: '' },
+    { key: 'evening', label: '🌃 저녁', title: '아름다운 야경', time: '17:00 - 21:00', place: '', desc: '' },
+  ];
+
+  let currentPeriodIdx = -1;
+  
+  lines.forEach((line) => {
+    const trimmed = line.trim();
+    if (!trimmed) return;
+    
+    // Check if line indicates a period transition
+    if (trimmed.includes('아침') || trimmed.includes('Morning') || trimmed.startsWith('🌄')) {
+      currentPeriodIdx = 0;
+    } else if (trimmed.includes('점심') || trimmed.includes('Lunch') || trimmed.startsWith('🍚') || trimmed.startsWith('☀️')) {
+      currentPeriodIdx = 1;
+    } else if (trimmed.includes('오후') || trimmed.includes('Afternoon') || trimmed.startsWith('🌲') || trimmed.startsWith('🌳')) {
+      currentPeriodIdx = 2;
+    } else if (trimmed.includes('저녁') || trimmed.includes('Evening') || trimmed.startsWith('🌃') || trimmed.startsWith('🌙')) {
+      currentPeriodIdx = 3;
+    }
+    
+    if (currentPeriodIdx !== -1) {
+      // Look for place name in brackets [Place Name]
+      const placeMatch = trimmed.match(/\[([^\]]+)\]/);
+      if (placeMatch && !periods[currentPeriodIdx].place) {
+        periods[currentPeriodIdx].place = placeMatch[1];
+      }
+      
+      // Look for custom times like "9:00 - 11:00" or "9시" or "(9:00 AM - 12:00 PM)"
+      const timeMatch = trimmed.match(/(\d{1,2}:\d{2}\s*(?:AM|PM)?\s*[-~]\s*\d{1,2}:\d{2}\s*(?:AM|PM)?)/i) ||
+                        trimmed.match(/(\d{1,2}시\s*[-~]\s*\d{1,2}시)/) ||
+                        trimmed.match(/(\d{1,2}:\d{2}\s*[-~]\s*\d{1,2}:\d.2)/) ||
+                        trimmed.match(/(\d{1,2}:\d{2}\s*[-~]\s*\d{1,2}:\d{2})/);
+      if (timeMatch) {
+        periods[currentPeriodIdx].time = timeMatch[1];
+      }
+      
+      // Clean description
+      let cleanLine = trimmed
+        .replace(/[\*#\-\•]/g, '') // remove markdown list/heading styles
+        .replace(/\[[^\]]+\]/g, '') // remove brackets containing place names
+        .replace(/\(\d{1,2}:\d{2}.*?\)/g, '') // remove parenthesized times
+        .replace(/\d{1,2}:\d{2}\s*[-~]\s*\d{1,2}:\d{2}/g, '')
+        .trim();
+      
+      cleanLine = cleanLine.replace(/^[:\s\-]+/, '').trim();
+      
+      if (cleanLine.length > 10) {
+        if (periods[currentPeriodIdx].desc) {
+          periods[currentPeriodIdx].desc += ' ' + cleanLine;
+        } else {
+          periods[currentPeriodIdx].desc = cleanLine;
+        }
+      }
+    }
+  });
+
+  // Fallbacks if some periods weren't matched
+  const allPlaces: string[] = [];
+  const placeRegex = /\[([^\]]+)\]/g;
+  let match;
+  while ((match = placeRegex.exec(content)) !== null) {
+    if (!allPlaces.includes(match[1])) {
+      allPlaces.push(match[1]);
+    }
+  }
+
+  periods.forEach((p, i) => {
+    if (!p.place && allPlaces[i]) {
+      p.place = allPlaces[i];
+    }
+    if (p.desc.length > 250) {
+      p.desc = p.desc.substring(0, 245) + '...';
+    }
+    if (!p.desc) {
+      p.desc = `${p.place || '관광명소'} 주변의 낭만적인 풍경을 감상하며 현지 가이드가 추천하는 힐링 포인트를 직접 경험해보세요.`;
+    }
+  });
+
+  const provinceText = selectedPersona ? (provinceTranslations[selectedPersona.province]?.ko || selectedPersona.province) : '';
+  const districtText = selectedPersona ? selectedPersona.district : '';
+  const regionName = `${provinceText} ${districtText}`.trim() || '전국 방방곡곡';
+  
+  const regionEn = selectedPersona ? (provinceTranslations[selectedPersona.province]?.en || selectedPersona.province).toUpperCase() : 'TOURISM INSIGHT';
+
+  // Get local delicacies for the region
+  let delicacies = delicaciesDatabase["서울"];
+  if (selectedPersona) {
+    const prov = selectedPersona.province;
+    const matchedKey = Object.keys(delicaciesDatabase).find(key => prov.includes(key));
+    if (matchedKey) {
+      delicacies = delicaciesDatabase[matchedKey];
+    }
+  }
+
+  return {
+    title,
+    intro,
+    periods,
+    regionName,
+    regionEn,
+    delicacies,
+    personaName: selectedPersona?.persona || '현지 가이드',
+    personaRole: selectedPersona ? (selectedPersona.occupation || '관광 해설사') : '관광 전문가'
+  };
 };
 
 const chatbotTranslations: Record<string, any> = {
@@ -329,6 +526,48 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
 
   const { user } = useAuth();
   const isMember = !!user;
+
+  const [downloadData, setDownloadData] = useState<any>(null);
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  const handleDownloadCard = async (botMessageContent: string) => {
+    try {
+      setIsDownloading(true);
+      const parsedData = parseCourseContent(botMessageContent, selectedPersona);
+      setDownloadData(parsedData);
+      
+      // Give React time to mount the hidden template DOM element
+      setTimeout(async () => {
+        const element = document.getElementById("travel-guide-download-template");
+        if (!element) {
+          throw new Error("Download template element not found in DOM");
+        }
+        
+        // Capture canvas with 2.5 scale for high quality
+        const canvas = await html2canvas(element, {
+          useCORS: true,
+          scale: 2.5,
+          backgroundColor: "#fdfbf7",
+          logging: false
+        });
+        
+        const dataUrl = canvas.toDataURL("image/png");
+        const link = document.createElement("a");
+        link.download = `${parsedData.regionName.replace(/\s+/g, '_')}_추천코스_가이드북.png`;
+        link.href = dataUrl;
+        link.click();
+        
+        setIsDownloading(false);
+        setDownloadData(null);
+        toast.success("가이드맵 이미지가 성공적으로 저장되었습니다!");
+      }, 600);
+    } catch (err: any) {
+      setIsDownloading(false);
+      setDownloadData(null);
+      console.error("Card Download Error:", err);
+      toast.error("이미지 다운로드 중 오류가 발생했습니다: " + err.message);
+    }
+  };
 
   useEffect(() => {
     if (isMember) {
@@ -726,6 +965,33 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
                           return part;
                         })}
                       </div>
+
+                      {msg.role === "bot" && isTravelCourse(msg.content) && (
+                        <div className="flex justify-start pl-2">
+                          <button
+                            onClick={() => handleDownloadCard(msg.content)}
+                            disabled={isDownloading}
+                            className="bg-white hover:bg-[#f8fafc] text-[#0f172a] hover:text-[#d97706] font-bold text-[12px] md:text-sm px-4 py-2.5 rounded-xl shadow-md border border-[#e2e8f0] hover:border-[#cbd5e1] flex items-center gap-2 transition-all active:scale-95 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+                          >
+                            {isDownloading ? (
+                              <>
+                                <Loader2 className="w-4 h-4 animate-spin text-[#d97706]" />
+                                <span>가이드맵 저장하는 중...</span>
+                              </>
+                            ) : (
+                              <>
+                                <Download className="w-4 h-4 text-[#d97706]" />
+                                <span>
+                                  {selectedLang === 'ko' && "📥 추천코스 안내 다운받기"}
+                                  {selectedLang === 'en' && "📥 Save Itinerary Map (A4)"}
+                                  {selectedLang === 'zh' && "📥 保存推荐路线图 (A4)"}
+                                  {selectedLang === 'ja' && "📥 おすすめコースを保存 (A4)"}
+                                </span>
+                              </>
+                            )}
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -755,6 +1021,328 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
           isMember={isMember}
           translations={t.tour}
         />
+      )}
+
+      {/* Hidden Travel Guide Download Template for html2canvas */}
+      {downloadData && (
+        <div
+          id="travel-guide-download-template"
+          style={{
+            position: 'absolute',
+            left: '-9999px',
+            top: '-9999px',
+            width: '800px',
+            height: '1130px',
+            backgroundColor: '#fdfbf7', // warm beige background
+            fontFamily: '"Outfit", "Inter", "Noto Sans KR", sans-serif',
+            boxSizing: 'border-box',
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'hidden',
+            borderRadius: '24px',
+            border: '3px solid #8ba88f', // Sage-green rounded border
+            outline: '1px dashed rgba(139, 168, 143, 0.4)',
+            outlineOffset: '-12px',
+            padding: '48px',
+          }}
+          className="relative"
+        >
+          {/* Top Stamp Bar */}
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            borderBottom: '2px solid #eae1d4',
+            paddingBottom: '16px',
+            marginBottom: '20px'
+          }}>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <span style={{
+                fontSize: '11px',
+                fontWeight: '900',
+                color: '#8ba88f',
+                letterSpacing: '0.15em',
+              }}>
+                TOURISM INSIGHT AI GUIDE
+              </span>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginTop: '4px' }}>
+                <span style={{
+                  fontSize: '32px',
+                  fontWeight: '950',
+                  color: '#1e293b',
+                }}>
+                  {downloadData.regionName}
+                </span>
+                <span style={{
+                  fontSize: '16px',
+                  color: '#8ba88f',
+                  fontWeight: 'extrabold',
+                }}>
+                  하루 추천 코스
+                </span>
+              </div>
+            </div>
+            
+            {/* Sage Stamp Label instead of A4 indicators */}
+            <div style={{
+              border: '2px solid #8ba88f',
+              borderRadius: '8px',
+              padding: '6px 12px',
+              color: '#8ba88f',
+              fontSize: '11px',
+              fontWeight: '900',
+              letterSpacing: '0.05em',
+              backgroundColor: 'rgba(139, 168, 143, 0.05)'
+            }}>
+              🌱 로컬 가이드북 / LOCAL STORIES
+            </div>
+          </div>
+
+          {/* Subtitle / Intro phrase */}
+          <div style={{
+            backgroundColor: '#ffffff',
+            padding: '16px 20px',
+            borderRadius: '16px',
+            border: '1px solid #eae1d4',
+            fontSize: '13px',
+            lineHeight: '1.6',
+            color: '#475569',
+            fontWeight: '600',
+            wordBreak: 'keep-all',
+            marginBottom: '20px',
+            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.01)'
+          }}>
+            “ {downloadData.title} ”
+            <p style={{ margin: '4px 0 0 0', fontSize: '12px', color: '#64748b', fontWeight: 'normal' }}>
+              {downloadData.intro}
+            </p>
+          </div>
+
+          {/* Dynamic 2-Column Content */}
+          <div style={{ display: 'flex', flex: 1, gap: '30px', overflow: 'hidden' }}>
+            {/* Left Column: Visual Route Map & Delicacies & Bio */}
+            <div style={{ width: '240px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              {/* Timeline Route Map */}
+              <div style={{
+                padding: '16px',
+                backgroundColor: '#ffffff',
+                borderRadius: '20px',
+                border: '1px solid #eae1d4',
+                display: 'flex',
+                flexDirection: 'column',
+              }}>
+                <div style={{
+                  fontSize: '13px',
+                  fontWeight: '900',
+                  color: '#475569',
+                  borderBottom: '1px solid #f3efe7',
+                  paddingBottom: '8px',
+                  marginBottom: '12px',
+                  letterSpacing: '0.05em',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}>
+                  📍 코스 요약 경로
+                </div>
+
+                {/* Timeline Route Line Graphic with fixed width overflow prevention */}
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '10px 0', position: 'relative' }}>
+                  <div style={{
+                    position: 'absolute',
+                    top: '15px',
+                    bottom: '15px',
+                    left: '20px',
+                    width: '2px',
+                    borderLeft: '2px dashed #8ba88f',
+                    zIndex: 1
+                  }} />
+
+                  {downloadData.periods.map((period: any, idx: number) => (
+                    <div key={idx} style={{ display: 'flex', alignItems: 'center', width: '100%', marginBottom: '20px', position: 'relative', zIndex: 2 }}>
+                      <div style={{
+                        width: '36px',
+                        height: '36px',
+                        borderRadius: '50%',
+                        backgroundColor: '#8ba88f',
+                        color: '#ffffff',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontWeight: '900',
+                        fontSize: '14px',
+                        border: '3px solid #ffffff',
+                        boxShadow: '0 4px 6px -1px rgba(139, 168, 143, 0.2)',
+                        flexShrink: 0
+                      }}>
+                        {idx + 1}
+                      </div>
+                      
+                      {/* Fixed width landmark label container to avoid sticking out */}
+                      <div style={{ 
+                        marginLeft: '10px', 
+                        width: '150px',
+                        display: 'flex',
+                        flexDirection: 'column'
+                      }}>
+                        <div style={{ fontSize: '9px', fontWeight: 'bold', color: '#8ba88f' }}>{period.time}</div>
+                        <div style={{ 
+                          fontSize: '11.5px', 
+                          fontWeight: 'bold', 
+                          color: '#1e293b', 
+                          marginTop: '1px',
+                          whiteSpace: 'normal',
+                          wordBreak: 'keep-all',
+                          lineHeight: '1.2'
+                        }}>
+                          {period.place || '추천 코스'}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Local Delicacies section covering major provinces */}
+              <div style={{
+                padding: '16px',
+                backgroundColor: '#ffffff',
+                borderRadius: '20px',
+                border: '1px solid #eae1d4',
+                display: 'flex',
+                flexDirection: 'column',
+              }}>
+                <div style={{
+                  fontSize: '13px',
+                  fontWeight: '900',
+                  color: '#475569',
+                  borderBottom: '1px solid #f3efe7',
+                  paddingBottom: '8px',
+                  marginBottom: '10px',
+                  letterSpacing: '0.05em',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}>
+                  🍽️ Must Try 로컬 추천
+                </div>
+                
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  {downloadData.delicacies.map((item: any, idx: number) => (
+                    <div key={idx} style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                      <span style={{ fontSize: '11.5px', fontWeight: 'bold', color: '#15803d' }}>
+                        • {item.name}
+                      </span>
+                      <span style={{ fontSize: '9.5px', color: '#64748b', lineHeight: '1.3', paddingLeft: '8px', wordBreak: 'keep-all' }}>
+                        {item.desc}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Expert Info Card */}
+              <div style={{
+                marginTop: 'auto',
+                padding: '12px 16px',
+                backgroundColor: '#ffffff',
+                borderRadius: '20px',
+                border: '1px solid #eae1d4',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px'
+              }}>
+                <div style={{
+                  width: '38px',
+                  height: '38px',
+                  borderRadius: '50%',
+                  backgroundColor: 'rgba(139, 168, 143, 0.1)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '18px',
+                  flexShrink: 0
+                }}>
+                  👩‍✈️
+                </div>
+                <div>
+                  <div style={{ fontSize: '9px', color: '#8ba88f', fontWeight: '900', letterSpacing: '0.05em' }}>LOCAL GUIDE</div>
+                  <div style={{ fontSize: '13px', fontWeight: '900', color: '#1e293b', marginTop: '1px' }}>
+                    {downloadData.personaName}
+                  </div>
+                  <div style={{ fontSize: '10px', color: '#64748b', fontWeight: '500' }}>
+                    {downloadData.personaRole}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column: Timeline Detail Description Cards */}
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {downloadData.periods.map((period: any, idx: number) => (
+                <div key={idx} style={{
+                  padding: '16px',
+                  backgroundColor: '#ffffff',
+                  borderRadius: '20px',
+                  border: '1px solid #eae1d4',
+                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.01)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  position: 'relative'
+                }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                    <span style={{
+                      backgroundColor: 'rgba(139, 168, 143, 0.1)',
+                      color: '#4b6b52',
+                      fontSize: '10.5px',
+                      fontWeight: '900',
+                      padding: '3px 8px',
+                      borderRadius: '6px',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                    }}>
+                      {period.label}
+                    </span>
+                    <span style={{ fontSize: '10.5px', fontWeight: 'bold', color: '#8ba88f' }}>
+                      ⏱️ {period.time}
+                    </span>
+                  </div>
+                  <h4 style={{ fontSize: '14.5px', fontWeight: '900', color: '#1e293b', marginBottom: '4px' }}>
+                    {period.place ? `[${period.place}]` : '코스 안내'}
+                  </h4>
+                  <p style={{
+                    fontSize: '12px',
+                    lineHeight: '1.55',
+                    color: '#475569',
+                    fontWeight: '500',
+                    margin: 0,
+                    wordBreak: 'keep-all',
+                    textAlign: 'justify'
+                  }}>
+                    {period.desc}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Footer Branding */}
+          <div style={{
+            borderTop: '1px solid #eae1d4',
+            paddingTop: '12px',
+            marginTop: '16px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+          }}>
+            <span style={{ fontSize: '10px', color: '#94a3b8', fontWeight: 'bold' }}>
+              Tourism Insight Web Service
+            </span>
+            <span style={{ fontSize: '10px', color: '#8ba88f', fontWeight: 'extrabold' }}>
+              LAB.TOURISM-INSIGHT.CO.KR
+            </span>
+          </div>
+        </div>
       )}
     </div>
   );
