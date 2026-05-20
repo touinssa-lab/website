@@ -209,7 +209,7 @@ const SidoDashboard = () => {
           <span className="block text-4xl md:text-6xl font-extrabold tracking-[-0.045em] leading-[1.1] z-10">
             관광자원 시도별
           </span>
-          <span className="block self-end font-serif italic font-medium text-[#B85C3C] text-4xl md:text-8xl tracking-[-0.03em] leading-[1.0] -mt-8 md:-mt-18 mr-0 md:mr-40">
+          <span className="block self-end font-serif italic font-medium text-[#B85C3C] text-4xl md:text-8xl tracking-[-0.03em] leading-[1.1] mt-4 md:mt-8 mr-0 md:mr-40">
             속성·비율 분석
           </span>
         </h1>
@@ -323,6 +323,30 @@ const SidoDashboard = () => {
                 </React.Fragment>
               ))}
             </div>
+          </div>
+          
+          {/* Legend */}
+          <div className="flex items-center gap-4 mt-5 text-[11px] text-[#4A4A4A] tracking-[0.06em]">
+            <span className="font-semibold">
+              {currentView === 'lq' ? 'Location Quotient (LQ)' : 
+               currentView === 'count' ? '자원수 (POI)' : 
+               currentView === 'ratio' ? '시도내 자원 비율 (%)' : '방문자수 비율 (%)'}
+            </span>
+            <div 
+              className="w-[220px] h-3 transition-all"
+              style={{
+                background: currentView === 'lq' 
+                  ? 'linear-gradient(90deg, #8B5A4F 0%, #E8DDD0 50%, #4A7C59 100%)'
+                  : currentView === 'count'
+                  ? 'linear-gradient(90deg, #FAF7F2 0%, #C9B8A0 50%, #5B4434 100%)'
+                  : 'linear-gradient(90deg, #FAF7F2 0%, #C9A961 50%, #8B2635 100%)'
+              }}
+            />
+            <span>
+              {currentView === 'lq' ? '< 0.8 부족 — 1.0 평균 — > 1.2 특화' :
+               currentView === 'count' ? '0 — 50 — 400+' :
+               '0 — 25% — 50%+'}
+            </span>
           </div>
         </div>
       </section>

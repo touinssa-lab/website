@@ -170,19 +170,7 @@ const AITravelGuide = () => {
                   Coming Soon
                 </button>
               </div>
-              {activeDashboard === 'sido' && (
-                <motion.div 
-                  initial={{ opacity: 0, y: 10 }} 
-                  animate={{ opacity: 1, y: 0 }}
-                  className="flex flex-col items-center justify-center py-32 bg-muted/20 rounded-[40px] border border-dashed border-border/60"
-                >
-                  <div className="w-20 h-20 bg-sky-50 rounded-full flex items-center justify-center mb-8 shadow-sm">
-                    <Sparkles className="w-10 h-10 text-sky-600 animate-pulse" />
-                  </div>
-                  <h3 className="text-3xl font-bold text-slate-800 mb-4 font-serif">대시보드가 준비중입니다.</h3>
-                  {/* <SidoDashboard /> */}
-                </motion.div>
-              )}
+              {activeDashboard === 'sido' && <SidoDashboard />}
               {activeDashboard === 'festival' && <FestivalDashboard />}
             </motion.div>
           )}
