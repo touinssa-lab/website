@@ -260,6 +260,33 @@ const parseCourseContent = (content: string, selectedPersona: any) => {
     if (!p.place && allPlaces[i]) {
       p.place = allPlaces[i];
     }
+    
+    // Smart extraction fallback for generic place names (like 점심, 오후, 저녁, 아침)
+    const isGenericPlace = !p.place || ['아침', '점심', '오후', '저녁', '식사', '점심식사', '저녁식사', '아침식사'].includes(p.place.trim());
+    if (isGenericPlace && p.desc) {
+      // 1. Try to find landmarks with suffix keywords in the desc
+      const suffixRegex = /([가-힣\d]{2,12}(?:강변|공원|시장|서원|사|산|길|거리|마을|읍내|계곡|폭포|해변|포구|항|온천|광장|루|대|대교|전망대|수목원|체험관|박물관|미술관|유적지|성|카페|식당|맛집|거리))/;
+      const suffixMatch = p.desc.match(suffixRegex);
+      
+      if (suffixMatch && !['점심', '오후', '저녁', '식당가', '거리'].includes(suffixMatch[1].trim())) {
+        p.place = suffixMatch[1].trim();
+      } else {
+        // 2. Try to find patterns like "[Place]에서" or "[Place]로" or "[Place] 따라" or "[Place] 탐방/산책/구경"
+        const patternRegex = /([가-힣\d\s]{2,10})(?:에서|로|(?:\s+따라)|(?:\s+구경)|(?:\s+탐방)|(?:\s+산책)|(?:\s+방문))/;
+        const patternMatch = p.desc.match(patternRegex);
+        if (patternMatch && patternMatch[1].trim().length >= 2 && !['점심', '오후', '저녁'].includes(patternMatch[1].trim())) {
+          p.place = patternMatch[1].trim();
+        }
+      }
+      
+      // If still generic or empty, use descriptive fallbacks
+      if (!p.place || ['아침', '점심', '오후', '저녁', '식사', '점심식사', '저녁식사', '아침식사'].includes(p.place.trim())) {
+        if (p.key === 'lunch') p.place = '로컬 맛집';
+        else if (p.key === 'evening') p.place = '야경 명소';
+        else p.place = '힐링 코스';
+      }
+    }
+
     if (p.desc.length > 250) {
       p.desc = p.desc.substring(0, 245) + '...';
     }
@@ -284,6 +311,12 @@ const parseCourseContent = (content: string, selectedPersona: any) => {
     }
   }
 
+  // Parse persona name and intro sentence
+  const rawPersona = selectedPersona?.persona || '';
+  const nameMatch = rawPersona.match(/^([^\s]+)\s+씨는/);
+  const personaNameOnly = nameMatch ? nameMatch[1] : '현지';
+  const personaIntro = rawPersona.replace(/^([^\s]+)\s+씨는\s+/, '') || '우리 동네 가이드입니다.';
+
   return {
     title,
     intro,
@@ -292,6 +325,8 @@ const parseCourseContent = (content: string, selectedPersona: any) => {
     regionEn,
     delicacies,
     personaName: selectedPersona?.persona || '현지 가이드',
+    personaNameOnly,
+    personaIntro,
     personaRole: selectedPersona ? (selectedPersona.occupation || '관광 해설사') : '관광 전문가'
   };
 };
@@ -543,10 +578,10 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
           throw new Error("Download template element not found in DOM");
         }
         
-        // Capture canvas with 2.5 scale for high quality
+        // Capture canvas with 1.5 scale for web-optimized quality (reduces file size)
         const canvas = await html2canvas(element, {
           useCORS: true,
-          scale: 2.5,
+          scale: 1.5,
           backgroundColor: "#fdfbf7",
           logging: false
         });
@@ -1167,8 +1202,8 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '10px 0', position: 'relative' }}>
                   <div style={{
                     position: 'absolute',
-                    top: '15px',
-                    bottom: '15px',
+                    top: '20px',
+                    bottom: '20px',
                     left: '20px',
                     width: '2px',
                     borderLeft: '2px dashed #8ba88f',
@@ -1176,7 +1211,7 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
                   }} />
 
                   {downloadData.periods.map((period: any, idx: number) => (
-                    <div key={idx} style={{ display: 'flex', alignItems: 'center', width: '100%', marginBottom: '20px', position: 'relative', zIndex: 2 }}>
+                    <div key={idx} style={{ display: 'flex', alignItems: 'flex-start', width: '100%', marginBottom: '26px', position: 'relative', zIndex: 2 }}>
                       <div style={{
                         width: '36px',
                         height: '36px',
@@ -1190,27 +1225,28 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
                         fontSize: '14px',
                         border: '2px solid #5d4037',
                         boxShadow: '0 4px 6px -1px rgba(139, 168, 143, 0.2)',
-                        flexShrink: 0
+                        flexShrink: 0,
+                        marginTop: '2px'
                       }}>
-                        {idx + 1}
+                        <span style={{ transform: 'translateY(-1.5px)', display: 'inline-block' }}>{idx + 1}</span>
                       </div>
                       
                       {/* Fixed width landmark label container to avoid sticking out */}
                       <div style={{ 
                         marginLeft: '10px', 
-                        width: '150px',
+                        width: '170px',
                         display: 'flex',
                         flexDirection: 'column'
                       }}>
-                        <div style={{ fontSize: '9px', fontWeight: 'bold', color: '#8d6e63', fontFamily: '"Outfit", sans-serif' }}>{period.time}</div>
+                        <div style={{ fontSize: '10px', fontWeight: 'bold', color: '#8d6e63', fontFamily: '"Outfit", sans-serif' }}>{period.time}</div>
                         <div style={{ 
-                          fontSize: '11.5px', 
+                          fontSize: '13.5px', 
                           fontWeight: 'bold', 
                           color: '#3e2723', 
-                          marginTop: '1px',
+                          marginTop: '2px',
                           whiteSpace: 'normal',
                           wordBreak: 'keep-all',
-                          lineHeight: '1.2',
+                          lineHeight: '1.25',
                           fontFamily: '"Noto Sans KR", sans-serif'
                         }}>
                           {period.place || '추천 코스'}
@@ -1260,38 +1296,55 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
                 </div>
               </div>
 
-              {/* Expert Info Card */}
+              {/* Expert Info Card - Expanded layout to show full guide description */}
               <div style={{
                 marginTop: 'auto',
-                padding: '12px 16px',
-                backgroundColor: 'rgba(255, 255, 255, 0.7)',
+                padding: '16px',
+                backgroundColor: 'rgba(255, 255, 255, 0.75)',
                 borderRadius: '20px',
                 border: '1.5px solid #8d6e63',
                 display: 'flex',
-                alignItems: 'center',
-                gap: '12px'
+                flexDirection: 'column',
+                gap: '10px',
+                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.01)'
               }}>
-                <div style={{
-                  width: '38px',
-                  height: '38px',
-                  borderRadius: '50%',
-                  backgroundColor: 'rgba(139, 168, 143, 0.15)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '18px',
-                  flexShrink: 0,
-                  border: '1px solid #8d6e63'
-                }}>
-                  🌿
-                </div>
-                <div style={{ overflow: 'hidden' }}>
-                  <div style={{ fontSize: '9px', color: '#8ba88f', fontWeight: '900', letterSpacing: '0.05em', fontFamily: '"Outfit", sans-serif' }}>LOCAL GUIDE</div>
-                  <div style={{ fontSize: '13px', fontWeight: '900', color: '#3e2723', marginTop: '1px', fontFamily: '"Noto Serif KR", serif', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    {downloadData.personaName}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <div style={{
+                    width: '38px',
+                    height: '38px',
+                    borderRadius: '50%',
+                    backgroundColor: 'rgba(139, 168, 143, 0.15)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '18px',
+                    flexShrink: 0,
+                    border: '1px solid #8d6e63'
+                  }}>
+                    🌿
                   </div>
-                  <div style={{ fontSize: '10px', color: '#5d4037', fontWeight: '500', fontFamily: '"Noto Sans KR", sans-serif' }}>
-                    {downloadData.personaRole}
+                  <div>
+                    <div style={{ fontSize: '9px', color: '#8ba88f', fontWeight: '900', letterSpacing: '0.05em', fontFamily: '"Outfit", sans-serif' }}>LOCAL GUIDE</div>
+                    <div style={{ fontSize: '14px', fontWeight: '900', color: '#3e2723', marginTop: '1px', fontFamily: '"Noto Serif KR", serif' }}>
+                      {downloadData.personaNameOnly} 가이드
+                    </div>
+                  </div>
+                </div>
+                
+                <div style={{ 
+                  fontSize: '10.5px', 
+                  color: '#5d4037', 
+                  lineHeight: '1.45',
+                  wordBreak: 'keep-all',
+                  fontFamily: '"Noto Sans KR", sans-serif',
+                  borderTop: '1px dotted rgba(141, 110, 99, 0.4)',
+                  paddingTop: '8px'
+                }}>
+                  <div style={{ fontWeight: 'bold', color: '#3e2723', marginBottom: '4px', fontSize: '11px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <span>👤</span> {downloadData.personaRole} ({downloadData.regionName})
+                  </div>
+                  <div style={{ color: '#5d4037', fontWeight: 'normal' }}>
+                    "{downloadData.personaIntro}"
                   </div>
                 </div>
               </div>
@@ -1341,7 +1394,7 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
                     textAlign: 'justify',
                     fontFamily: '"Noto Sans KR", sans-serif'
                   }}>
-                    {period.desc}
+                    {period.desc && period.desc.length > 170 ? period.desc.slice(0, 170) + '...' : period.desc}
                   </p>
                 </div>
               ))}
