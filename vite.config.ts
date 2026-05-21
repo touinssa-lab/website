@@ -2,6 +2,7 @@ import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
+import { spawn } from "child_process";
 
 // Mock API plugin for local development without Vercel CLI
 const localApiMock = () => {
@@ -9,6 +10,40 @@ const localApiMock = () => {
     name: 'local-api-mock',
     configureServer(server: any) {
       server.middlewares.use(async (req: any, res: any, next: any) => {
+        if (req.url === '/api/run-agent' && req.method === 'POST') {
+          let body = '';
+          req.on('data', (chunk: any) => { body += chunk.toString(); });
+          req.on('end', () => {
+            try {
+              const { step } = JSON.parse(body);
+              const pythonPath = "D:\\뉴프로젝트\\AutoAgent\\venv\\Scripts\\python.exe";
+              const scriptPath = "D:\\뉴프로젝트\\AutoAgent\\newsroom_agent\\agent.py";
+              
+              const args = [scriptPath];
+              if (step && step !== 'all') {
+                args.push('--only', step);
+              }
+              
+              console.log(`[Local API] Triggering agent with cmd: ${pythonPath} ${args.join(' ')}`);
+              
+              const child = spawn(pythonPath, args, {
+                detached: true,
+                stdio: 'ignore'
+              });
+              child.unref();
+              
+              res.setHeader('Content-Type', 'application/json');
+              res.end(JSON.stringify({ success: true, message: `Successfully triggered agent step: ${step}` }));
+            } catch (e: any) {
+              console.error('[Local API] Error triggering agent:', e);
+              res.statusCode = 500;
+              res.setHeader('Content-Type', 'application/json');
+              res.end(JSON.stringify({ success: false, error: e.message || 'Server error' }));
+            }
+          });
+          return;
+        }
+
         if (req.url === '/api/admin-auth' && req.method === 'POST') {
           let body = '';
           req.on('data', (chunk: any) => { body += chunk.toString(); });

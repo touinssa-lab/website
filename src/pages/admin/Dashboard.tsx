@@ -25,6 +25,7 @@ import {
   LineChart,
   Line
 } from "recharts";
+import { toast } from "sonner";
 
 const Dashboard = () => {
   // Fetch Stats
@@ -89,6 +90,31 @@ const Dashboard = () => {
     refetchInterval: 3000, // Poll every 3 seconds to ensure real-time terminal sync
   });
 
+  const isAgentRunning = agentStatus?.status === 'running' || agentStatus?.status === 'starting';
+
+  const handleTriggerAgent = async (step: string) => {
+    if (isAgentRunning) return;
+    
+    try {
+      const response = await fetch('/api/run-agent', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ step }),
+      });
+      
+      const result = await response.json();
+      
+      if (response.ok && result.success) {
+        toast.success(`에이전트가 백그라운드에서 구동되었습니다. (대상: ${step === 'all' ? '전체' : step})`);
+      } else {
+        toast.error(`에이전트 구동 실패: ${result.error || '알 수 없는 오류'}`);
+      }
+    } catch (e: any) {
+      toast.error(`서버 통신 실패: ${e.message || '오류 발생'}`);
+    }
+  };
 
   // Format GA4 chart data
   const visitorChartData = analytics?.chartData?.slice(-14).map((item: any) => ({
@@ -275,6 +301,44 @@ const Dashboard = () => {
                         style={{ width: `${(agentStatus.step / agentStatus.total_steps) * 100}%` }}
                       />
                     </div>
+                  </div>
+                </div>
+
+                {/* Re-run controls */}
+                <div className="bg-slate-900 p-4 rounded-xl border border-slate-850 flex flex-col lg:flex-row lg:items-center justify-between gap-4 font-sans">
+                  <div>
+                    <h5 className="text-white text-xs font-bold">에이전트 수동 제어</h5>
+                    <p className="text-[10px] text-slate-500 mt-0.5">특정 섹션만 재요청하거나 데이터 품질 저하 시 부분 수집을 트리거합니다.</p>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <button
+                      onClick={() => handleTriggerAgent('all')}
+                      disabled={isAgentRunning}
+                      className="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-[11px] font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-indigo-600/10"
+                    >
+                      전체 재실행
+                    </button>
+                    <button
+                      onClick={() => handleTriggerAgent('keywords')}
+                      disabled={isAgentRunning}
+                      className="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-[11px] font-bold border border-slate-750 transition-all disabled:opacity-40 disabled:cursor-not-allowed hover:scale-[1.02] active:scale-[0.98]"
+                    >
+                      키워드 재수집 (1단계)
+                    </button>
+                    <button
+                      onClick={() => handleTriggerAgent('insights')}
+                      disabled={isAgentRunning}
+                      className="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-[11px] font-bold border border-slate-750 transition-all disabled:opacity-40 disabled:cursor-not-allowed hover:scale-[1.02] active:scale-[0.98]"
+                    >
+                      인사이트 재분석 (2단계)
+                    </button>
+                    <button
+                      onClick={() => handleTriggerAgent('news')}
+                      disabled={isAgentRunning}
+                      className="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-[11px] font-bold border border-slate-750 transition-all disabled:opacity-40 disabled:cursor-not-allowed hover:scale-[1.02] active:scale-[0.98]"
+                    >
+                      뉴스피드 재요약 (3단계)
+                    </button>
                   </div>
                 </div>
 
