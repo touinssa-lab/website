@@ -251,15 +251,16 @@ const SidoDashboard = () => {
               whileHover={{ y: -8, scale: 1.02, boxShadow: '0 20px 40px -15px rgba(0,0,0,0.1)' }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className="bg-white border border-[#D8D2C4] p-7 pb-8 relative group cursor-pointer transition-shadow"
+              className="border border-[#D8D2C4] p-7 pb-8 relative group cursor-pointer transition-shadow"
+              style={{ backgroundColor: g.color + '0d' }}
             >
               <div className="absolute top-0 left-0 w-1 h-full" style={{ backgroundColor: g.color }} />
               <div className="font-serif text-sm font-bold tracking-[0.05em] mb-3" style={{ color: g.color }}>Group {g.tag}</div>
-              <div className="text-2xl font-extrabold tracking-tight mb-3">{g.name}</div>
+              <div className="text-3xl font-extrabold tracking-tight mb-3">{g.name}</div>
               <div className="text-[13.5px] text-[#4A4A4A] leading-[1.55] mb-4.5 min-h-[42px]">{g.def}</div>
               <div className="text-sm pt-3.5 border-t border-[#D8D2C4]">
                 <span className="block text-[10px] tracking-[0.2em] uppercase text-[#8B8680] mb-1.5">시도 ({g.sidos.length})</span>
-                <span className="text-base font-bold text-[#1A1A1A]">
+                <span className="text-xl font-bold text-[#1A1A1A]">
                   {g.sidos.map(s => SHORT[s]).join(', ')}
                 </span>
               </div>
