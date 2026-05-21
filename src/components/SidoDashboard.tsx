@@ -259,7 +259,9 @@ const SidoDashboard = () => {
               <div className="text-[13.5px] text-[#4A4A4A] leading-[1.55] mb-4.5 min-h-[42px]">{g.def}</div>
               <div className="text-sm pt-3.5 border-t border-[#D8D2C4]">
                 <span className="block text-[10px] tracking-[0.2em] uppercase text-[#8B8680] mb-1.5">시도 ({g.sidos.length})</span>
-                {g.sidos.map(s => SHORT[s]).join(', ')}
+                <span className="text-base font-bold text-[#1A1A1A]">
+                  {g.sidos.map(s => SHORT[s]).join(', ')}
+                </span>
               </div>
             </motion.div>
           ))}
