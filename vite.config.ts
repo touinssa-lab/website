@@ -19,7 +19,7 @@ const localApiMock = () => {
               const pythonPath = "D:\\뉴프로젝트\\AutoAgent\\venv\\Scripts\\python.exe";
               const scriptPath = "D:\\뉴프로젝트\\AutoAgent\\newsroom_agent\\agent.py";
               
-              const args = [scriptPath];
+              const args = [scriptPath, "--force"];
               if (step && step !== 'all') {
                 args.push('--only', step);
               }
