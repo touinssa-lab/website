@@ -127,7 +127,18 @@
         *   `useQuery` 내의 로컬 데이터 매칭 조건문(`if (selectedDate === 'YYYY-MM-DD')`)을 당일 날짜로 변경.
         *   아카이브 달력의 `max` 값을 당일 날짜로 업데이트.
 2.  **데이터 품질 검수**: 썸네일 이미지가 깨지거나 요약이 부자연스러운 기사는 즉시 교체.
-3.  **최종 확인 및 육안 검증**:
+3.  **Git 커밋 및 원격 저장소 푸시 필수 수행 (실서버 배포)**
+    > [!WARNING]
+    > **로컬 썸네일 이미지 및 수정한 소스 코드의 Git Push 누락 금지**
+    > - 수동으로 뉴스를 추가하거나 데이터 날짜를 보정할 때, 로컬에 생성된 뉴스 썸네일 이미지(`public/images/news/YYYY-MM-DD/*`)와 수정된 소스 코드 파일(`src/pages/NewsRoom.tsx`)은 반드시 **Git Commit 및 Git Push** 단계를 거쳐 깃허브 원격 저장소에 업로드되어야 실서버 배포본에 온전하게 반영됩니다.
+    > - 깃허브 푸시 단계를 누락할 경우 데이터베이스 정보(Supabase)만 업데이트되고 썸네일 이미지 실물이 서버에 존재하지 않아 대시보드상에서 이미지가 깨져(엑스박스) 보입니다.
+4.  **수동 기사 추가 헬퍼 스크립트 활용 가이드**
+    *   수동 추가 작업을 안전하게 일괄 처리하기 위해, DB 입력부터 이미지 다운로드 및 자동 Git Push까지 한 번에 수행하는 파이썬 헬퍼 스크립트를 제공합니다.
+    *   **명령어**: `python scratch/add_manual_article.py [네이버 뉴스 URL] --category [ai | tourism] --tag [원하는 태그]`
+        *   *예시 (AI & Data)*: `python scratch/add_manual_article.py https://n.news.naver.com/mnews/article/003/0013970900 --category ai --tag "제조 AI"`
+        *   *예시 (관광 뉴스)*: `python scratch/add_manual_article.py https://n.news.naver.com/mnews/article/082/0001382695 --category tourism --tag "지역 관광"`
+    *   이 스크립트는 원문의 제목/이미지/언론사명을 자동 크롤링하고, Gemini API를 통해 4문장 요약을 생성한 뒤, DB 삽입 및 이미지 로컬 저장과 **Git Commit & Push**까지 자동으로 처리합니다.
+5.  **최종 확인 및 육안 검증**:
     *   AI 에이전트는 직접 로컬 환경(`http://localhost:8080`)에 접속하여 데이터 렌더링 상태를 최종 확인해야 함.
     *   브라우저를 새로고침하여 상단 'ARCHIVE DATE'와 'Today Top Rankings'의 날짜가 오늘 날짜로 정확히 표시되는지, 뉴스 요약(4문장) 및 이미지가 정상 출력되는지 확인.
 
@@ -154,7 +165,7 @@
     3.  **데이터 품질 대시보드**: 오늘 수집된 데이터의 긍부정 스코어 비율, 글자 수, API 사용 비용 통계 분석 차트 제공.
 
 ---
-**최종 수정일**: 2026-05-21 (v1.8 개정)
+**최종 수정일**: 2026-05-27 (v1.9 개정)
 **관리자**: Tourism Insight AI Agent & USER
 
 > [!CAUTION]
