@@ -16,15 +16,26 @@
 
 ---
 
-## 2. 코드 업데이트 위치
+## 2. 코드 업데이트 위치 및 아키텍처 (보안 강화)
 
-챗봇 엔진 호출 로직은 아래 파일의 `handleSend` 함수 내 API Endpoint 주소에서 관리합니다.
+챗봇 엔진 호출 시 API Key 유효성 및 보안을 위해 클라이언트에서 직접 호출하지 않고, **서버리스 API 프록시(`/api/chat`)**를 통해 호출합니다.
 
-*   **파일 경로**: `src/components/AIGuideChat.tsx`
-*   **수정 코드 예시**:
+*   **프론트엔드 파일 경로**: `src/components/AIGuideChat.tsx`
+*   **백엔드 프록시 파일 경로**: `api/chat.ts`
+*   **프론트엔드 호출 방식**:
     ```typescript
-    // ✅ 올바른 호출 방식
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`, { ... });
+    // ✅ 보안이 강화된 백엔드 프록시 호출 방식
+    const response = await fetch(`/api/chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        messages: [
+          { role: 'system', content: systemInstruction },
+          ...messages.map((m) => ({ role: m.role, content: m.content })),
+          { role: 'user', content: userMessage }
+        ]
+      })
+    });
     ```
 
 ---
@@ -33,9 +44,9 @@
 
 챗봇 모델을 업데이트하거나 수정할 때 다음 3가지를 반드시 확인하십시오.
 
-1.  **API Key 유효성**: `VITE_GOOGLE_GEMINI_API_KEY`가 환경 변수에 올바르게 설정되어 있는지 확인.
-2.  **모델명 오타 확인**: `gemini-2.5-flash` 문자열에 오타가 없는지 확인 (특히 대시`-` 위치 주의).
-3.  **Endpoint 버전**: 현재 `/v1beta/` 버전의 엔드포인트를 사용 중인지 확인.
+1.  **API Key 보안**: API Key는 클라이언트(브라우저)에 절대 노출되어서는 안 됩니다. `VITE_GOOGLE_GEMINI_API_KEY` 대신 서버 전용 환경변수인 `GEMINI_API_KEY` 또는 `GOOGLE_GEMINI_API_KEY`로 서버(Vercel 등) 환경에만 설정하십시오.
+2.  **모델명 변경**: 모델명을 변경하고자 할 때는 서버 사이드 코드(`api/chat.ts`)에서 API 호출 엔드포인트를 수정하십시오. (기본 모델: `gemini-2.5-flash`)
+3.  **에러 핸들링**: 클라이언트 코드(`AIGuideChat.tsx`)에서 `/api/chat`이 반환하는 JSON의 `error` 필드 및 HTTP 상태코드를 적절히 처리하고 있는지 확인하십시오.
 
 ---
 

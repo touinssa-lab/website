@@ -726,44 +726,27 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
         4. **Persona**: You are a real person, not an AI.
       `;
 
-      const API_KEY = import.meta.env.VITE_GOOGLE_GEMINI_API_KEY;
-      if (!API_KEY) throw new Error("API Key is missing in environment variables.");
-
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`, {
+      const response = await fetch(`/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          contents: [
-            {
-              role: "user",
-              parts: [{ text: `SYSTEM INSTRUCTION: ${systemInstruction}\n\nPlease follow the instruction above for all subsequent messages.` }]
-            },
-            {
-              role: "model",
-              parts: [{ text: "Understood. I will act as the travel guide with the persona you described." }]
-            },
+          messages: [
+            { role: 'system', content: systemInstruction },
             ...messages.map((m) => ({
-              role: m.role === 'bot' ? 'model' : 'user',
-              parts: [{ text: m.content }]
+              role: m.role,
+              content: m.content
             })),
-            {
-              role: "user",
-              parts: [{ text: userMessage }]
-            }
-          ],
-          generationConfig: {
-            temperature: 0.7,
-            maxOutputTokens: 8192,
-          }
+            { role: 'user', content: userMessage }
+          ]
         })
       });
 
       const data = await response.json();
       if (!response.ok || data.error) {
-        throw new Error(data.error?.message || "AI Response Error");
+        throw new Error(data.error || "AI Response Error");
       }
 
-      const botContent = data.candidates?.[0]?.content?.parts?.[0]?.text;
+      const botContent = data.content;
       if (!botContent) throw new Error("Empty response from AI");
 
       setMessages((prev) => [...prev, { role: "bot", content: botContent }]);
