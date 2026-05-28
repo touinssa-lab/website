@@ -5,6 +5,7 @@ export interface PlaceDetail {
   lng: number;
   photoUrl?: string;
   rating?: number;
+  types?: string[];
 }
 
 // 메모리 기반 캐시 저장소 (동일 세션 내 중복 검색 방지)
@@ -50,6 +51,16 @@ export const searchPlace = (query: string, map?: google.maps.Map): Promise<Place
       service.textSearch(request, (results, status) => {
         if (status === google.maps.places.PlacesServiceStatus.OK && results && results.length > 0) {
           const place = results[0];
+          
+          // 2차 필터링: 구글 검색결과 타입 중 단순 행정구역(locality, sublocality, political) 배제
+          const types = place.types || [];
+          const isAdminArea = types.some(t => ['locality', 'sublocality', 'political', 'administrative_area_level_1', 'administrative_area_level_2'].includes(t)) && 
+                              !types.some(t => ['establishment', 'point_of_interest', 'tourist_attraction', 'food', 'restaurant', 'cafe', 'bar', 'store', 'park', 'museum'].includes(t));
+          if (isAdminArea) {
+            reject(new Error(`단일 행정구역 결과(시/군/구/동 등)로 판정되어 제외되었습니다: ${query}`));
+            return;
+          }
+
           const geometry = place.geometry;
           
           if (geometry && geometry.location) {
@@ -63,7 +74,8 @@ export const searchPlace = (query: string, map?: google.maps.Map): Promise<Place
               lat: geometry.location.lat(),
               lng: geometry.location.lng(),
               photoUrl,
-              rating: place.rating
+              rating: place.rating,
+              types
             };
 
             // 캐시 저장

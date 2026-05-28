@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, User, Bot, MapPin, Briefcase, MessageSquare, Info, ChevronLeft, Trash2, Map as MapIcon, Ship, Users, Languages, Sparkles, Database, ArrowRight, CheckCircle2, Loader2, X, HelpCircle, Play, Download } from "lucide-react";
+import { Send, User, Bot, MapPin, Briefcase, MessageSquare, Info, ChevronLeft, Trash2, Map as MapIcon, Ship, Users, Languages, Sparkles, Database, ArrowRight, CheckCircle2, Loader2, X, HelpCircle, Play, Download, Lightbulb } from "lucide-react";
 import html2canvas from "html2canvas";
 import personasData from "@/data/personas_sample.json";
 import personaTranslations from "@/data/persona_translations.json";
@@ -148,6 +148,29 @@ const isTravelCourse = (content: string) => {
   );
 };
 
+const isGenericPlaceName = (name: string): boolean => {
+  const cleaned = name.trim();
+  
+  // 1. 음식 종류 및 범용 키워드 필터링
+  const genericKeywords = [
+    '칼국수', '두루치기', '국수', '찌개', '탕', '구이', '볶음', '식사', 
+    '점심', '저녁', '아침', '디저트', '커피', '카페', '맛집', '빵', 
+    '음식', '요리', '식당', '밥집', '점심식사', '저녁식사', '아침식사', '로컬 맛집'
+  ];
+  if (genericKeywords.some(keyword => cleaned.includes(keyword) && cleaned.length <= keyword.length + 2)) {
+    return true;
+  }
+  
+  // 2. 단일 행정구역명 필터링 (동/구/시/군/읍/면/리 단위가 단독으로 쓰인 경우)
+  const adminRegex = /^[가-힣]{2,4}(동|구|시|군|읍|면|리)$/;
+  const wideAdminRegex = /^[가-힣]{2,6}(특별시|광역시|특별자치시|특별자치도|도)$/;
+  if (adminRegex.test(cleaned) || wideAdminRegex.test(cleaned)) {
+    return true;
+  }
+  
+  return false;
+};
+
 const parseCourseContent = (content: string, selectedPersona: any) => {
   const lines = content.split('\n');
   
@@ -185,115 +208,68 @@ const parseCourseContent = (content: string, selectedPersona: any) => {
     intro = `현지 가이드 ${selectedPersona?.persona || '가이드'}가 직접 안내해 주는 추천 투어 동선입니다.`;
   }
 
-  // 3. Extract periods
-  // We'll divide into 4 periods: Morning, Lunch, Afternoon, Evening
-  const periods = [
-    { key: 'morning', label: '🌄 아침', title: '상쾌한 시작', time: '09:00 - 12:00', place: '', desc: '' },
-    { key: 'lunch', label: '🍚 점심', title: '맛있는 식사', time: '12:00 - 13:30', place: '', desc: '' },
-    { key: 'afternoon', label: '🌲 오후', title: '특별한 힐링', time: '13:30 - 17:00', place: '', desc: '' },
-    { key: 'evening', label: '🌃 저녁', title: '아름다운 야경', time: '17:00 - 21:00', place: '', desc: '' },
-  ];
-
-  let currentPeriodIdx = -1;
+  // 3. Extract periods (Dynamic sequence-based periods)
+  const periods: any[] = [];
+  const validPlacesWithLines: { place: string; lineIndex: number; originalLine: string }[] = [];
   
-  lines.forEach((line) => {
-    const trimmed = line.trim();
-    if (!trimmed) return;
-    
-    // Check if line indicates a period transition
-    if (trimmed.includes('아침') || trimmed.includes('Morning') || trimmed.startsWith('🌄')) {
-      currentPeriodIdx = 0;
-    } else if (trimmed.includes('점심') || trimmed.includes('Lunch') || trimmed.startsWith('🍚') || trimmed.startsWith('☀️')) {
-      currentPeriodIdx = 1;
-    } else if (trimmed.includes('오후') || trimmed.includes('Afternoon') || trimmed.startsWith('🌲') || trimmed.startsWith('🌳')) {
-      currentPeriodIdx = 2;
-    } else if (trimmed.includes('저녁') || trimmed.includes('Evening') || trimmed.startsWith('🌃') || trimmed.startsWith('🌙')) {
-      currentPeriodIdx = 3;
-    }
-    
-    if (currentPeriodIdx !== -1) {
-      // Look for place name in brackets [Place Name]
-      const placeMatch = trimmed.match(/\[([^\]]+)\]/);
-      if (placeMatch && !periods[currentPeriodIdx].place) {
-        periods[currentPeriodIdx].place = placeMatch[1];
-      }
-      
-      // Look for custom times like "9:00 - 11:00" or "9시" or "(9:00 AM - 12:00 PM)"
-      const timeMatch = trimmed.match(/(\d{1,2}:\d{2}\s*(?:AM|PM)?\s*[-~]\s*\d{1,2}:\d{2}\s*(?:AM|PM)?)/i) ||
-                        trimmed.match(/(\d{1,2}시\s*[-~]\s*\d{1,2}시)/) ||
-                        trimmed.match(/(\d{1,2}:\d{2}\s*[-~]\s*\d{1,2}:\d.2)/) ||
-                        trimmed.match(/(\d{1,2}:\d{2}\s*[-~]\s*\d{1,2}:\d{2})/);
-      if (timeMatch) {
-        periods[currentPeriodIdx].time = timeMatch[1];
-      }
-      
-      // Clean description
-      let cleanLine = trimmed
-        .replace(/[\*#\-\•]/g, '') // remove markdown list/heading styles
-        .replace(/\[[^\]]+\]/g, '') // remove brackets containing place names
-        .replace(/\(\d{1,2}:\d{2}.*?\)/g, '') // remove parenthesized times
-        .replace(/\d{1,2}:\d{2}\s*[-~]\s*\d{1,2}:\d{2}/g, '')
-        .trim();
-      
-      cleanLine = cleanLine.replace(/^[:\s\-]+/, '').trim();
-      
-      if (cleanLine.length > 10) {
-        if (periods[currentPeriodIdx].desc) {
-          periods[currentPeriodIdx].desc += ' ' + cleanLine;
-        } else {
-          periods[currentPeriodIdx].desc = cleanLine;
+  lines.forEach((line, lineIdx) => {
+    let match;
+    const tempRegex = /\[([^\]]+)\]/g;
+    while ((match = tempRegex.exec(line)) !== null) {
+      const placeName = match[1].trim();
+      if (!isGenericPlaceName(placeName)) {
+        if (!validPlacesWithLines.some(p => p.place === placeName)) {
+          validPlacesWithLines.push({
+            place: placeName,
+            lineIndex: lineIdx,
+            originalLine: line
+          });
         }
       }
     }
   });
 
-  // Fallbacks if some periods weren't matched
-  const allPlaces: string[] = [];
-  const placeRegex = /\[([^\]]+)\]/g;
-  let match;
-  while ((match = placeRegex.exec(content)) !== null) {
-    if (!allPlaces.includes(match[1])) {
-      allPlaces.push(match[1]);
-    }
-  }
-
-  periods.forEach((p, i) => {
-    if (!p.place && allPlaces[i]) {
-      p.place = allPlaces[i];
+  validPlacesWithLines.forEach((item, idx) => {
+    const nextItem = validPlacesWithLines[idx + 1];
+    const startLine = item.lineIndex;
+    const endLine = nextItem ? nextItem.lineIndex : lines.length;
+    
+    let descLines: string[] = [];
+    
+    for (let i = startLine; i < endLine; i++) {
+      const line = lines[i].trim();
+      if (!line) continue;
+      
+      let clean = line
+        .replace(/[\*#\-\•]/g, '')
+        .replace(/\[[^\]]+\]/g, '')
+        .replace(/\(\d{1,2}:\d{2}.*?\)/g, '')
+        .replace(/\d{1,2}:\d{2}\s*[-~]\s*\d{1,2}:\d{2}/g, '')
+        .trim();
+        
+      clean = clean.replace(/^[:\s\-]+/, '').trim();
+      
+      if (clean.length > 5) {
+        descLines.push(clean);
+      }
     }
     
-    // Smart extraction fallback for generic place names (like 점심, 오후, 저녁, 아침)
-    const isGenericPlace = !p.place || ['아침', '점심', '오후', '저녁', '식사', '점심식사', '저녁식사', '아침식사'].includes(p.place.trim());
-    if (isGenericPlace && p.desc) {
-      // 1. Try to find landmarks with suffix keywords in the desc
-      const suffixRegex = /([가-힣\d]{2,12}(?:강변|공원|시장|서원|사|산|길|거리|마을|읍내|계곡|폭포|해변|포구|항|온천|광장|루|대|대교|전망대|수목원|체험관|박물관|미술관|유적지|성|카페|식당|맛집|거리))/;
-      const suffixMatch = p.desc.match(suffixRegex);
-      
-      if (suffixMatch && !['점심', '오후', '저녁', '식당가', '거리'].includes(suffixMatch[1].trim())) {
-        p.place = suffixMatch[1].trim();
-      } else {
-        // 2. Try to find patterns like "[Place]에서" or "[Place]로" or "[Place] 따라" or "[Place] 탐방/산책/구경"
-        const patternRegex = /([가-힣\d\s]{2,10})(?:에서|로|(?:\s+따라)|(?:\s+구경)|(?:\s+탐방)|(?:\s+산책)|(?:\s+방문))/;
-        const patternMatch = p.desc.match(patternRegex);
-        if (patternMatch && patternMatch[1].trim().length >= 2 && !['점심', '오후', '저녁'].includes(patternMatch[1].trim())) {
-          p.place = patternMatch[1].trim();
-        }
-      }
-      
-      // If still generic or empty, use descriptive fallbacks
-      if (!p.place || ['아침', '점심', '오후', '저녁', '식사', '점심식사', '저녁식사', '아침식사'].includes(p.place.trim())) {
-        if (p.key === 'lunch') p.place = '로컬 맛집';
-        else if (p.key === 'evening') p.place = '야경 명소';
-        else p.place = '힐링 코스';
-      }
+    let desc = descLines.join(' ');
+    if (desc.length > 250) {
+      desc = desc.substring(0, 245) + '...';
     }
-
-    if (p.desc.length > 250) {
-      p.desc = p.desc.substring(0, 245) + '...';
+    if (!desc) {
+      desc = `${item.place} 주변의 낭만적인 풍경을 감상하며 현지 가이드가 추천하는 힐링 포인트를 직접 경험해보세요.`;
     }
-    if (!p.desc) {
-      p.desc = `${p.place || '관광명소'} 주변의 낭만적인 풍경을 감상하며 현지 가이드가 추천하는 힐링 포인트를 직접 경험해보세요.`;
-    }
+    
+    periods.push({
+      key: `step_${idx}`,
+      label: `${idx + 1}번째 코스`,
+      title: item.place,
+      time: `코스 ${idx + 1}`,
+      place: item.place,
+      desc: desc
+    });
   });
 
   const provinceText = selectedPersona ? (provinceTranslations[selectedPersona.province]?.ko || selectedPersona.province) : '';
@@ -339,6 +315,8 @@ const chatbotTranslations: Record<string, any> = {
     chatbotSubtitle: "현지인의 시선으로 여행을 설계하세요",
     inputPlaceholder: "질문을 입력하세요...",
     loadingStatus: "답변 중입니다. 잠시만 기다려주세요",
+    suggestedPromptText: (district: string) => `${district}에서 하루종일 놀 수 있는 코스 짜주세요`,
+    suggestedPromptButton: (district: string) => `${district} 하루 코스 추천 질문`,
     occupation: "직업",
     age: "나이",
     hobbies: "취미 및 관심사",
@@ -391,6 +369,8 @@ const chatbotTranslations: Record<string, any> = {
     chatbotSubtitle: "Plan your trip through the eyes of a local",
     inputPlaceholder: "Ask a question...",
     loadingStatus: "Answering. Please wait a moment",
+    suggestedPromptText: (district: string) => `Please plan a course to play all day in '${district}'`,
+    suggestedPromptButton: (district: string) => `Ask ${district} Course`,
     occupation: "Occupation",
     age: "Age",
     hobbies: "Hobbies & Interests",
@@ -443,6 +423,8 @@ const chatbotTranslations: Record<string, any> = {
     chatbotSubtitle: "以当地人的视角规划行程",
     inputPlaceholder: "请输入问题...",
     loadingStatus: "正在回答中，请稍候",
+    suggestedPromptText: (district: string) => `请帮我制定一个在‘${district}’玩一整天的路线`,
+    suggestedPromptButton: (district: string) => `推荐问：${district}一日游`,
     occupation: "职业",
     age: "年龄",
     hobbies: "爱好与兴趣",
@@ -495,6 +477,8 @@ const chatbotTranslations: Record<string, any> = {
     chatbotSubtitle: "地元の方の視点で旅行を設計しましょう",
     inputPlaceholder: "質問を入力してください...",
     loadingStatus: "回答中です. しばらくお待ちください",
+    suggestedPromptText: (district: string) => `${district}で一日中遊べるコースを立ててください`,
+    suggestedPromptButton: (district: string) => `おすすめ：${district}コース`,
     occupation: "職業",
     age: "年齢",
     hobbies: "趣味・関心事",
@@ -697,8 +681,9 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
     window.open(url, 'googleMapsPopup', `width=${width},height=${height},left=${left},top=${top},noopener,noreferrer`);
   };
 
-  const handleSend = async () => {
-    if (!input.trim() || !selectedPersona) return;
+  const handleSend = async (customMessage?: string) => {
+    const messageText = customMessage !== undefined ? customMessage : input;
+    if (!messageText.trim() || !selectedPersona) return;
 
     if (!isMember) {
       const loginStatusMsg = {
@@ -711,7 +696,7 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
       return;
     }
 
-    const userMessage = input.trim();
+    const userMessage = messageText.trim();
     setMessages((prev) => [...prev, { role: "user", content: userMessage }]);
     setInput("");
 
@@ -943,7 +928,7 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
             </Card>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="flex flex-col h-[900px] bg-card rounded-3xl border shadow-xl overflow-hidden">
+          <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="flex flex-col h-[950px] bg-card rounded-3xl border shadow-xl overflow-hidden">
             <div className="p-4 md:p-6 border-b bg-muted/30 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
               <div id="tour-chatbot-header" className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0"><MessageSquare className="h-5 w-5" /></div>
@@ -951,18 +936,26 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
                   <div className="flex items-center gap-2">
                     <h3 className="font-bold text-base md:text-lg whitespace-nowrap">{t.chatbotTitle}</h3>
                   </div>
-                  <p className="text-[11px] md:text-xs text-muted-foreground">{t.chatbotSubtitle}</p>
+                  <p className="text-[11px] md:text-xs font-bold text-slate-500">{t.chatbotSubtitle}</p>
                 </div>
               </div>
               <div className="flex items-center gap-2 w-full md:w-auto">
-                {isLoading && (
-                  <motion.div animate={{ opacity: [0.6, 1, 0.6] }} transition={{ repeat: Infinity, duration: 1.5 }} className="h-10 md:h-11 flex items-center justify-center px-4 md:px-8 rounded-xl bg-red-500 text-white shadow-lg text-[11px] md:text-[13px] font-black mr-1 whitespace-nowrap">
-                    {t.loadingStatus}
-                  </motion.div>
-                )}
                 <div className="flex gap-2 w-full md:w-auto">
-                  <Button variant="outline" id="tour-change-lang-button" onClick={() => setSelectedPersona(null)} className="flex-1 md:flex-none border-primary text-primary hover:bg-primary/10 gap-1.5 md:gap-2 font-extrabold h-10 md:h-11 px-3 md:px-6 text-xs md:text-sm"><Languages className="h-4 w-4 md:h-5 md:w-5" /> {t.changeLang}</Button>
-                  <Button variant="default" id="tour-explore-other" onClick={() => setSelectedPersona(null)} className="flex-1 md:flex-none bg-primary hover:bg-primary/90 text-primary-foreground gap-1.5 md:gap-2 font-extrabold h-10 md:h-11 px-3 md:px-6 text-xs md:text-sm"><MapIcon className="h-4 w-4 md:h-5 md:w-5" /> {t.otherRegion}</Button>
+                  <Button 
+                    variant="outline" 
+                    id="tour-prompt-button" 
+                    onClick={() => {
+                      const rawDistrict = selectedPersona?.district || '';
+                      const cleanDistrict = translateContent(rawDistrict, 'districts', selectedLang).split('-').pop() || '';
+                      handleSend(t.suggestedPromptText(cleanDistrict));
+                    }} 
+                    className="flex-1 md:flex-none border-amber-500 text-amber-600 hover:bg-amber-50 hover:text-amber-700 hover:border-amber-600 gap-1 md:gap-1.5 font-extrabold h-10 md:h-11 px-2.5 md:px-4 text-xs md:text-sm shadow-sm transition-colors"
+                  >
+                    <HelpCircle className="h-4 w-4 md:h-5 md:w-5 text-amber-500" />
+                    {t.suggestedPromptButton(translateContent(selectedPersona?.district || '', 'districts', selectedLang).split('-').pop() || '')}
+                  </Button>
+                  <Button variant="outline" id="tour-change-lang-button" onClick={() => setSelectedPersona(null)} className="flex-1 md:flex-none border-primary text-primary hover:bg-primary/10 gap-1 md:gap-1.5 font-extrabold h-10 md:h-11 px-2.5 md:px-4 text-xs md:text-sm"><Languages className="h-4 w-4 md:h-5 md:w-5" /> {t.changeLang}</Button>
+                  <Button variant="default" id="tour-explore-other" onClick={() => setSelectedPersona(null)} className="flex-1 md:flex-none bg-primary hover:bg-primary/90 text-primary-foreground gap-1 md:gap-1.5 font-extrabold h-10 md:h-11 px-2.5 md:px-4 text-xs md:text-sm"><MapIcon className="h-4 w-4 md:h-5 md:w-5" /> {t.otherRegion}</Button>
                 </div>
               </div>
             </div>
@@ -971,8 +964,18 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
               <div className="space-y-6">
                 {messages.map((msg, index) => (
                   <div key={index} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-                    <div className="max-w-[85%] space-y-3">
-                      <div className={`p-5 rounded-2xl text-[15px] leading-relaxed whitespace-pre-wrap ${msg.role === "user" ? "bg-[#FEE500] text-black rounded-tr-none shadow-sm" : "bg-white text-black rounded-tl-none shadow-sm"}`}>
+                    <div className={`space-y-3 ${
+                      msg.role === "user" 
+                        ? "max-w-[85%]" 
+                        : isTravelCourse(msg.content) 
+                          ? "max-w-[95%] md:max-w-[92%] w-full" 
+                          : "max-w-[85%]"
+                    }`}>
+                      <div className={`p-5 rounded-2xl text-[15px] leading-relaxed whitespace-pre-wrap ${
+                        msg.role === "user" 
+                          ? "bg-[#FEE500] text-black rounded-tr-none shadow-sm" 
+                          : "bg-white text-black rounded-tl-none shadow-sm"
+                      } ${msg.role === "bot" && isTravelCourse(msg.content) ? "max-w-[90%] md:max-w-[85%]" : ""}`}>
                         {msg.content.split(/(\[[^\]]+\]|\*\*[\s\S]*?\*\*)/g).map((part, i) => {
                           if (part.startsWith('[') && part.endsWith(']')) {
                             const locationName = part.slice(1, -1);
@@ -1005,11 +1008,10 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
                       {msg.role === "bot" && isTravelCourse(msg.content) && (
                         <div className="space-y-4 pl-2 pt-2 w-full">
                           <TravelRouteMap 
-                            locations={
+                            periods={
                               parseCourseContent(msg.content, selectedPersona)
                                 .periods
                                 .filter(p => p.place && p.place.trim() !== '')
-                                .map(p => p.place)
                             }
                             province={selectedPersona?.province || ""}
                             language={selectedLang}
@@ -1043,6 +1045,20 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
                     </div>
                   </div>
                 ))}
+                {isLoading && (
+                  <div className="flex justify-start">
+                    <div className="max-w-[85%] space-y-3">
+                      <motion.div 
+                        animate={{ opacity: [0.7, 1, 0.7] }} 
+                        transition={{ repeat: Infinity, duration: 1.5 }}
+                        className="p-5 rounded-2xl text-[15px] leading-relaxed bg-[#ef4444] text-white rounded-tl-none shadow-md font-extrabold flex items-center gap-2"
+                      >
+                        <Loader2 className="w-4 h-4 animate-spin text-white shrink-0" />
+                        <span>{t.loadingStatus}</span>
+                      </motion.div>
+                    </div>
+                  </div>
+                )}
                 <div ref={scrollEndRef} className="h-1" />
               </div>
             </ScrollArea>
@@ -1223,7 +1239,7 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
                     zIndex: 1
                   }} />
 
-                  {downloadData.periods.map((period: any, idx: number) => (
+                  {downloadData.periods.slice(0, 4).map((period: any, idx: number) => (
                     <div key={idx} style={{ display: 'flex', alignItems: 'flex-start', width: '100%', marginBottom: '26px', position: 'relative', zIndex: 2 }}>
                       <div style={{
                         width: '36px',
@@ -1365,7 +1381,7 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
 
             {/* Right Column: Timeline Detail Description Cards */}
             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              {downloadData.periods.map((period: any, idx: number) => (
+              {downloadData.periods.slice(0, 4).map((period: any, idx: number) => (
                 <div key={idx} style={{
                   padding: '16px',
                   backgroundColor: 'rgba(255, 255, 255, 0.65)',
