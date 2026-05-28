@@ -1015,31 +1015,9 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
                             }
                             province={selectedPersona?.province || ""}
                             language={selectedLang}
+                            onDownload={() => handleDownloadCard(msg.content)}
+                            isDownloading={isDownloading}
                           />
-                          <div className="flex justify-start">
-                            <button
-                              onClick={() => handleDownloadCard(msg.content)}
-                              disabled={isDownloading}
-                              className="bg-white hover:bg-[#f8fafc] text-[#0f172a] hover:text-[#d97706] font-bold text-[12px] md:text-sm px-4 py-2.5 rounded-xl shadow-md border border-[#e2e8f0] hover:border-[#cbd5e1] flex items-center gap-2 transition-all active:scale-95 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
-                            >
-                              {isDownloading ? (
-                                <>
-                                  <Loader2 className="w-4 h-4 animate-spin text-[#d97706]" />
-                                  <span>가이드맵 저장하는 중...</span>
-                                </>
-                              ) : (
-                                <>
-                                  <Download className="w-4 h-4 text-[#d97706]" />
-                                  <span>
-                                    {selectedLang === 'ko' && "📥 추천코스 안내 다운받기"}
-                                    {selectedLang === 'en' && "📥 Save Itinerary Map (A4)"}
-                                    {selectedLang === 'zh' && "📥 保存推荐路线图 (A4)"}
-                                    {selectedLang === 'ja' && "📥 おすすめコースを保存 (A4)"}
-                                  </span>
-                                </>
-                              )}
-                            </button>
-                          </div>
                         </div>
                       )}
                     </div>

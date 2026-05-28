@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { GoogleMap, useJsApiLoader, PolylineF, MarkerF } from "@react-google-maps/api";
 import { PlaceDetail, searchPlace } from "@/utils/googlePlaces";
-import { Loader2, MapPin, ExternalLink, Star, X, ChevronLeft, ArrowRight } from "lucide-react";
+import { Loader2, MapPin, ExternalLink, Star, X, ChevronLeft, ArrowRight, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface TravelRouteMapPeriod {
@@ -17,6 +17,8 @@ interface TravelRouteMapProps {
   periods: TravelRouteMapPeriod[];
   province: string;
   language?: string;
+  onDownload?: () => void;
+  isDownloading?: boolean;
 }
 
 interface RouteItem {
@@ -30,7 +32,13 @@ interface RouteItem {
 const defaultCenter = { lat: 37.5665, lng: 126.9780 }; // 서울 기준
 const googleMapsLibraries: ("places" | "drawing" | "geometry" | "localContext" | "visualization")[] = ["places"];
 
-export const TravelRouteMap = ({ periods, province, language = "ko" }: TravelRouteMapProps) => {
+export const TravelRouteMap = ({ 
+  periods, 
+  province, 
+  language = "ko",
+  onDownload,
+  isDownloading = false
+}: TravelRouteMapProps) => {
   const { isLoaded, loadError } = useJsApiLoader({
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "",
     libraries: googleMapsLibraries,
@@ -179,16 +187,41 @@ export const TravelRouteMap = ({ periods, province, language = "ko" }: TravelRou
         <div className="flex-1 flex flex-col h-full overflow-hidden">
           <div className="mb-4 shrink-0 flex items-center justify-between gap-2">
             <h4 className="font-extrabold text-slate-800 text-[15px] flex items-center gap-1.5 whitespace-nowrap">
-              🗺️ 추천 여행 코스
+              🗺️ {language === 'ko' ? "추천여행코스" : (language === 'en' ? "Recommended Course" : (language === 'zh' ? "推荐旅行路线" : "おすすめコース"))}
             </h4>
-            {hasValidPlaces && (
-              <Button 
-                onClick={handleOpenGoogleDirections}
-                className="bg-sky-600 hover:bg-sky-700 text-white font-extrabold text-[10px] gap-1 px-2.5 h-7 rounded-xl transition-all active:scale-95 cursor-pointer shadow-sm shrink-0"
-              >
-                전체 길찾기 <ExternalLink className="w-3 h-3" />
-              </Button>
-            )}
+            <div className="flex items-center gap-1">
+              {onDownload && (
+                <Button
+                  onClick={onDownload}
+                  disabled={isDownloading}
+                  className="bg-white hover:bg-slate-50 text-amber-600 border border-amber-200 hover:border-amber-300 font-extrabold text-[10px] gap-1 px-2.5 h-7 rounded-xl transition-all active:scale-95 cursor-pointer shadow-sm shrink-0 disabled:opacity-60"
+                >
+                  {isDownloading ? (
+                    <Loader2 className="w-3 h-3 animate-spin text-amber-600" />
+                  ) : (
+                    <Download className="w-3 h-3 text-amber-600" />
+                  )}
+                  <span>
+                    {language === 'ko' && "안내지 다운"}
+                    {language === 'en' && "Save Map"}
+                    {language === 'zh' && "下载地图"}
+                    {language === 'ja' && "マップ保存"}
+                  </span>
+                </Button>
+              )}
+              {hasValidPlaces && (
+                <Button 
+                  onClick={handleOpenGoogleDirections}
+                  className="bg-sky-600 hover:bg-sky-700 text-white font-extrabold text-[10px] gap-1 px-2.5 h-7 rounded-xl transition-all active:scale-95 cursor-pointer shadow-sm shrink-0"
+                >
+                  {language === 'ko' && "전체 길찾기"}
+                  {language === 'en' && "Directions"}
+                  {language === 'zh' && "完整导航"}
+                  {language === 'ja' && "全ルート案内"}
+                  <ExternalLink className="w-2.5 h-2.5" />
+                </Button>
+              )}
+            </div>
           </div>
           
           <div className="space-y-3 flex-1 overflow-y-auto pr-1">
