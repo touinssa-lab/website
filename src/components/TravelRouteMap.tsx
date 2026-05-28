@@ -202,7 +202,7 @@ export const TravelRouteMap = ({
                     <Download className="w-3 h-3 text-amber-600" />
                   )}
                   <span>
-                    {language === 'ko' && "안내지 다운"}
+                    {language === 'ko' && "안내장 다운"}
                     {language === 'en' && "Save Map"}
                     {language === 'zh' && "下载地图"}
                     {language === 'ja' && "マップ保存"}
