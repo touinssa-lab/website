@@ -63,8 +63,11 @@ export const TravelRouteMap = ({
     }
   };
 
+  const periodsStr = JSON.stringify(periods);
+
   useEffect(() => {
-    if (periods.length === 0) {
+    const parsedPeriods = JSON.parse(periodsStr) as TravelRouteMapPeriod[];
+    if (parsedPeriods.length === 0) {
       setLoading(false);
       return;
     }
@@ -74,7 +77,7 @@ export const TravelRouteMap = ({
       setLoading(true);
       setSearchFailed(false);
       
-      const queries = periods.map(p => {
+      const queries = parsedPeriods.map(p => {
         const bracketMatch = p.place.match(/\[([^\]]+)\]/);
         let placeName = bracketMatch ? bracketMatch[1] : p.place;
         
@@ -102,7 +105,7 @@ export const TravelRouteMap = ({
         }
       }
 
-      const items: RouteItem[] = periods.map((p, idx) => ({
+      const items: RouteItem[] = parsedPeriods.map((p, idx) => ({
         time: p.time,
         label: p.label,
         placeName: p.place,
@@ -115,7 +118,7 @@ export const TravelRouteMap = ({
 
       const validDetails = details.filter((d): d is PlaceDetail => d !== null);
 
-      if (validDetails.length === 0 && periods.length > 0) {
+      if (validDetails.length === 0 && parsedPeriods.length > 0) {
         setSearchFailed(true);
       }
 
@@ -134,7 +137,7 @@ export const TravelRouteMap = ({
     };
 
     fetchPlaces();
-  }, [isLoaded, periods, province]);
+  }, [isLoaded, periodsStr, province]);
 
   const onLoad = (map: google.maps.Map) => {
     mapRef.current = map;

@@ -36,8 +36,24 @@ export const getPlacesService = (map?: google.maps.Map): google.maps.places.Plac
  * 검색어로 장소의 정보(좌표, 썸네일, 주소, 평점)를 단일 조회
  */
 export const searchPlace = (query: string, map?: google.maps.Map): Promise<PlaceDetail> => {
+  // 1. 메모리 캐시 확인
   if (placeCache[query]) {
     return Promise.resolve(placeCache[query]);
+  }
+
+  // 2. 로컬 스토리지 캐시 확인
+  if (typeof window !== "undefined") {
+    try {
+      const cached = localStorage.getItem(`gplaces_cache_${query}`);
+      if (cached) {
+        const parsed = JSON.parse(cached) as PlaceDetail;
+        // 메모리에 동기화
+        placeCache[query] = parsed;
+        return Promise.resolve(parsed);
+      }
+    } catch (e) {
+      console.warn("로컬 스토리지 캐시 읽기 실패:", e);
+    }
   }
 
   return new Promise((resolve, reject) => {
@@ -78,8 +94,18 @@ export const searchPlace = (query: string, map?: google.maps.Map): Promise<Place
               types
             };
 
-            // 캐시 저장
+            // 메모리 캐시 저장
             placeCache[query] = detail;
+            
+            // 로컬 스토리지 캐시 저장
+            if (typeof window !== "undefined") {
+              try {
+                localStorage.setItem(`gplaces_cache_${query}`, JSON.stringify(detail));
+              } catch (e) {
+                console.warn("로컬 스토리지 캐시 쓰기 실패:", e);
+              }
+            }
+            
             resolve(detail);
           } else {
             reject(new Error(`장소의 좌표 정보가 존재하지 않습니다: ${query}`));
