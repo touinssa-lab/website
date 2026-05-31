@@ -47,11 +47,11 @@ const App = () => (
           <Route path="/ai-guide" element={<AITravelGuide />} />
           
           {/* Admin Routes */}
-          <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/admin/news" element={<AdminNews />} />
-          <Route path="/admin/panels" element={<AdminPanels />} />
-          <Route path="/admin/surveys" element={<AdminSurveys />} />
-          <Route path="/admin/ai-guide" element={<AdminAIGuide />} />
+          <Route path="/touinssa-manager" element={<AdminDashboard />} />
+          <Route path="/touinssa-manager/news" element={<AdminNews />} />
+          <Route path="/touinssa-manager/panels" element={<AdminPanels />} />
+          <Route path="/touinssa-manager/surveys" element={<AdminSurveys />} />
+          <Route path="/touinssa-manager/ai-guide" element={<AdminAIGuide />} />
           
           <Route path="*" element={<NotFound />} />
         </Routes>

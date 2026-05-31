@@ -7,7 +7,7 @@ const QuickMenu = () => {
   const [isVisible, setIsVisible] = useState(false);
   const location = useLocation();
 
-  const isAdmin = location.pathname.startsWith('/admin');
+  const isAdmin = location.pathname.startsWith('/touinssa-manager');
   const isAIGuide = location.pathname === '/ai-guide';
 
   useEffect(() => {
