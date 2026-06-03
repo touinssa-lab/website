@@ -95,7 +95,7 @@ const AITravelGuide = () => {
             <motion.div key="guide-view" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} className="space-y-12">
               <div style={{ backgroundColor: '#fbfcf9' }} className="rounded-[40px] py-10 md:py-12 px-10 md:px-16 mb-12 relative overflow-hidden shadow-sm border border-sky-100/50">
                 <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(to right, #e0f2fe, #f0f9ff 50%, #fbfcf9 70%)' }} />
-                <div className="relative z-10 max-w-3xl">
+                <div className="relative z-10 max-w-3xl lg:max-w-[55%] xl:max-w-[60%]">
                   <motion.h2 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-4xl md:text-5xl mb-3 tracking-tight leading-tight font-serif text-slate-800 font-black">
                     {t.heroTitle}
                   </motion.h2>
@@ -121,8 +121,21 @@ const AITravelGuide = () => {
                     </div>
                   </div>
                 </div>
-                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1/2 h-full hidden lg:block opacity-90 pointer-events-none">
-                  <img src="/images/local_hero.png" alt="Neighborhood Illustration" className="w-full h-full object-contain object-right" />
+                <div 
+                  className="absolute right-[-40px] top-1/2 -translate-y-1/2 w-[60%] h-full hidden lg:block opacity-90 pointer-events-none"
+                  style={{
+                    maskImage: 'linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.1) 15%, black 40%)',
+                    WebkitMaskImage: 'linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.1) 15%, black 40%)'
+                  }}
+                >
+                  <video
+                    src="/images/local_hero.mp4"
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="w-full h-full object-cover object-right mix-blend-multiply"
+                  />
                 </div>
               </div>
 
