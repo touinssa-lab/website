@@ -114,7 +114,7 @@ const AITravelGuide = () => {
                     </div>
                   </div>
 
-                  <div className="flex gap-6 items-start border-l-4 border-sky-400 pl-6 py-2 bg-sky-50/30 rounded-r-2xl max-w-2xl">
+                  <div className="flex gap-6 items-start border-l-4 border-sky-400 pl-6 py-2 rounded-r-2xl max-w-2xl">
                     <div>
                       <h4 className="text-base md:text-lg font-bold text-slate-800 mb-1">{t.curationTitle}</h4>
                       <div className="text-sm md:text-base text-slate-600 leading-relaxed font-medium">{t.curationDesc}</div>
@@ -129,7 +129,7 @@ const AITravelGuide = () => {
                   }}
                 >
                   <video
-                    src="/images/local_hero.mp4"
+                    src="/images/local_hero2.mp4"
                     autoPlay
                     loop
                     muted
