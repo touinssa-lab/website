@@ -37,8 +37,7 @@ const Contact = () => {
             연락처: formData.phone,
             문의유형: formData.inquiryType,
             내용: formData.message,
-            _subject: `[웹사이트 문의] ${formData.inquiryType} - ${formData.name}`,
-            _captcha: "false"
+            _subject: `[웹사이트 문의] ${formData.inquiryType} - ${formData.name}`
         })
       });
 

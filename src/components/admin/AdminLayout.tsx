@@ -35,12 +35,43 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   const location = useLocation();
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isValidating, setIsValidating] = useState(true);
   const [inputPassword, setInputPassword] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   useEffect(() => {
-    const auth = sessionStorage.getItem("admin_auth") === "true";
-    setIsAuthenticated(auth);
+    const token = sessionStorage.getItem("admin_token");
+    if (!token) {
+      setIsAuthenticated(false);
+      setIsValidating(false);
+      return;
+    }
+
+    const verifyToken = async () => {
+      try {
+        const response = await fetch('/api/admin-auth', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        const result = await response.json();
+        if (result.valid) {
+          setIsAuthenticated(true);
+        } else {
+          sessionStorage.removeItem("admin_token");
+          setIsAuthenticated(false);
+          toast.error("세션이 만료되었거나 올바르지 않습니다.");
+        }
+      } catch (error) {
+        setIsAuthenticated(false);
+        toast.error("인증 서버 연결 실패");
+      } finally {
+        setIsValidating(false);
+      }
+    };
+
+    verifyToken();
   }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -54,9 +85,9 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
       
       const result = await response.json();
       
-      if (result.success) {
+      if (result.success && result.token) {
         setIsAuthenticated(true);
-        sessionStorage.setItem("admin_auth", "true");
+        sessionStorage.setItem("admin_token", result.token);
         toast.success("관리자 인증 성공");
       } else {
         toast.error(result.error || "비밀번호가 올바르지 않습니다.");
@@ -67,11 +98,22 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   };
 
   const handleLogout = () => {
-    sessionStorage.removeItem("admin_auth");
+    sessionStorage.removeItem("admin_token");
     setIsAuthenticated(false);
     navigate("/");
     toast.info("로그아웃 되었습니다.");
   };
+
+  if (isValidating) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+        <div className="text-center space-y-4">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+          <p className="text-sm text-muted-foreground">관리자 세션 확인 중...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!isAuthenticated) {
     return (

@@ -544,7 +544,7 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
   const [isTourOpen, setIsTourOpen] = useState(false);
   const scrollEndRef = useRef<HTMLDivElement>(null);
 
-  const { user } = useAuth();
+  const { user, session } = useAuth();
   const isMember = !!user;
 
   const [downloadData, setDownloadData] = useState<any>(null);
@@ -728,11 +728,14 @@ const AIGuideChat = ({ isUnlimited = false }: AIGuideChatProps) => {
 
       const response = await fetch(`/api/chat`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session?.access_token || ''}`
+        },
         body: JSON.stringify({
           messages: [
             { role: 'system', content: systemInstruction },
-            ...messages.map((m) => ({
+            ...messages.slice(-10).map((m) => ({
               role: m.role,
               content: m.content
             })),

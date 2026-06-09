@@ -24,3 +24,17 @@ public/agent_status.json
 
 # 루트 폴더의 임시 스크린샷 이미지
 /*.png
+
+# 추가 임시 백업 및 로그 파일
+*.bak
+*.mjs
+*.log
+*.txt
+*temp*
+*.timestamp-*
+
+# 크롤링 및 수집 데이터 임시 결과물 (배포/Git 스테이징 제외)
+naver_news.json
+ai_articles_raw.json
+articles_full.json
+temp_news.json
