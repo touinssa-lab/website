@@ -475,7 +475,9 @@ const SidoDashboard = () => {
             <div key={i} className="pt-7 border-t border-[#D8D2C4] first:border-t-0 md:first:border-t-0 md:[&:nth-child(2)]:border-t-0">
               <div className="font-serif italic text-4xl text-[#B85C3C] leading-none mb-3">{f.n}</div>
               <div className="text-lg font-bold tracking-tight mb-2.5 leading-[1.3]">{f.h}</div>
-              <div className="text-[14.5px] text-[#4A4A4A] leading-[1.65]" dangerouslySetInnerHTML={{ __html: f.b.replace(/<b>(.*?)<\/b>/g, '<strong class="text-[#1A1A1A] font-semibold">$1</strong>') }} />
+              <div className="text-[14.5px] text-[#4A4A4A] leading-[1.65]">
+                {f.b}
+              </div>
             </div>
           ))}
         </div>
