@@ -62,7 +62,7 @@ const Index = () => {
     { 
       id: 'keyword',
       title: 'AI Hot Keyword', 
-      desc: '실시간 검색 트렌드와 데이터 분석 기반 주요 키워드를 추출합니다.',
+      desc: '주간 Weekend 검색 트렌드와 데이터 분석 기반 주요 키워드를 추출합니다.',
       image: '/ai_hot_keyword_v2.png',
       color: 'text-sky-600',
       content: ['#여행', '#관광', '#축제']
@@ -77,8 +77,8 @@ const Index = () => {
     },
     { 
       id: 'news',
-      title: 'AI Hot News', 
-      desc: 'AI 에이전트가 선정한 관광 산업계의 주요 뉴스를 요약 제공합니다.',
+      title: 'AI Today Hot News', 
+      desc: 'AI 에이전트가 선정한 관광 산업계의 오늘의 주요 뉴스를 요약 제공합니다.',
       image: '/ai_hot_news_v2.png',
       color: 'text-emerald-600',
       content: '2026년 글로벌 관광 시장 회복세 뚜렷...'

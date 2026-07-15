@@ -40,6 +40,39 @@ import { naverNewsData } from "@/data/naverNewsData";
 import { naverNewsDataAI } from "@/data/naverNewsDataAI";
 import StockMarketTrends from "@/components/StockMarketTrends";
 
+// 헬퍼 함수: 선택된 날짜가 속한 주간(월~일)의 시작이자 기준일인 직전 일요일 날짜를 계산
+const getStartOfWeekSunday = (dateStr: string): string => {
+  if (!dateStr) return '';
+  const date = new Date(dateStr);
+  const day = date.getDay(); // 0 (일요일) ~ 6 (토요일)
+  
+  // 일요일(0)이면 그대로, 평일은 직전 일요일로 가기 위해 day만큼 뺌
+  const diff = date.getDate() - day;
+  const sunday = new Date(date.setDate(diff));
+  
+  const yyyy = sunday.getFullYear();
+  const mm = String(sunday.getMonth() + 1).padStart(2, '0');
+  const dd = String(sunday.getDate()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd}`;
+};
+
+// 헬퍼 함수: 일요일 날짜를 기준으로 해당 주간(월~일)의 날짜 범위를 문자열로 반환
+const getWeekRangeString = (sundayDateStr: string): string => {
+  if (!sundayDateStr) return '';
+  const sunday = new Date(sundayDateStr);
+  const monday = new Date(sundayDateStr);
+  monday.setDate(sunday.getDate() - 6);
+  
+  const formatDate = (d: Date) => {
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  };
+  
+  return `${formatDate(monday)} ~ ${formatDate(sunday)}`;
+};
+
 const NewsRoom = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -51,19 +84,29 @@ const NewsRoom = () => {
   const [isNoticeModalOpen, setIsNoticeModalOpen] = useState(false);
   const [newsTab, setNewsTab] = useState<'tourism' | 'ai'>('tourism');
   const [startIndex, setStartIndex] = useState(0);
-  const [selectedDate, setSelectedDate] = useState<string>("2026-05-27");
+  const [selectedDate, setSelectedDate] = useState<string>("2026-06-25");
+  const weekSundayDate = getStartOfWeekSunday(selectedDate);
   
-  // DB에서 데이터가 있는 가장 최신 날짜 가져오기
+  // DB에서 데이터가 있는 가장 최신 날짜 가져오기 (키워드 또는 뉴스가 존재하는 최신 날짜)
   const { data: latestDate } = useQuery({
     queryKey: ['latest_trend_date'],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data: kwData } = await supabase
         .from('news_trends_keywords')
         .select('target_date')
         .order('target_date', { ascending: false })
         .limit(1);
-      if (error) throw error;
-      return data?.[0]?.target_date || "2026-05-17";
+        
+      const { data: artData } = await supabase
+        .from('news_trends_articles')
+        .select('target_date')
+        .order('target_date', { ascending: false })
+        .limit(1);
+        
+      const kwDate = kwData?.[0]?.target_date || "2026-05-17";
+      const artDate = artData?.[0]?.target_date || "2026-05-17";
+      
+      return kwDate > artDate ? kwDate : artDate;
     }
   });
 
@@ -89,14 +132,14 @@ const NewsRoom = () => {
 
   // --- Supabase Trends Data Queries ---
   const { data: trendKeywords = [], isLoading: isKeywordsLoading } = useQuery({
-    queryKey: ['trend_keywords', selectedDate],
+    queryKey: ['trend_keywords', weekSundayDate],
     queryFn: async () => {
 
 
       const { data, error } = await supabase
         .from('news_trends_keywords')
         .select('*')
-        .eq('target_date', selectedDate)
+        .eq('target_date', weekSundayDate)
         .order('rank', { ascending: true });
       if (error) throw error;
       
@@ -149,14 +192,14 @@ const NewsRoom = () => {
   });
 
   const { data: trendInsights = [], isLoading: isInsightsLoading } = useQuery({
-    queryKey: ['trend_insights', selectedDate],
+    queryKey: ['trend_insights', weekSundayDate],
     queryFn: async () => {
 
 
       const { data, error } = await supabase
         .from('news_trends_insights')
         .select('*')
-        .eq('target_date', selectedDate);
+        .eq('target_date', weekSundayDate);
       if (error) throw error;
       
       const unique = (data || []).reduce((acc: any[], current: any) => {
@@ -542,7 +585,7 @@ const NewsRoom = () => {
                           type="date" 
                           value={selectedDate}
                           min="2026-05-09"
-                          max={latestDate || "2026-05-27"}
+                          max={latestDate || "2026-06-25"}
                           onChange={(e) => setSelectedDate(e.target.value)}
                           className="bg-transparent border-none p-0 text-sm font-bold text-white focus:ring-0 cursor-pointer w-full [color-scheme:dark]"
                         />
@@ -608,7 +651,7 @@ const NewsRoom = () => {
                       </div>
                       <div>
                         <h3 className="text-2xl font-bold text-slate-900 font-sans">AI Hot Keyword</h3>
-                        <p className="text-sm text-muted-foreground font-medium">실시간 트렌드 및 데이터 분석 기반 주요 키워드</p>
+                        <p className="text-sm text-muted-foreground font-medium">주간 Weekend 트렌드 및 데이터 분석 기반 주요 키워드</p>
                       </div>
                     </div>
                   </div>
@@ -618,7 +661,7 @@ const NewsRoom = () => {
                       <div className="flex items-center gap-2 mb-2 px-2">
                         <TrendingUp className="w-5 h-5 text-primary" />
                         <h4 className="text-lg font-bold text-slate-800 font-sans">
-                          Today Top Rankings <span className="font-normal text-slate-400 text-sm ml-1">({selectedDate})</span>
+                          Weekend Top Rankings <span className="font-normal text-slate-400 text-sm ml-1">({getWeekRangeString(weekSundayDate)})</span>
                         </h4>
                       </div>
                       <div className="bg-white/50 backdrop-blur-md border border-slate-100 rounded-[1.5rem] p-8 shadow-sm h-full">
@@ -721,7 +764,7 @@ const NewsRoom = () => {
                       <div className="flex items-center gap-2 mb-2 px-2">
                         <Sparkles className="w-5 h-5 text-indigo-500" />
                         <h4 className="text-lg font-bold text-slate-800 font-sans">
-                          AI Selected Insights <span className="font-normal text-slate-400 text-sm ml-1">(Today Top Rankings 에서 선정한 키워드)</span>
+                          AI Selected Insights <span className="font-normal text-slate-400 text-sm ml-1">(Weekend Top Rankings 에서 선정한 키워드)</span>
                         </h4>
                       </div>
                       
@@ -785,7 +828,7 @@ const NewsRoom = () => {
                         <Bot className="w-6 h-6 text-indigo-600" />
                       </div>
                       <div>
-                        <h3 className="text-2xl font-bold text-slate-900 font-sans tracking-tight">AI Hot News</h3>
+                        <h3 className="text-2xl font-bold text-slate-900 font-sans tracking-tight">AI Today Hot News</h3>
                         <p className="text-sm text-muted-foreground font-medium mt-0.5">AI에이전트가 선정하고 요약한 오늘의 핫뉴스</p>
                       </div>
                     </div>
