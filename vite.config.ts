@@ -1,6 +1,7 @@
 import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
+import fs from "fs";
 import { componentTagger } from "lovable-tagger";
 import { spawn } from "child_process";
 import crypto from "crypto";
@@ -34,7 +35,33 @@ const localApiMock = () => {
           req.on('data', (chunk: any) => { body += chunk.toString(); });
           req.on('end', () => {
             try {
-              const { step } = JSON.parse(body);
+              const { step, action } = JSON.parse(body);
+
+              // Handle reset action
+              if (action === 'reset') {
+                const nowStr = new Date().toISOString().replace('T', ' ').substring(0, 19);
+                const resetData = {
+                  last_updated: nowStr,
+                  status: "completed",
+                  step: 5,
+                  total_steps: 5,
+                  message: "에이전트 상태가 수동으로 초기화되었습니다.",
+                  logs: [
+                    `[${nowStr.substring(11)}] 에이전트 상태가 사용자에 의해 강제 초기화(리셋)되었습니다.`,
+                    `[${nowStr.substring(11)}] 준비 완료 상태입니다.`
+                  ]
+                };
+                const publicStatusPath = path.resolve(__dirname, 'public/agent_status.json');
+                const distStatusPath = path.resolve(__dirname, 'dist/agent_status.json');
+                fs.writeFileSync(publicStatusPath, JSON.stringify(resetData, null, 2), 'utf-8');
+                if (fs.existsSync(path.dirname(distStatusPath))) {
+                  fs.writeFileSync(distStatusPath, JSON.stringify(resetData, null, 2), 'utf-8');
+                }
+                res.setHeader('Content-Type', 'application/json');
+                res.end(JSON.stringify({ success: true, message: '에이전트 상태가 성공적으로 초기화되었습니다.' }));
+                return;
+              }
+
               const pythonPath = "D:\\뉴프로젝트\\AutoAgent\\venv\\Scripts\\python.exe";
               const scriptPath = "D:\\뉴프로젝트\\AutoAgent\\newsroom_agent\\agent.py";
               

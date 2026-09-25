@@ -12,7 +12,8 @@ import {
   ArrowDownRight,
   MousePointer2,
   Eye,
-  Activity
+  Activity,
+  RotateCcw
 } from "lucide-react";
 import { 
   BarChart, 
@@ -90,7 +91,16 @@ const Dashboard = () => {
     refetchInterval: 3000, // Poll every 3 seconds to ensure real-time terminal sync
   });
 
-  const isAgentRunning = agentStatus?.status === 'running' || agentStatus?.status === 'starting';
+  // agent_status.json이 'running' 또는 'starting'이더라도,
+  // 마지막 업데이트(last_updated)로부터 15분 이상 경과했다면 프로세스가 비정상 종료된 것으로 간주하여 잠금 해제
+  const isAgentStale = (() => {
+    if (!agentStatus?.last_updated) return false;
+    const lastTime = new Date(agentStatus.last_updated.replace(' ', 'T')).getTime();
+    if (isNaN(lastTime)) return false;
+    return Date.now() - lastTime > 15 * 60 * 1000;
+  })();
+
+  const isAgentRunning = (agentStatus?.status === 'running' || agentStatus?.status === 'starting') && !isAgentStale;
 
   const handleTriggerAgent = async (step: string) => {
     if (isAgentRunning) return;
@@ -110,6 +120,26 @@ const Dashboard = () => {
         toast.success(`에이전트가 백그라운드에서 구동되었습니다. (대상: ${step === 'all' ? '전체' : step})`);
       } else {
         toast.error(`에이전트 구동 실패: ${result.error || '알 수 없는 오류'}`);
+      }
+    } catch (e: any) {
+      toast.error(`서버 통신 실패: ${e.message || '오류 발생'}`);
+    }
+  };
+
+  const handleResetAgent = async () => {
+    try {
+      const response = await fetch('/api/run-agent', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ action: 'reset' }),
+      });
+      const result = await response.json();
+      if (response.ok && result.success) {
+        toast.success("에이전트 상태가 초기화되었습니다.");
+      } else {
+        toast.error(`초기화 실패: ${result.error || '알 수 없는 오류'}`);
       }
     } catch (e: any) {
       toast.error(`서버 통신 실패: ${e.message || '오류 발생'}`);
@@ -269,15 +299,31 @@ const Dashboard = () => {
               }`} />
               관광 AI 뉴스룸 에이전트 실시간 모니터링 (AutoAgent Console)
             </CardTitle>
-            <span className={`text-[10px] px-2.5 py-1 rounded-full font-bold uppercase tracking-wider ${
-              agentStatus?.status === 'running' || agentStatus?.status === 'starting'
-                ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-                : agentStatus?.status === 'completed'
-                ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                : 'bg-slate-850 text-slate-450 border border-slate-750'
-            }`}>
-              {agentStatus?.status || 'OFFLINE'}
-            </span>
+            <div className="flex items-center gap-2">
+              <span className={`text-[10px] px-2.5 py-1 rounded-full font-bold uppercase tracking-wider ${
+                isAgentRunning
+                  ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                  : isAgentStale && (agentStatus?.status === 'running' || agentStatus?.status === 'starting')
+                  ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
+                  : agentStatus?.status === 'completed'
+                  ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                  : 'bg-slate-850 text-slate-450 border border-slate-750'
+              }`}>
+                {isAgentRunning 
+                  ? 'RUNNING' 
+                  : (isAgentStale && (agentStatus?.status === 'running' || agentStatus?.status === 'starting'))
+                  ? 'TIMEOUT (STALE)'
+                  : (agentStatus?.status || 'IDLE')}
+              </span>
+              <button
+                onClick={handleResetAgent}
+                title="에이전트가 예기치 않게 멈췄거나 오류 시 상태를 강제로 리셋합니다."
+                className="flex items-center gap-1 px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-full text-[10px] font-bold border border-slate-700 transition-all hover:scale-105 active:scale-95"
+              >
+                <RotateCcw className="w-3 h-3" />
+                상태 리셋
+              </button>
+            </div>
           </CardHeader>
           <CardContent className="pt-6 font-mono text-xs text-slate-300">
             {agentStatus ? (
@@ -338,6 +384,13 @@ const Dashboard = () => {
                       className="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-[11px] font-bold border border-slate-750 transition-all disabled:opacity-40 disabled:cursor-not-allowed hover:scale-[1.02] active:scale-[0.98]"
                     >
                       뉴스피드 재요약 (3단계)
+                    </button>
+                    <button
+                      onClick={handleResetAgent}
+                      className="px-3.5 py-2 bg-rose-950/40 hover:bg-rose-900/60 text-rose-300 rounded-lg text-[11px] font-bold border border-rose-800/40 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center gap-1.5"
+                    >
+                      <RotateCcw className="w-3 h-3" />
+                      상태 초기화
                     </button>
                   </div>
                 </div>
