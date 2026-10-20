@@ -233,7 +233,7 @@ const Contact = () => {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">Phone</h3>
-                    <p className="text-muted-foreground">010-7179-7743 / 02-3445-5334</p>
+                    <p className="text-muted-foreground">010-7179-7743</p>
                     <p className="text-muted-foreground text-sm">평일 09:00 - 18:00</p>
                   </div>
                 </div>
@@ -243,8 +243,7 @@ const Contact = () => {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">Email</h3>
-                    <p className="text-muted-foreground">service@tourisminsight.co.kr</p>
-                    <p className="text-muted-foreground mt-1">touinssa@gmail.com</p>
+                    <p className="text-muted-foreground">touinssa@gmail.com</p>
                   </div>
                 </div>
               </div>
